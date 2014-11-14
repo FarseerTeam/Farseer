@@ -10,7 +10,7 @@
     "angular-cookies": ">=1.2.*",
     "angular-sanitize": ">=1.2.*",
     "angular-route": ">=1.2.*",
-    "font-awesome": ">=4.1.0",
+    "font-awesome": "~4.2.0",
     "lodash": "~2.4.1"
   },
   "devDependencies": {
