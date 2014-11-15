@@ -1,11 +1,18 @@
 'use strict';
 
 angular.module('farseerApp')
-  .controller('NavbarCtrl', function ($scope, $location) {
+  .controller('NavbarCtrl', function($scope, $location) {
     $scope.menu = [{
-      'title': 'Home',
-      'link': '/'
-    }];
+      title: 'Home',
+      link: '/'
+    }, {
+      title: 'People',
+      link: '/people'
+    },{
+      title: 'About',
+      link: '/about'
+    }
+    ];
 
     $scope.isCollapsed = true;
 
