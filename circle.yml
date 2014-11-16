@@ -11,4 +11,5 @@ deployment:
   production:
     branch: master
     commands:
+      - grunt build
       - grunt buildcontrol:heroku
