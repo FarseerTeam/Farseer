@@ -12,4 +12,4 @@ deployment:
     branch: master
     commands:
       - grunt build
-      - grunt buildcontrol --force
+      - grunt buildcontrol:heroku --force
