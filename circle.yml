@@ -9,6 +9,6 @@ test:
     - grunt test
 deployment:
   production:
-    branch: production
+    branch: master
     commands:
       - grunt buildcontrol:heroku
