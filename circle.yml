@@ -12,8 +12,4 @@ deployment:
     branch: master
     commands:
       - grunt build
-      - cd dist
-      - git config user.email "rmurdock@pillartechnology.com"
-      - git config user.name "Circle CI pretending to be Rob"
-      - cd ..
-      - grunt buildcontrol:heroku
+      - grunt buildcontrol:heroku --force
