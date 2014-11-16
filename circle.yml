@@ -7,3 +7,8 @@ dependencies:
 test:
   post:
     - grunt test
+deployment:
+  production:
+    branch: production
+    commands:
+      - grunt buildcontrol:heroku
