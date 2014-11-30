@@ -4,13 +4,9 @@ var should = require('should');
 var app = require('../../app');
 var request = require('supertest');
 var players = require("../../components/players")
-var mongoose = require("mongoose");
-var config = require('../../config/environment/test');
+var dataService = require('../../components/dataService')
 
-mongoose.connection.on('error', function(err){
-  console.log("connection already opened");
-})
-mongoose.connect(config.mongo.uri);
+dataService.connect();
 
 describe('GET /api/players', function() {
 
@@ -36,5 +32,4 @@ describe('GET /api/players', function() {
       done();
     });
   });
-
 });
