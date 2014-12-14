@@ -16,5 +16,30 @@
       "bootstrap": false,
       "uibootstrap": false
     }
+  },
+  "generator-ng-component": {
+    "routeDirectory": "client/app/",
+    "directiveDirectory": "client/app/",
+    "filterDirectory": "client/app/",
+    "serviceDirectory": "client/app/",
+    "basePath": "client",
+    "moduleName": "",
+    "filters": [
+      "ngroute"
+    ],
+    "extensions": [
+      "js",
+      "jade",
+      "scss"
+    ],
+    "directiveSimpleTemplates": "",
+    "directiveComplexTemplates": "",
+    "filterTemplates": "",
+    "serviceTemplates": "",
+    "factoryTemplates": "",
+    "controllerTemplates": "",
+    "decoratorTemplates": "",
+    "providerTemplates": "",
+    "routeTemplates": ""
   }
 }

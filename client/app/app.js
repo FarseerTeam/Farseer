@@ -11,6 +11,5 @@ angular.module('farseerApp', [
       .otherwise({
         redirectTo: '/'
       });
-
     $locationProvider.html5Mode(true);
   });
