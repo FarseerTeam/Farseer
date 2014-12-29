@@ -5,7 +5,6 @@ module.exports = (function() {
 
   // define the _playerSchema
   var _playerSchema = new Schema({
-    id: Number,
     email: {
       type: String,
       index: {
