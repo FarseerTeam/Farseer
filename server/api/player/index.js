@@ -12,7 +12,7 @@ router.route('/')
 	.get(controller.index)
 	.post(controller.create);
 
-router.param('player_id', controller.middlewareId);
+router.param('player_id', controller.middleware.idInterceptor);
 
 
 router.route('/:player_id')
