@@ -1,23 +1,27 @@
+
 module.exports = (function() {
 
   var mongoose = require('mongoose');
+	var tree = require('mongoose-path-tree');
+
   var Schema = mongoose.Schema;
 
-  // define the _teamSchema
-  var _teamSchema = new Schema({
+  // define the TeamSchema
+  var TeamSchema = new Schema({
     name: {
       type: String,
       index: {
         unique: true,
         required: true
       }
-    }
+    }	
   });
-  var _model = mongoose.model('Team', _teamSchema);
+  TeamSchema.plugin(tree);
+  var _model = mongoose.model('Team', TeamSchema);
 
 
   return {
     Team: _model,
-    schema: _teamSchema,
+    schema: TeamSchema,
   }
 })();

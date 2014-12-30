@@ -20,32 +20,47 @@ var dataService = require('./dataService')
 dataService.connect();
 
 describe("Teams", function() {
-	var aTeam = null;
+	var theTeam = null;
 	beforeEach(function(done) {
 		teams.Team.remove({});
-		teams.Team.create({name: "Ford"}, function(err, doc){
-				aTeam = doc;
-				done();
+		teams.Team.create({
+			name: "Ford"
+		}, function(err, doc) {
+			theTeam = doc;
+			done();
 		});
 	});
 
 	it("contains names", function() {
-		expect(aTeam).to.be.ok();
-		aTeam.save(function(err, doc) {
+		expect(theTeam).to.be.ok();
+		theTeam.save(function(err, doc) {
 			expect(err).to.be(null);
-			expect(doc.name).equal(aTeam.name);
+			expect(doc.name).equal(theTeam.name);
 		});
 	});
-	it("that is unique ", function(){
+	it("that is unique ", function() {
 		var teamFailed = new teams.Team();
-		teamFailed.name = aTeam.name;
-		teamFailed.save(function(err){
+		teamFailed.name = theTeam.name;
+		teamFailed.save(function(err) {
 			expect(err).to.be.ok();
 			expect(err.code).to.be.equal(11000);
 		});
 	});
+	it("contains other teams", function() {
+
+		var subTeam = new teams.Team();
+		subTeam.parent = theTeam;
+		subTeam.save(function(err) {
+			expect(err).to.be(null);
+			theTeam.getChildren(function(err, childrenTeam) {
+				expect(childrenTeam).to.be.an('array');
+				expect(childrenTeam[0]).to.eql(subTeam);
+			});
+		});
+	});
+
 	afterEach(function(done) {
-		teams.Team.remove({}, function(){
+		teams.Team.remove({}, function() {
 			done();
 		});
 	});
