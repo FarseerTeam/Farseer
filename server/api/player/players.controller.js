@@ -55,8 +55,10 @@ exports.update = function(req, res){
 	});
 };
 exports.delete = function(req, res){
-	players.model.remove({ _id: req.player.id });
-	res.json(player);
+	players.model.remove({ _id: req.player.id }, function(err){
+		res.status(200).end();
+	});
+	
 };
 
 exports.read = function(req, res) {

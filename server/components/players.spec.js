@@ -9,15 +9,15 @@ var config = require('../config/environment/test');
 // db.once('open', function callback() {
 // 	//db is
 // });
-mongoose.connection.on('error', function(err){
-	console.log("connection already opened");
+mongoose.connection.on('error', function(err) {
+	//console.log("connection already opened");
 })
 mongoose.connect(config.mongo.uri);
 describe("Players", function() {
 	//holds a players to use in the each test  
 	var currentCustomer = null;
 	beforeEach(function(done) {
-	
+
 		//add some test data 
 		players.model.create({
 			name: "John",
