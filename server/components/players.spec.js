@@ -3,16 +3,11 @@ var players = require("./players");
 var should = require('should');
 var config = require('../config/environment/test');
 
-// var db = mongoose.connection;
+var dataService = require('./dataService')
 
-// db.on('error', console.error.bind(console, 'connection error:'));
-// db.once('open', function callback() {
-// 	//db is
-// });
-mongoose.connection.on('error', function(err) {
-	//console.log("connection already opened");
-})
-mongoose.connect(config.mongo.uri);
+dataService.connect();
+
+
 describe("Players", function() {
 	//holds a players to use in the each test  
 	var currentCustomer = null;
@@ -27,7 +22,7 @@ describe("Players", function() {
 			done();
 		});
 	});
-	it("retrieves by email", function(done) {
+	it("can be retrieved by email", function(done) {
 		players.findByEmail(currentCustomer.email, function(doc) {
 			doc.email.should.equal(currentCustomer.email);
 			done();
