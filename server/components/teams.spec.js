@@ -57,7 +57,6 @@ describe("Teams", function() {
 			});
 		});
 	});
-
 	afterEach(function(done) {
 		teams.Team.remove({}, function() {
 			done();
