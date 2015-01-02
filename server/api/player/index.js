@@ -13,7 +13,7 @@ router.route('/')
 	.get(controller.index)
 	.post(controller.create);
 
-router.param('player_id', middleware.idInterceptor('Player', players.model, 'player'));
+router.param('player_id', middleware.idInterceptor(players.model, 'player'));
 router.route('/:player_id')
 	.all(function(req, res, next) {
 	  next();

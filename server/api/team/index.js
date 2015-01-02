@@ -13,7 +13,7 @@ router.route('/')
 	.get(controller.index)
 	.post(controller.create);
 
-router.param('team_id', middleware.idInterceptor('Team', teams.Team, 'team'));
+router.param('team_id', middleware.idInterceptor(teams.Team, 'team'));
 
 router.route('/:team_id')
 	.all(function(req, res, next) {
