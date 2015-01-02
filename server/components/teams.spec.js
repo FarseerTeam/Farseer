@@ -54,7 +54,7 @@ describe("Teams", function() {
 			expect(err).to.be(null);
 			theTeam.getChildren(function(err, childrenTeam) {
 				expect(childrenTeam).to.be.an('array');
-				expect(childrenTeam[0]).to.eql(subTeam);
+				expect(childrenTeam[0].id).to.eql(subTeam.id);
 			});
 		});
 	});
