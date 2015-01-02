@@ -10,7 +10,6 @@
 */
 
 var mongoose = require("mongoose");
-var expect = require("expect.js");
 var teams = require("./teams");
 var should = require('should');
 var config = require('../config/environment/test');
@@ -32,18 +31,18 @@ describe("Teams", function() {
 	});
 
 	it("contains names", function() {
-		expect(theTeam).to.be.ok();
+		theTeam.should.be.ok;
 		theTeam.save(function(err, doc) {
-			expect(err).to.be(null);
-			expect(doc.name).equal(theTeam.name);
+			(err === null).should.be.true;
+			doc.name.should.eql(theTeam.name);
 		});
 	});
 	it("that is unique ", function() {
 		var teamFailed = new teams.Team();
 		teamFailed.name = theTeam.name;
 		teamFailed.save(function(err) {
-			expect(err).to.be.ok();
-			expect(err.code).to.be.equal(11000);
+			err.should.be.ok;
+			(11000).should.eql(err.code);
 		});
 	});
 	it("contains other teams", function() {
@@ -51,10 +50,10 @@ describe("Teams", function() {
 		var subTeam = new teams.Team();
 		subTeam.parent = theTeam;
 		subTeam.save(function(err) {
-			expect(err).to.be(null);
+			(err === null).should.be.true;
 			theTeam.getChildren(function(err, childrenTeam) {
-				expect(childrenTeam).to.be.an('array');
-				expect(childrenTeam[0].id).to.eql(subTeam.id);
+				childrenTeam.should.be.instanceof(Array);
+				(subTeam.id).should.be.eql(childrenTeam[0].id);
 			});
 		});
 	});
