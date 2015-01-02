@@ -2,7 +2,8 @@
 
 var express = require('express');
 var controller = require('./players.controller');
-
+var middleware = require('../middleware');
+var players = require('../../components/players');
 var router = express.Router();
 
 router.route('/')
@@ -12,9 +13,7 @@ router.route('/')
 	.get(controller.index)
 	.post(controller.create);
 
-router.param('player_id', controller.middleware.idInterceptor);
-
-
+router.param('player_id', middleware.idInterceptor('Player', players.model, 'player'));
 router.route('/:player_id')
 	.all(function(req, res, next) {
 	  next();

@@ -14,24 +14,6 @@ var _ = require('lodash');
 var players = require("../../components/players")
 	// Get list of players
 
-exports.middleware = {
-	idInterceptor: function(req, res, next, id) {
-
-		players.model.findById(id, function(err, player) {
-			if (err) {
-				req.player = {
-					error: "Player with id " + id + " does not exist."
-				};
-			} else {
-				req.player = player;
-			}
-			// if (!player) return next(new Error('Failed to load player ' + id));
-
-			next();
-		});
-	}
-};
-
 exports.index = function(req, res) {
 	players.model.find({}, function(err, doc) {
 		res.json(doc);

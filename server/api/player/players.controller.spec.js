@@ -106,7 +106,7 @@ describe('/api/players/:player_id', function() {
         .expect('Content-Type', /json/)
         .end(function(err, res) {
           if (err) return done(err);
-          res.body.error.should.be.equal("Player with id " + randomId + " does not exist.");
+          res.body.errorMessage.should.be.equal("Player with id " + randomId + " does not exist.");
           done();
         });
     });

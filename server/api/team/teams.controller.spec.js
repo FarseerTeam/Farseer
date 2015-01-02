@@ -149,7 +149,7 @@ describe('/api/teams/:team_id', function() {
         .expect('Content-Type', /json/)
         .end(function(err, res) {
           if (err) return done(err);
-          res.body.error.should.be.equal("Team with id " + randomId + " does not exist.");
+          res.body.errorMessage.should.be.equal("Team with id " + randomId + " does not exist.");
           done();
         });
     });

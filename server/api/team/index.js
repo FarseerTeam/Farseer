@@ -2,7 +2,8 @@
 
 var express = require('express');
 var controller = require('./teams.controller');
-
+var middleware = require('../middleware');
+var teams = require('../../components/teams');
 var router = express.Router();
 
 router.route('/')
@@ -12,8 +13,7 @@ router.route('/')
 	.get(controller.index)
 	.post(controller.create);
 
-router.param('team_id', controller.middleware.idInterceptor);
-
+router.param('team_id', middleware.idInterceptor('Team', teams.Team, 'team'));
 
 router.route('/:team_id')
 	.all(function(req, res, next) {

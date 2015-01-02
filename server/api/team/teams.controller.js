@@ -14,24 +14,6 @@ var _ = require('lodash');
 var teams = require("../../components/teams")
 	// Get list of teams
 
-exports.middleware = {
-	idInterceptor: function(req, res, next, id) {
-
-		teams.Team.findById(id, function(err, team) {
-			if (err) {
-				req.team = {
-					error: "Team with id " + id + " does not exist."
-				};
-			} else {
-				req.team = team;
-			}
-			// if (!team) return next(new Error('Failed to load team ' + id));
-
-			next();
-		});
-	}
-};
-
 exports.index = function(req, res) {
 	teams.Team.find({}, function(err, doc) {
 		res.json(doc);
@@ -66,7 +48,7 @@ exports.create = function(req, res) {
 			}
 		});
 	}
-	
+
 	if (req.body.parentId) {
 		findTeamParentFirstThanSave(req.body.parentId);
 	} else {
@@ -88,7 +70,6 @@ exports.delete = function(req, res) {
 	}, function(err) {
 		res.status(200).end();
 	});
-
 };
 
 exports.read = function(req, res) {
