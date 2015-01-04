@@ -1,6 +1,7 @@
 'use strict';
 
 angular.module('farseerApp', [
+  'ngAnimate',
   'ngCookies',
   'ngResource',
   'ngSanitize',
