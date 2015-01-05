@@ -43,8 +43,6 @@ describe('/api/teams', function() {
     });
   });
 
-  //curl http://localhost:9000/api/teams
-  //curl -H "Content-Type: application/json" -d '{"name":"pedro"}' http://localhost:9000/api/teams
   describe('POST ', function() {
     var ford;
 
