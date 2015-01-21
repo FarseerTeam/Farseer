@@ -1,5 +1,6 @@
 var mongoose = require("mongoose");
 var players = require("./players");
+var teams = require("./teams");
 var should = require('should');
 var config = require('../config/environment/test');
 
@@ -33,5 +34,49 @@ describe("Players", function() {
 			done();
 		});
 	});
-	//tests...  
+
+	describe("has an optional", function() {
+		it("team reference", function(done) {
+			var aTeam = {
+				name: "Ford"
+			};
+			teams.Team.create(aTeam,
+				function(err, team) {
+					should(team._id).be.ok;
+					var thePlayer = {
+						name: "AJohn",
+						email: "Atest@test.com",
+						_team: team
+					};
+
+					players.model.create(thePlayer, function(err, doc) {
+						should(err).not.be.ok;
+						should(team._id.equals(doc._team)).be.truthy;
+						
+						done();
+
+						// players.model.findOne({
+						// 		email: doc.email
+						// 	})
+						// 	.populate('_team')
+						// 	.exec(function(err, doc) {
+						// 		doc.should.be.ok;
+						// 		should(doc._team).should.be.equal(team._id);
+						// 		done();
+						// 	});
+					});
+				});
+		});
+
+
+		afterEach(function(done) {
+			players.model.remove({}, function() {
+				teams.Team.remove({}, function() {
+					done();
+				})
+			});
+		});
+
+	});
+
 });

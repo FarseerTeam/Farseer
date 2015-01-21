@@ -45,7 +45,7 @@ describe('/api/players', function() {
   //curl -H "Content-Type: application/json" -d '{"name":"pedro","email":"pedro@email"}' http://localhost:9000/api/players
   describe('POST ', function() {
     it('should create players', function(done) {
-      request(app)
+      request(app)  
         .post('/api/players')
         .send({
           name: 'Manny',
