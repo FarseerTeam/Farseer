@@ -25,6 +25,10 @@ describe("Teams", function() {
 		teams.Team.create({
 			name: "Ford"
 		}, function(err, doc) {
+			if (err) { 
+				done(err);
+				return;
+			}
 			theTeam = doc;
 			done();
 		});

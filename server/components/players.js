@@ -30,7 +30,7 @@ module.exports = (function() {
   }
 
   return {
-    model: _model,
+    Player: _model,
     schema: _playerSchema,
     findByEmail: _findByEmail
   }

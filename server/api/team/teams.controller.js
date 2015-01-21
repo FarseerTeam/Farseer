@@ -33,9 +33,7 @@ exports.create = function(req, res) {
 	}
 
 	function findTeamParentFirstThanSave(parentId) {
-		console.log("INSIDE %o", parentId);
 		teams.Team.findById(parentId, function(err, doc) {
-			console.log("RESULT %o %o", err, doc);
 			if (!doc) {
 				res.json({
 					error: "Team with id " + parentId + " does not exist."

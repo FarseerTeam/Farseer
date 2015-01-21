@@ -15,7 +15,7 @@ describe("Players", function() {
 	beforeEach(function(done) {
 
 		//add some test data 
-		players.model.create({
+		players.Player.create({
 			name: "John",
 			email: "test@test.com"
 		}, function(err, doc) {
@@ -30,7 +30,7 @@ describe("Players", function() {
 		}, function(e) {});
 	});
 	afterEach(function(done) {
-		players.model.remove({}, function() {
+		players.Player.remove({}, function() {
 			done();
 		});
 	});
@@ -49,13 +49,13 @@ describe("Players", function() {
 						_team: team
 					};
 
-					players.model.create(thePlayer, function(err, doc) {
+					players.Player.create(thePlayer, function(err, doc) {
 						should(err).not.be.ok;
 						should(team._id.equals(doc._team)).be.truthy;
 						
 						done();
 
-						// players.model.findOne({
+						// players.Player.findOne({
 						// 		email: doc.email
 						// 	})
 						// 	.populate('_team')
@@ -70,7 +70,7 @@ describe("Players", function() {
 
 
 		afterEach(function(done) {
-			players.model.remove({}, function() {
+			players.Player.remove({}, function() {
 				teams.Team.remove({}, function() {
 					done();
 				})

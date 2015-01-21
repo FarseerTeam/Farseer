@@ -15,12 +15,12 @@ var players = require("../../components/players")
 	// Get list of players
 
 exports.index = function(req, res) {
-	players.model.find({}, function(err, doc) {
+	players.Player.find({}, function(err, doc) {
 		res.json(doc);
 	});
 };
 exports.create = function(req, res) {
-	var player = new players.model(req.body);
+	var player = new players.Player(req.body);
 	player.save(function(err) {
 		if (err) {
 			return res.status(400).send({
@@ -41,7 +41,7 @@ exports.update = function(req, res) {
 	});
 };
 exports.delete = function(req, res) {
-	players.model.remove({
+	players.Player.remove({
 		_id: req.player.id
 	}, function(err) {
 		res.status(200).end();

@@ -13,7 +13,7 @@ describe('/api/players', function() {
     var smith;
 
     beforeEach(function(done) {
-      players.model.create({
+      players.Player.create({
         name: "Smith ",
         email: "test@test.smith.com"
       }, function(err, doc) {
@@ -35,7 +35,7 @@ describe('/api/players', function() {
         });
     });
     afterEach(function(done) {
-      players.model.remove({}, function() {
+      players.Player.remove({}, function() {
         done();
       });
     });
@@ -60,7 +60,7 @@ describe('/api/players', function() {
         });
     });
     afterEach(function(done) {
-      players.model.remove({}, function() {
+      players.Player.remove({}, function() {
         done();
       });
     });
@@ -75,7 +75,7 @@ describe('/api/players/:player_id', function() {
     var smith;
 
     beforeEach(function(done) {
-      players.model.create({
+      players.Player.create({
           name: "Smith ",
           email: "test@test.smith.com"
         },
@@ -111,7 +111,7 @@ describe('/api/players/:player_id', function() {
         });
     });
     afterEach(function(done) {
-      players.model.remove({}, function() {
+      players.Player.remove({}, function() {
         done();
       });
     });
@@ -123,7 +123,7 @@ describe('/api/players/:player_id', function() {
       email: 'email@changed.com'
     };
     beforeEach(function(done) {
-      players.model.create({
+      players.Player.create({
           name: "Smith ",
           email: "test@test.smith.com"
         },
@@ -141,7 +141,7 @@ describe('/api/players/:player_id', function() {
         .expect(200)
         .expect('Content-Type', /json/)
         .end(function(err, res) {
-          players.model.findById(smith.id, function(err, doc) {
+          players.Player.findById(smith.id, function(err, doc) {
             if (err) return done(err);
             doc.name.should.be.equal(smithChanged.name);
             doc.email.should.be.equal(smithChanged.email);
@@ -150,7 +150,7 @@ describe('/api/players/:player_id', function() {
         });
     });
     afterEach(function(done) {
-      players.model.remove({}, function() {
+      players.Player.remove({}, function() {
         done();
       });
     });
@@ -159,7 +159,7 @@ describe('/api/players/:player_id', function() {
   describe('DELETE', function() {
     var smith;
     beforeEach(function(done) {
-      players.model.create({
+      players.Player.create({
           name: "Smith ",
           email: "test@test.smith.com"
         },
@@ -179,7 +179,7 @@ describe('/api/players/:player_id', function() {
         });
     });
     afterEach(function(done) {
-      players.model.remove({}, function() {
+      players.Player.remove({}, function() {
         done();
       });
     });
