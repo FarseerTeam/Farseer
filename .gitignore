@@ -4,5 +4,6 @@ public
 .sass-cache
 .idea
 client/bower_components
+.sublime-grunt.cache
 dist
 /server/config/local.env.js

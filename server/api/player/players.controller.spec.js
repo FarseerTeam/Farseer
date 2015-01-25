@@ -1,5 +1,6 @@
 'use strict';
 
+var nextIfError = require("callback-wrappers").nextIfError;
 var should = require('should');
 var app = require('../../app');
 var request = require('supertest');
@@ -45,7 +46,7 @@ describe('/api/players', function() {
   //curl -H "Content-Type: application/json" -d '{"name":"pedro","email":"pedro@email"}' http://localhost:9000/api/players
   describe('POST ', function() {
     it('should create players', function(done) {
-      request(app)  
+      request(app)
         .post('/api/players')
         .send({
           name: 'Manny',
@@ -104,11 +105,16 @@ describe('/api/players/:player_id', function() {
         .get(url)
         .expect(200)
         .expect('Content-Type', /json/)
-        .end(function(err, res) {
-          if (err) return done(err);
-          res.body.errorMessage.should.be.equal("PLAYER with id " + randomId + " does not exist.");
-          done();
-        });
+        .end(
+          nextIfError(
+            function(res) {
+              res.body.errorMessage.should.be.equal("PLAYER with id " + randomId + " does not exist.");
+              done();
+            },
+            function(err) {
+              done(err);
+            }
+          ));
     });
     afterEach(function(done) {
       players.Player.remove({}, function() {
