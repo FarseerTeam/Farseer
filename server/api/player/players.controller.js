@@ -24,7 +24,7 @@ exports.create = function(req, res) {
 	player.save(function(err) {
 		if (err) {
 			return res.status(400).send({
-				message: errorHandler.getErrorMessage(err)
+				message: err
 			});
 		} else {
 			res.json(player);
