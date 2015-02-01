@@ -5,9 +5,8 @@ dependencies:
     - npm install
     - bower install
 test:
-  pre:
-    - grunt newer:jshint
   post:
+    - grunt newer:jshint
     - grunt test
 deployment:
   production:
