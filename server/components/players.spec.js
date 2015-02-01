@@ -1,3 +1,4 @@
+/*jshint expr: true*/
 var mongoose = require("mongoose");
 var players = require("./players");
 var teams = require("./teams");
@@ -10,11 +11,11 @@ dataService.connect();
 
 
 describe("Players", function() {
-	//holds a players to use in the each test  
+	//holds a players to use in the each test
 	var currentCustomer = null;
 	beforeEach(function(done) {
 
-		//add some test data 
+		//add some test data
 		players.Player.create({
 			name: "John",
 			email: "test@test.com"
@@ -52,7 +53,7 @@ describe("Players", function() {
 					players.Player.create(thePlayer, function(err, doc) {
 						should(err).not.be.ok;
 						should(team._id.equals(doc._team)).be.truthy;
-						
+
 						done();
 
 						// players.Player.findOne({

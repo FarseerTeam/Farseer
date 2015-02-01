@@ -3,12 +3,13 @@
 	Teams contains Names that are unique
 	Teams contains other Teams called subteams
 	Teams contains other Teams called subteams that have other subteams
-	
+
 	Players are part of one team
 
 
 */
 
+/*jshint expr: true*/
 var mongoose = require("mongoose");
 var teams = require("./teams");
 var should = require('should');
@@ -25,7 +26,7 @@ describe("Teams", function() {
 		teams.Team.create({
 			name: "Ford"
 		}, function(err, doc) {
-			if (err) { 
+			if (err) {
 				done(err);
 				return;
 			}

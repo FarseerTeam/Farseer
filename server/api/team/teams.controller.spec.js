@@ -1,3 +1,4 @@
+/*jshint expr: true*/
 'use strict';
 
 var should = require('should');
@@ -103,7 +104,7 @@ describe('/api/teams', function() {
           ("Team with id " + 587979877787 + " does not exist.").should.eql(res.body.error);
           done();
         });
-    });    
+    });
     afterEach(function(done) {
       teams.Team.remove({}, function() {
         done();
