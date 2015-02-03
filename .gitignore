@@ -7,3 +7,4 @@ client/bower_components
 .sublime-grunt.cache
 dist
 /server/config/local.env.js
+.DS_Store

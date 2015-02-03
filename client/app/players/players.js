@@ -7,8 +7,8 @@ angular.module('farseerApp')
         templateUrl: 'app/players/players.html',
         controller: 'PlayersCtrl'
       }).
-      when('/playersCards', {
-        templateUrl: 'app/players/playersCards.html',
+      when('/playersMap', {
+        templateUrl: 'app/players/playersMap.html',
         controller: 'PlayersCtrl'
       });
   });

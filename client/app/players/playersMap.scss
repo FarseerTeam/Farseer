@@ -7,6 +7,17 @@ ul.players {
     float: left;
     padding: 5px;
     margin-right: 5px;
+    width: 8%;
+    min-height: 11em;
+
+    img {
+      width: 80%;
+      margin-left: 10%;
+    }
+
+    div {
+      margin-left: 25%;
+    }
 
     &.ng-enter, .ng-move {
       -webkit-animation: fadeIn 1s;

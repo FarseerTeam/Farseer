@@ -1,4 +1,14 @@
 h1 Players:
+
+h3 Add New Player:
+label(for='name') Name
+input(type='text', id='name', ng-model='newPlayer.name')
+label(for='email') Email
+input(type='text', id='email', ng-model='newPlayer.email')
+button(type='button', ng-click='addPlayer()') Add Player
+
 ul(ng-repeat='player in players')
-  li {{player}}
-a(href='/playersCards', title='Cards View') Cards View
+  li
+    span {{player.name}}
+    span  {{player.email}}
+a(href='/playersMap', title='Map View') Map View
