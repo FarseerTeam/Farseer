@@ -10,7 +10,7 @@
 'use strict';
 
 var _ = require('lodash');
-
+var format = require('string-format')
 var teams = require("../../components/teams")
 	// Get list of teams
 
@@ -36,7 +36,7 @@ exports.create = function(req, res) {
 		teams.Team.findById(parentId, function(err, doc) {
 			if (!doc) {
 				res.json({
-					error: "Team with id " + parentId + " does not exist."
+					error: format("Team with id {} does not exist.", parentId)
 				});
 			} else {
 

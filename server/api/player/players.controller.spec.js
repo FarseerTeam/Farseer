@@ -6,6 +6,7 @@ var app = require('../../app');
 var request = require('supertest');
 var players = require("../../components/players")
 var dataService = require('../../components/dataService')
+var format = require('string-format')
 
 dataService.connect();
 
@@ -108,7 +109,7 @@ describe('/api/players/:player_id', function() {
         .end(
           nextIfError(
             function(res) {
-              res.body.errorMessage.should.be.equal("PLAYER with id " + randomId + " does not exist.");
+              res.body.errorMessage.should.be.equal(format("PLAYER with id {} does not exist.", randomId));
               done();
             },
             function(err) {

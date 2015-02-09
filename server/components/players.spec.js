@@ -53,18 +53,7 @@ describe("Players", function() {
 					players.Player.create(thePlayer, function(err, doc) {
 						should(err).not.be.ok;
 						should(team._id.equals(doc._team)).be.truthy;
-
 						done();
-
-						// players.Player.findOne({
-						// 		email: doc.email
-						// 	})
-						// 	.populate('_team')
-						// 	.exec(function(err, doc) {
-						// 		doc.should.be.ok;
-						// 		should(doc._team).should.be.equal(team._id);
-						// 		done();
-						// 	});
 					});
 				});
 		});
