@@ -71,11 +71,11 @@ var execAndCheck = function(expected, done) {
 };
 
 describe('/api/maps', function() {
-  describe('GET when database is empty ', function() {
-    it('should respond with an empty JSON array', function(done) {
-      execAndCheck([], done);
-    });
-  });
+  // describe('GET when database is empty ', function() {
+  //   it('should respond with an empty JSON array', function(done) {
+  //     execAndCheck([], done);
+  //   });
+  // });
 
   describe("Given player 'Aang' on team: 'avatar", function() {
 
