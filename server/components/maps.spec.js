@@ -7,25 +7,54 @@ var _ = require('lodash');
 var format = require("string-format");
 dataService.connect();
 /*
- Given players: [{name:'Zuko', team:'/fireNation/royalty'}, 
-                {name: 'Aang', team: '/avatar}, 
-                 {name: 'Katara', team: '/avatar' }, 
-                 {name: 'Iroh', team: '/fireNation/royalty'}]
+   Given players: [{name:'Zuko', team:'/fireNation/royalty'}, 
+   {name: 'Aang', team: '/avatar}, 
+   {name: 'Katara', team: '/avatar' }, 
+   {name: 'Iroh', team: '/fireNation/royalty'}]
 
-                 [{team: 'avatar', players: [{name: 'Aang'}, 
-                 {name: 'Katara'}]}, 
-          {team: 'fireNation', 
-          subteams: [{team: 'royalty', 
-          players: [{name: 'Zuko'}, {name: 'Iroh'}]}]}]
+   [{team: 'avatar', players: [{name: 'Aang'}, 
+   {name: 'Katara'}]}, 
+   {team: 'fireNation', 
+   subteams: [{team: 'royalty', 
+   players: [{name: 'Zuko'}, {name: 'Iroh'}]}]}]
 
 */
 
 
 
 var createTeam = function(teamName, playerNames, callback) {
+    teams.Team.create({
+        name: teamName,
+    }, function(err, parentTeam) {
+        createPlayers(parentTeam, playerNames, callback);
+
+    });
+
+};
+var createPlayers = function(parentTeam, playerNames, callback) {
     function endIfLast(index) {
         if ((1 + index) === playerNames.length) {
             callback();
+        }
+    }
+    if (playerNames)
+        callback();
+    else
+        _.each(playerNames, function(playerName, index) {
+            players.Player.create({
+                name: playerName,
+                email: format("{}@test.smith.com", playerName),
+                _team: parentTeam
+            }, function(err, doc) {
+                endIfLast(index);
+            });
+        });
+
+};
+var createParentTeam = function(teamName, playerNames, subTeamCallBack) {
+    function endIfLast(theTeam, index) {
+        if ((1 + index) === playerNames.length) {
+            subTeamCallBack(theTeam);
         }
     }
     teams.Team.create({
@@ -33,20 +62,23 @@ var createTeam = function(teamName, playerNames, callback) {
     }, function(err, doc) {
         var theTeam = doc;
 
-        _.each(playerNames, function(playerName, index) {
-            players.Player.create({
-                name: playerName,
-                email: format("{}@test.smith.com", playerName),
-                _team: theTeam
-            }, function(err, doc) {
-                endIfLast(index);
-            });
+        createPlayers(theTeam, playerNames, function() {
+            subTeamCallBack(theTeam);
         });
 
     });
-
 };
 
+var createSubTeam = function(parentTeam, teamName, playerNames, callback) {
+    teams.Team.create({
+        parent: parentTeam,
+        name: teamName,
+
+    }, function(err, doc) {
+        var theTeam = doc;
+        createPlayers(doc, playerNames, callback);
+    });
+};
 var clearAll = function(done) {
     players.Player.remove({}, function() {
         teams.Team.remove({}, function() {
@@ -63,7 +95,7 @@ var execAndCheck = function(expected, done) {
     });
 };
 
-describe('maps.buildTeamPLayersMap', function() {
+describe('maps.buildTeamPlayersMap', function() {
     describe('when database is empty ', function() {
         it('should respond with an empty array', function(done) {
             execAndCheck([], done);
@@ -127,8 +159,8 @@ describe('maps.buildTeamPLayersMap', function() {
 
     //     }();
     // }
-//            buildTeam("avatar").withPlayers(["Aang"])//
-//                    .buildTeam("fireNation").withPlayers("Yung").then(done);
+    //            buildTeam("avatar").withPlayers(["Aang"])//
+    //                    .buildTeam("fireNation").withPlayers("Yung").then(done);
 
     describe("Given player 'Aang' on team: 'avatar' and player 'Yung' on 'fireNation'", function() {
 
@@ -166,5 +198,33 @@ describe('maps.buildTeamPLayersMap', function() {
         });
     });
 
+    describe("Given player 'Aang' on team: 'avatar' under 'fireNation'", function() {
 
+        beforeEach(function(done) {
+            createParentTeam("fireNation", [],
+                function(parentTeam) {
+                    createSubTeam(parentTeam, "avatar", ["Aang"], done);
+                });
+        });
+
+        it("should respond with the appropriate format ", function(done) {
+
+            var teamNode = {
+                team: 'fireNation',
+                players: [],
+                subTeams: [{
+                    team: "avatar",
+                    players: ["Aang"]
+                }]
+            };
+
+            execAndCheck([teamNode], done);
+
+        });
+
+
+        afterEach(function(done) {
+            clearAll(done);
+        });
+    });
 });
