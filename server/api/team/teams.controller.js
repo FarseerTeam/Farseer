@@ -12,64 +12,64 @@
 var _ = require('lodash');
 var format = require('string-format')
 var teams = require("../../components/teams")
-	// Get list of teams
+// Get list of teams
 
 exports.index = function(req, res) {
-	teams.Team.find({}, function(err, doc) {
-		res.json(doc);
-	});
+    teams.Team.find({}, function(err, doc) {
+        res.json(doc);
+    });
 };
 exports.create = function(req, res) {
-	function save(team) {
-		team.save(function(err) {
-			if (err) {
-				return res.status(400).send({
-					message: err
-				});
-			} else {
-				res.json(team);
-			}
-		});
-	}
+    function save(team) {
+        team.save(function(err) {
+            if (err) {
+                return res.status(400).send({
+                    message: err
+                });
+            } else {
+                res.json(team);
+            }
+        });
+    }
 
-	function findTeamParentFirstThanSave(parentId) {
-		teams.Team.findById(parentId, function(err, doc) {
-			if (!doc) {
-				res.json({
-					error: format("Team with id {} does not exist.", parentId)
-				});
-			} else {
+    function findTeamParentFirstThanSave(parentId) {
+        teams.Team.findById(parentId, function(err, doc) {
+            if (!doc) {
+                res.json({
+                    error: format("Team with id {} does not exist.", parentId)
+                });
+            } else {
 
-				var team = new teams.Team(req.body)
-				team.parent = doc;
-				save(team);
-			}
-		});
-	}
+                var team = new teams.Team(req.body)
+            team.parent = doc;
+        save(team);
+            }
+        });
+    }
 
-	if (req.body.parentId) {
-		findTeamParentFirstThanSave(req.body.parentId);
-	} else {
-		save(new teams.Team(req.body));
-	}
+    if (req.body.parentId) {
+        findTeamParentFirstThanSave(req.body.parentId);
+    } else {
+        save(new teams.Team(req.body));
+    }
 };
 exports.update = function(req, res) {
-	var team = req.team;
+    var team = req.team;
 
-	team = _.extend(team, req.body);
+    team = _.extend(team, req.body);
 
-	team.save(function(err) {
-		res.json(team);
-	});
+    team.save(function(err) {
+        res.json(team);
+    });
 };
 exports.delete = function(req, res) {
-	teams.Team.remove({
-		_id: req.team.id
-	}, function(err) {
-		res.status(200).end();
-	});
+    teams.Team.remove({
+        _id: req.team.id
+    }, function(err) {
+        res.status(200).end();
+    });
 };
 
 exports.read = function(req, res) {
-	res.json(req.team);
+    res.json(req.team);
 };
