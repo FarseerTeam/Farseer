@@ -6,24 +6,42 @@ describe('Controller: PlayersCtrl', function () {
 
   var PlayersCtrl,
       scope,
-      $httpBackend;
+      $httpBackend,
+      mockService;
 
-  beforeEach(inject(function (_$httpBackend_, $controller, $rootScope) {
+  beforeEach(inject(function (_$httpBackend_, $controller, $rootScope, $q) {
     $httpBackend = _$httpBackend_;
     scope = $rootScope.$new();
-    PlayersCtrl = $controller('PlayersCtrl', {
-      $scope: scope
-    });
 
-    $httpBackend.expectGET('/api/players')
-      .respond(['Harry Potter', 'Hermione Granger', 'Ron Weasley']);
+    mockService = {
+      getPlayers: function() {
+        var deferred = $q.defer();
+        deferred.resolve(['Harry Potter', 'Hermione Granger', 'Ron Weasley']);
+        return deferred.promise;
+      }
+    };
+
+    PlayersCtrl = $controller('PlayersCtrl', {
+      $scope: scope,
+      httpService: mockService
+    });
 
   }));
 
-  it('should attach a list of players to the scope', function () {
-    $httpBackend.flush();
-    expect(scope.players.length).toEqual(3);
+  it('should attach empty list of players to the scope when promise is not fulfilled', function() {
+    expect(scope.players).not.toBe(undefined);
+    expect(scope.players.length).toEqual(0);
   });
+
+  it('should attach list of players to the scope', function() {
+    scope.$digest();
+
+    expect(scope.players.length).toEqual(3);
+    expect(scope.players[0]).toBe('Harry Potter');
+    expect(scope.players[1]).toBe('Hermione Granger');
+    expect(scope.players[2]).toBe('Ron Weasley');
+  });
+
 
   describe('adding new player', function() {
 
