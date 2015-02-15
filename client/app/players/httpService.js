@@ -9,4 +9,10 @@ angular.module('farseerApp')
       });
     };
 
+    this.addPlayer = function(newPlayer) {
+      return $http.post('/api/players', newPlayer).then(function(response) {
+        return response;
+      });
+    };
+
   });

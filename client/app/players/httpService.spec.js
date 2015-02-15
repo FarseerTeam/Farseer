@@ -27,4 +27,14 @@ describe('Http Service', function () {
 
   });
 
+  it('should add new player', function() {
+    var newPlayer = '{"name":"Draco","email":"malfoy@email"}';
+    $httpBackend.expectPOST('/api/players', newPlayer).respond(200);
+
+    service.addPlayer(newPlayer).then(function(response) {
+      expect(response.status).toBe(200);
+    });
+    $httpBackend.flush();
+  });
+
 });

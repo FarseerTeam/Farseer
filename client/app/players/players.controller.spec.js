@@ -6,17 +6,23 @@ describe('Controller: PlayersCtrl', function () {
 
   var PlayersCtrl,
       scope,
-      $httpBackend,
-      mockService;
+      mockService,
+      addedPlayer;
 
-  beforeEach(inject(function (_$httpBackend_, $controller, $rootScope, $q) {
-    $httpBackend = _$httpBackend_;
+  beforeEach(inject(function ($controller, $rootScope, $q) {
     scope = $rootScope.$new();
 
     mockService = {
       getPlayers: function() {
         var deferred = $q.defer();
         deferred.resolve(['Harry Potter', 'Hermione Granger', 'Ron Weasley']);
+        return deferred.promise;
+      },
+      addPlayer: function(newPlayer) {
+        addedPlayer = newPlayer;
+
+        var deferred = $q.defer();
+        deferred.resolve();
         return deferred.promise;
       }
     };
@@ -42,18 +48,13 @@ describe('Controller: PlayersCtrl', function () {
     expect(scope.players[2]).toBe('Ron Weasley');
   });
 
+  it('should add new player', function() {
+    var newPlayer = '{"name":"Draco","email":"malfoy@email"}';
+    scope.newPlayer = newPlayer;
+    scope.addPlayer();
 
-  describe('adding new player', function() {
-
-    it('should post new player to the api', function () {
-      var newPlayer = '{"name":"Draco","email":"malfoy@email"}';
-      scope.newPlayer = newPlayer;
-      $httpBackend.expectPOST('/api/players', newPlayer).respond(200);
-
-      scope.addPlayer();
-      $httpBackend.flush();
-    });
-
+    scope.$digest();
+    expect(addedPlayer).toBe(newPlayer);
   });
 
 });
