@@ -48,6 +48,7 @@ describe('In the api/components/maps module,', function() {
     var execAndCheck = function(expected, done) {
         maps.buildTeamPlayersMap(function(result) {
             result.should.be.instanceof(Array);
+            // console.log("Actual result %s" , JSON.stringify(result));
             expected.should.be.eql(result);
             done();
         });
@@ -202,10 +203,10 @@ describe('In the api/components/maps module,', function() {
             beforeEach(function(done) {
 
                 var p = createTeam("fireNation").then(function(team) {
-                        return createTeam("avatar", team);
-                    });
+                    return createTeam("avatar", team);
+                });
                 p = p.then(function(team) {
-                    return createPlayer(team, 'Aang' );
+                    return createPlayer(team, 'Aang');
                 });
                 p = p.then(callDone(done), callDoneWithError(done));
             });
@@ -215,7 +216,9 @@ describe('In the api/components/maps module,', function() {
                 players: [],
                 subTeams: [{
                     team: "avatar",
-                    players: [{name:"Aang"}]
+                    players: [{
+                        name: "Aang"
+                    }]
                 }]
             };
             it(shouldReturn(teamNode), function(done) {
@@ -224,8 +227,63 @@ describe('In the api/components/maps module,', function() {
 
 
             afterEach(function(done) {
-                 clearAll(done);
+                clearAll(done);
             });
         });
+
+
+
+        describe("Given players: [{name:'Zuko', team:'/fireNation/royalty'}, " + //
+            "{name: 'Aang', team: '/avatar}, {name: 'Katara', team: '/avatar' }" + //
+            ", {name: 'Iroh', team: '/fireNation/royalty'}]",
+            function() {
+
+                beforeEach(function(done) {
+
+                    var p = createTeam("avatar");
+                    p = p.then(function(team) {
+                        console.log(team);
+                        return createPlayer(team, 'Aang').then(
+                            doCreatePlayer(team, 'Katara'));
+                    });
+                    p = p.then(function(){return createTeam("fireNation")});
+                    p = p.then(function(team) {
+                        return createTeam("royalty", team);
+                    });
+                    p = p.then(function(team) {
+                        return createPlayer(team, "Zuko").then(doCreatePlayer(team, "Iroh"));
+                    });
+                    p = p.then(callDone(done), callDoneWithError(done));
+                });
+
+                var expected = [{
+                    team: 'avatar',
+                    players: [{
+                        name: 'Aang'
+                    }, {
+                        name: 'Katara'
+                    }]
+                }, {
+                    team: 'fireNation',
+                    players: [], 
+                    subTeams: [{
+                        team: 'royalty',
+                        players: [{
+                            name: 'Zuko'
+                        }, {
+                            name: 'Iroh'
+                        }]
+                    }]
+                }];
+
+                it(shouldReturn(expected), function(done) {
+                    execAndCheck(expected, done);
+                });
+
+
+                afterEach(function(done) {
+                    clearAll(done);
+                });
+            });
     });
 });
