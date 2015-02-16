@@ -20,7 +20,7 @@ dataService.connect();
    players: [{name: 'Zuko'}, {name: 'Iroh'}]}]}]
 
 */
- 
+
 describe('In the api/components/maps module,', function() {
     var clearAll = function(done) {
         players.Player.remove({},
@@ -46,25 +46,25 @@ describe('In the api/components/maps module,', function() {
     }
 
     var execAndCheck = function(expected, done) {
-        //console.log("Executing ");
         maps.buildTeamPlayersMap(function(result) {
             result.should.be.instanceof(Array);
             expected.should.be.eql(result);
-            callDone(done)();
+            done();
         });
     };
 
 
 
-    var createTeam = function(teamName) {
-        //console.log("Creating team %s ", teamName);
+    var createTeam = function(teamName, parent) {
+        // console.log("Creating team %s parent %s ", teamName, parent);
         return teams.Team.create({
             name: teamName,
+            parent: parent
         });
 
     };
     var createPlayer = function(team, playerName) {
-        //console.log("Creating player %s for team %s", playerName, team.name);
+        // console.log("Creating player %s for team %s", playerName, team.name);
         return players.Player.create({
             name: playerName,
             email: format("{}@test.smith.com", playerName),
@@ -124,7 +124,6 @@ describe('In the api/components/maps module,', function() {
 
         describe("Given player 'Aang' AND 'Yung' on team: 'avatar", function() {
             beforeEach(function(done) {
-
                 createTeam("avatar").then(
                     function(team) {
                         createPlayer(team, "Aang")
@@ -198,10 +197,17 @@ describe('In the api/components/maps module,', function() {
             });
         });
 
-        xdescribe("Given player 'Aang' on team: 'avatar' under 'fireNation'", function() {
+        describe("Given player 'Aang' on team: 'avatar' under 'fireNation'", function() {
 
             beforeEach(function(done) {
-                done();
+
+                var p = createTeam("fireNation").then(function(team) {
+                        return createTeam("avatar", team);
+                    });
+                p = p.then(function(team) {
+                    return createPlayer(team, 'Aang' );
+                });
+                p = p.then(callDone(done), callDoneWithError(done));
             });
 
             var teamNode = {
@@ -209,20 +215,16 @@ describe('In the api/components/maps module,', function() {
                 players: [],
                 subTeams: [{
                     team: "avatar",
-                    players: ["Aang"]
+                    players: [{name:"Aang"}]
                 }]
             };
             it(shouldReturn(teamNode), function(done) {
-
-
-
                 execAndCheck([teamNode], done);
-
             });
 
 
             afterEach(function(done) {
-                clearAll(done);
+                 clearAll(done);
             });
         });
     });
