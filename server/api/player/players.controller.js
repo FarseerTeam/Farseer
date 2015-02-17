@@ -24,8 +24,8 @@ exports.create = function(req, res) {
     var player = new players.Player(req.body);
     player.save(function(err) {
         if (err) {
-            return res.status(400).send({
-                message: err
+            return res.status(409).send({
+                message: 'A player with email ' + player.email + ' already exists'
             });
         } else {
             res.json(player);

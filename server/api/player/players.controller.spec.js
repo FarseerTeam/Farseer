@@ -36,6 +36,7 @@ describe('/api/players', function() {
                 done();
             });
         });
+
         afterEach(function(done) {
             players.Player.remove({}, function() {
                 done();
@@ -61,6 +62,35 @@ describe('/api/players', function() {
                 done();
             });
         });
+
+        describe('when adding duplicate player', function() {
+          beforeEach(function(done) {
+              players.Player.create({
+                  name: "Smith ",
+                  email: "test@test.smith.com"
+              }, function(err, doc) {
+                  done();
+              });
+          });
+
+          it('should return a human error message', function(done) {
+            request(app)
+              .post('/api/players')
+              .send({
+                  name: 'Smith',
+                  email: 'test@test.smith.com'
+              })
+              .set('Accept', 'application/json')
+              .expect(409)
+              .expect('Content-Type', /json/)
+              .expect({message: "A player with email test@test.smith.com already exists"}, function(error) {
+                done(error);
+              });
+
+          });
+
+        });
+
         afterEach(function(done) {
             players.Player.remove({}, function() {
                 done();
