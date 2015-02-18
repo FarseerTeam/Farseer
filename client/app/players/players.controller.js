@@ -9,7 +9,19 @@ angular.module('farseerApp')
     });
 
     $scope.addPlayer = function() {
-      httpService.addPlayer($scope.newPlayer);
+      httpService.addPlayer($scope.newPlayer).then(handleSuccess, handleFailure);
     };
+
+    function handleSuccess() {
+      $scope.addPlayerResult = {
+        message: 'Success'
+      };
+    }
+
+    function handleFailure(error) {
+      $scope.addPlayerResult = {
+        message: error.data.message
+      };
+    }
 
   });
