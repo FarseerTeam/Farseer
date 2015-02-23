@@ -12,7 +12,10 @@ angular.module('farseerApp')
       httpService.addPlayer($scope.newPlayer).then(handleSuccess, handleFailure);
     };
 
-    function handleSuccess() {
+    function handleSuccess(response) {
+      var newPlayer = response.data;
+
+      $scope.players.push(newPlayer);
       $scope.addPlayerResult = {
         message: 'Success'
       };

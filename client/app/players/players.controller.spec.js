@@ -27,7 +27,7 @@ describe('Controller: PlayersCtrl', function () {
         if(rejectAddPlayer) {
           deferred.reject({data: {message: expectedErrorMessage}});
         } else {
-          deferred.resolve();
+          deferred.resolve({data: newPlayer});
         }
 
         return deferred.promise;
@@ -70,6 +70,25 @@ describe('Controller: PlayersCtrl', function () {
       scope.$digest();
 
       expect(addedPlayer).toBe(newPlayer);
+    });
+
+    it('should add new player to the empty list of players in scope when successful', function() {
+      scope.$digest();
+      scope.players = [];
+
+      scope.addPlayer();
+      scope.$digest();
+
+      expect(scope.players.length).toBe(1);
+      expect(scope.players[0]).toBe(newPlayer);
+    });
+
+    it('should add new player to the list of existing players in scope when successful', function() {
+      scope.addPlayer();
+      scope.$digest();
+
+      expect(scope.players.length).toBe(4);
+      expect(_.last(scope.players)).toBe(newPlayer);
     });
 
     it('should pass success message to scope when add is successful', function() {
