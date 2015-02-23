@@ -1065,6 +1065,11 @@
           "resolved": "https://registry.npmjs.org/ms/-/ms-0.6.2.tgz"
         }
       }
+    },
+    "string-format": {
+      "version": "0.5.0",
+      "from": "string-format@>=0.5.0 <0.6.0",
+      "resolved": "https://registry.npmjs.org/string-format/-/string-format-0.5.0.tgz"
     }
   }
 }
