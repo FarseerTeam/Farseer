@@ -11,6 +11,6 @@ button(type='button', ng-click='addPlayer()') Add Player
 
 ul(ng-repeat='player in players')
   li
-    span {{player.name}}
-    span  {{player.email}}
+    input(type='text', disabled='disabled', value='{{player.name}}')
+    input(type='text', disabled='disabled', value='{{player.email}}')
 a(href='/playersMap', title='Map View') Map View
