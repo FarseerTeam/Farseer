@@ -15,4 +15,10 @@ angular.module('farseerApp')
       });
     };
 
+    this.update = function(player) {
+      return $http.put('/api/players/'+player._id, player).then(function(response) {
+        return response;
+      });
+    };
+
   });

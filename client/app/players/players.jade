@@ -1,6 +1,6 @@
 h1 Players:
 
-p(class='message'){{addPlayerResult.message}}
+p(class='message'){{handler.message}}
 
 h3 Add New Player:
 label(for='name') Name
@@ -10,7 +10,8 @@ input(type='text', id='email', ng-model='newPlayer.email')
 button(type='button', ng-click='addPlayer()') Add Player
 
 ul(ng-repeat='player in players')
-  li
-    input(type='text', disabled='disabled', value='{{player.name}}')
-    input(type='text', disabled='disabled', value='{{player.email}}')
+  li(ng-class='{disabled: ngDisabled}', ng-init='ngDisabled=true')
+    input(type='text', ng-readonly='ngDisabled', ng-model='player.name', value='{{player.name}}', ng-click='ngDisabled = false')
+    input(type='text', ng-readonly='ngDisabled', ng-model='player.email', value='{{player.email}}', ng-click='ngDisabled = false')
+    button(ng-click='update(player)') Save
 a(href='/playersMap', title='Map View') Map View

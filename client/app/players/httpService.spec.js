@@ -37,4 +37,16 @@ describe('Http Service', function () {
     $httpBackend.flush();
   });
 
+  it('should update existing player', function() {
+    var smitty = {name: 'Smith', email: 'smitty@email', _id: 'smitty123'};
+
+    $httpBackend.expectPUT('/api/players/' + smitty._id, smitty).respond(200);
+
+    service.update(smitty).then(function(response) {
+      expect(response.status).toBe(200);
+    });
+
+    $httpBackend.flush();
+  });
+
 });

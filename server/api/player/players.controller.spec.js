@@ -154,10 +154,10 @@ describe('/api/players/:player_id', function() {
         });
     });
     describe('PUT', function() {
-        var smith;
+        var smith, anderson;
         var smithChanged = {
             name: 'Smith Update',
-        email: 'email@changed.com'
+            email: 'email@changed.com'
         };
         beforeEach(function(done) {
             players.Player.create({
@@ -171,6 +171,7 @@ describe('/api/players/:player_id', function() {
         });
         it('will update a valid object ', function(done) {
             var url = '/api/players/' + smith.id;
+
             request(app)
             .put(url)
             .send(smithChanged)
@@ -178,6 +179,7 @@ describe('/api/players/:player_id', function() {
             .expect(200)
             .expect('Content-Type', /json/)
             .end(function(err, res) {
+                if(err) return done(err);
                 players.Player.findById(smith.id, function(err, doc) {
                     if (err) return done(err);
                     doc.name.should.be.equal(smithChanged.name);
@@ -186,6 +188,38 @@ describe('/api/players/:player_id', function() {
                 });
             });
         });
+
+        describe('when using duplicate email', function() {
+          beforeEach(function(done) {
+              players.Player.create({
+                  name: "Anderson",
+                  email: "neo@matrix.com"
+              },
+              function(err, doc) {
+                  anderson = doc;
+                  done();
+              });
+          });
+
+          it('should return a human error message', function(done) {
+
+            request(app)
+              .put('/api/players/' + smith.id)
+              .send({
+                  name: 'Smitty',
+                  email: anderson.email
+              })
+              .set('Accept', 'application/json')
+              .expect(409)
+              .expect('Content-Type', /json/)
+              .expect({message: "A player with email " + anderson.email + " already exists"}, function(error) {
+                done(error);
+              });
+
+          });
+
+        });
+
         afterEach(function(done) {
             players.Player.remove({}, function() {
                 done();

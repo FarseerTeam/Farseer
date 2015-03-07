@@ -32,15 +32,23 @@ exports.create = function(req, res) {
         }
     });
 };
+
 exports.update = function(req, res) {
     var player = req.player;
 
     player = _.extend(player, req.body);
 
     player.save(function(err) {
-        res.json(player);
+        if(err) {
+          return res.status(409).send({
+            message: 'A player with email ' + player.email + ' already exists'
+          });
+        } else {
+          res.json(player);
+        }
     });
 };
+
 exports.delete = function(req, res) {
     players.Player.remove({
         _id: req.player.id
