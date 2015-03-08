@@ -1,17 +1,17 @@
 h1 Players:
 
-p(class='message'){{handler.message}}
+p(class='message', ng-class='{error: handler.error}') {{handler.message}}
 
 h3 Add New Player:
 label(for='name') Name
 input(type='text', id='name', ng-model='newPlayer.name')
 label(for='email') Email
-input(type='text', id='email', ng-model='newPlayer.email')
+input(type='text', id='email', ng-model='newPlayer.email', ng-class='{error: newPlayer.error}')
 button(type='button', ng-click='addPlayer()') Add Player
 
 ul(ng-repeat='player in players')
-  li(ng-class='{disabled: ngDisabled}', ng-init='ngDisabled=true')
-    input(type='text', ng-readonly='ngDisabled', ng-model='player.name', value='{{player.name}}', ng-click='ngDisabled = false')
-    input(type='text', ng-readonly='ngDisabled', ng-model='player.email', value='{{player.email}}', ng-click='ngDisabled = false')
-    button(ng-click='update(player)') Save
+  li(ng-class='{disabled: !active}', ng-init='active=false; edited=false')
+    input(type='text', ng-model='player.name', value='{{player.name}}', ng-focus='active=true', ng-blur='active=false', ng-change='edited=true', ng-readonly='!active')
+    input(type='text', ng-model='player.email', value='{{player.email}}', ng-class='{error: player.error}', ng-focus='active=true', ng-blur='active=false', ng-change='edited=true', ng-readonly='!active')
+    button(ng-click='update(player); active=false; edited=false', ng-show='edited') Save
 a(href='/playersMap', title='Map View') Map View

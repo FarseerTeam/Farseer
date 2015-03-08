@@ -1,8 +1,13 @@
+.error {
+  color: red !important;
+}
+
+.message {
+  color: green;
+}
+
 .disabled {
   input {
     color: grey;
-  }
-  button {
-    display: none;
   }
 }

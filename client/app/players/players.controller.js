@@ -9,30 +9,35 @@ angular.module('farseerApp')
     });
 
     $scope.update = function(player) {
-      httpService.update(player).then(handleSuccess, handleFailure);
+      httpService.update(player).then(function() {
+        handleResponse('Success', player, false);
+
+      }, function(error) {
+        handleResponse(error.data.message, player, true);
+      });
     };
 
     $scope.addPlayer = function() {
-      httpService.addPlayer($scope.newPlayer).then(handleSuccessAndUpdateScope, handleFailure);
+      httpService.addPlayer($scope.newPlayer).then(function(response) {
+        addNewPlayerToScope(response.data);
+        handleResponse('Success', $scope.newPlayer, false);
+
+      }, function(error) {
+        handleResponse(error.data.message, $scope.newPlayer, true);
+      });
     };
 
-    function handleSuccess() {
+    function handleResponse(messageText, player, isError) {
+      player.error = isError;
+
       $scope.handler = {
-        message: 'Success'
+        message: messageText,
+        error: isError
       };
     }
 
-    function handleSuccessAndUpdateScope(response) {
-      var newPlayer = response.data;
-      $scope.players.push(newPlayer);
-
-      handleSuccess();
-    }
-
-    function handleFailure(error) {
-      $scope.handler = {
-        message: error.data.message
-      };
+    function addNewPlayerToScope(newPlayer) {
+        $scope.players.push(newPlayer);
     }
 
   });

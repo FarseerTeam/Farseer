@@ -74,7 +74,7 @@ describe('Controller: PlayersCtrl', function () {
     var newPlayer;
 
     beforeEach(function() {
-      newPlayer = '{"name":"Draco","email":"malfoy@email"}';
+      newPlayer = {name:'Draco',email:'malfoy@email'};
       scope.newPlayer = newPlayer;
     });
 
@@ -105,14 +105,18 @@ describe('Controller: PlayersCtrl', function () {
     });
 
     it('should pass success message to scope when add is successful', function() {
+      scope.newPlayer.error = true;
       scope.addPlayer();
       scope.$digest();
 
       expect(scope.handler).not.toBe(undefined);
       expect(scope.handler.message).toBe('Success');
+      expect(scope.handler.error).toBe(false);
+      expect(scope.newPlayer.error).toBe(false);
     });
 
     it('should pass error message to scope when add is rejected', function() {
+      scope.newPlayer.error = false;
       rejectAddPlayer = true;
 
       scope.addPlayer();
@@ -120,6 +124,8 @@ describe('Controller: PlayersCtrl', function () {
 
       expect(scope.handler).not.toBe(undefined);
       expect(scope.handler.message).toBe(expectedErrorMessage);
+      expect(scope.handler.error).toBe(true);
+      expect(scope.newPlayer.error).toBe(true);
     });
   });
 
@@ -143,6 +149,7 @@ describe('Controller: PlayersCtrl', function () {
 
       expect(scope.handler).not.toBe(undefined);
       expect(scope.handler.message).toBe('Success');
+      expect(existingPlayer.error).toBe(false);
     });
 
     it('should pass error message to scope when update is rejected', function() {
@@ -153,6 +160,7 @@ describe('Controller: PlayersCtrl', function () {
 
       expect(scope.handler).not.toBe(undefined);
       expect(scope.handler.message).toBe(expectedErrorMessage);
+      expect(existingPlayer.error).toBe(true);
     });
 
   });
