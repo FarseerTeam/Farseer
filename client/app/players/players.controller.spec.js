@@ -47,7 +47,7 @@ describe('Controller: PlayersCtrl', function () {
       },
       getTeamToPlayersMap: function() {
         var deferred = $q.defer();
-        deferred.resolve([{team: 'Gryiffindor', players: [{name: 'Harry Potter'}]}, {team: undefined, players: [{name: 'Poppy Pomfrey'}, {name: 'Irma Pince'}]}]);
+        deferred.resolve([{team: 'Gryffindor', players: [{name: 'Harry Potter'}]}, {team: undefined, players: [{name: 'Poppy Pomfrey'}, {name: 'Irma Pince'}]}]);
         return deferred.promise;
       } 
     };
@@ -86,7 +86,7 @@ describe('Controller: PlayersCtrl', function () {
 
       expect(scope.teamPlayersMap.length).toEqual(2);
 
-      expect(scope.teamPlayersMap[0].team).toBe('Gryiffindor');
+      expect(scope.teamPlayersMap[0].team).toBe('Gryffindor');
       expect(scope.teamPlayersMap[0].players.length).toBe(1);
       expect(scope.teamPlayersMap[0].players[0].name).toBe('Harry Potter');
 

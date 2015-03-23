@@ -68,16 +68,16 @@ ul.team {
   }
 
   &.ng-enter, .ng-move {
-    -webkit-animation: fadeIn 1s;
-    -moz-animation: fadeIn 1s;
-    -o-animation: fadeIn 1s;
-    animation: fadeIn 1s;
+    -webkit-animation: slideInRight .5s;
+    -moz-animation: slideInRight .5s;
+    -o-animation: slideInRight .5s;
+    animation: slideInRight .5s;
   }
 
   &.ng-leave {
-    -webkit-animation: fadeOut 1s;
-    -moz-animation: fadeOut 1s;
-    -o-animation: fadeOut 1s;
-    animation: fadeOut 1s;
+    -webkit-animation: slideOutRight .5s;
+    -moz-animation: slideOutRight .5s;
+    -o-animation: slideOutRight .5s;
+    animation: slideOutRight .5s;
   }
 }
