@@ -3,9 +3,14 @@
 angular.module('farseerApp')
   .controller('PlayersCtrl', function ($scope, httpService) {
     $scope.players = [];
+    $scope.teamPlayersMap = [];
 
     httpService.getPlayers().then(function(players) {
       $scope.players = players;
+    });
+
+    httpService.getTeamToPlayersMap().then(function(map) {
+      $scope.teamPlayersMap = map;
     });
 
     $scope.update = function(player) {
@@ -39,5 +44,4 @@ angular.module('farseerApp')
     function addNewPlayerToScope(newPlayer) {
         $scope.players.push(newPlayer);
     }
-
   });

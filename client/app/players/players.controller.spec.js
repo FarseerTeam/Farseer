@@ -44,7 +44,12 @@ describe('Controller: PlayersCtrl', function () {
           deferred.resolve();
         }
         return deferred.promise;
-      }
+      },
+      getTeamToPlayersMap: function() {
+        var deferred = $q.defer();
+        deferred.resolve([{team: 'Gryffindor', players: [{name: 'Harry Potter'}]}, {team: undefined, players: [{name: 'Poppy Pomfrey'}, {name: 'Irma Pince'}]}]);
+        return deferred.promise;
+      } 
     };
 
     PlayersCtrl = $controller('PlayersCtrl', {
@@ -67,6 +72,28 @@ describe('Controller: PlayersCtrl', function () {
       expect(scope.players[0]).toBe('Harry Potter');
       expect(scope.players[1]).toBe('Hermione Granger');
       expect(scope.players[2]).toBe('Ron Weasley');
+    });
+  });
+
+  describe('team-to-players map attached to the scope: ', function() {
+    it('should be empty when promise is not fulfilled', function() {
+      expect(scope.teamPlayersMap).not.toBe(undefined);
+      expect(scope.teamPlayersMap.length).toEqual(0);
+    });
+
+    it('should be complete when promise if fulfilled', function() {
+      scope.$digest();
+
+      expect(scope.teamPlayersMap.length).toEqual(2);
+
+      expect(scope.teamPlayersMap[0].team).toBe('Gryffindor');
+      expect(scope.teamPlayersMap[0].players.length).toBe(1);
+      expect(scope.teamPlayersMap[0].players[0].name).toBe('Harry Potter');
+
+      expect(scope.teamPlayersMap[1].team).toBe(undefined);
+      expect(scope.teamPlayersMap[1].players.length).toBe(2);
+      expect(scope.teamPlayersMap[1].players[0].name).toBe('Poppy Pomfrey');
+      expect(scope.teamPlayersMap[1].players[1].name).toBe('Irma Pince');
     });
   });
 

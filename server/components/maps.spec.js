@@ -285,5 +285,40 @@ describe('In the api/components/maps module,', function() {
                     clearAll(done);
                 });
             });
+        
+        describe("Players with no team assignment exist in the map.  " + 
+                 "Given players: [{name:'Tui'}, {name:'Wan Shi Tong'}, {name: 'Aang', team: '/avatar}]", function() {
+
+            beforeEach(function(done) {
+
+                var p = createTeam("avatar");
+                p = p.then(function(team) { return createPlayer(team, 'Aang');});
+                p = p.then(function(){return createPlayer(undefined, 'Tui')});
+                p = p.then(function(){return createPlayer(undefined, 'Wan Shi Tong')});
+                p = p.then(callDone(done), callDoneWithError(done));
+            });
+
+            var expected = 
+                [{
+                    team: 'avatar',
+                    players: [
+                        {name: 'Aang'}
+                    ]
+                }, {
+                    team: undefined,
+                    players: [
+                        {name: 'Tui'}, 
+                        {name: 'Wan Shi Tong'}
+                    ]
+                }];
+
+            it(shouldReturn(expected), function(done) {
+                execAndCheck(expected, done);
+            });
+
+            afterEach(function(done) {
+                clearAll(done);
+            });
+        });
     });
 });
