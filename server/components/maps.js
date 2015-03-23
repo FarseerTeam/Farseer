@@ -13,7 +13,7 @@ var doBuildTeamPlayersMap = function(parentTeams, existingPlayers, cb) {
 
     var buildNode = function(teams){
         return  _.map(teams, function(team){
-            
+
             var result = {
                 team: team.name,
             players: hashOfPlayers[team._id] || []
@@ -35,17 +35,9 @@ var doBuildTeamPlayersMap = function(parentTeams, existingPlayers, cb) {
 
 
 exports.buildTeamPlayersMap = function(callbackWithResult) {
-    var found = {};
-    var promise = teams.Team.find({parent:null}).exec();
-
-    promise = promise.then(function(foundTeams){
-        found.teams = foundTeams;
-        return  players.Player.find({}).exec(); 
-    }); 
-    promise.then(function(foundPlayers){
-        found.players = foundPlayers;
-        teams.Team.getChildrenTree(function(err, fullTree){
-                doBuildTeamPlayersMap(fullTree, found.players, callbackWithResult);
-        });
-    });    
+    players.Player.find({}).exec().then(function(foundPlayers){
+      teams.Team.getChildrenTree(function(err, fullTree){
+      doBuildTeamPlayersMap(fullTree, foundPlayers, callbackWithResult);
+    });
+  });
 };
