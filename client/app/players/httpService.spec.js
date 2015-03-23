@@ -49,4 +49,15 @@ describe('Http Service', function () {
     $httpBackend.flush();
   });
 
+  it('should return team-to-players map data', function() {
+    var expectedResult = [{team: 'Gryffindor', players: [{name: 'Harry Potter'}]}];
+    $httpBackend.expectGET('/api/maps').respond(expectedResult);
+
+    service.getTeamToPlayersMap().then(function(returnedMap) {
+      expect(returnedMap).toEqual(expectedResult);
+    });
+
+    $httpBackend.flush();
+  });
+
 });

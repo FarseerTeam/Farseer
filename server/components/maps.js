@@ -25,6 +25,11 @@ var doBuildTeamPlayersMap = function(parentTeams, existingPlayers, cb) {
     };
 
     var result = buildNode(parentTeams);
+
+    if (hashOfPlayers[undefined]) {
+        result.push({'team': undefined, players : hashOfPlayers[undefined]});
+    }
+
     cb(result);
 };
 

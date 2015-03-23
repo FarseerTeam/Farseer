@@ -1,36 +1,83 @@
-ul.players {
+div.teamMapHolder {
+  ul:nth-child(4n+1) {
+    background-color: #5DA7FF;
+    border: 3px solid #1E5CA6;
+  }
+  ul:nth-child(4n+2) {
+    background-color: #8E62FF;
+    border: 3px solid #4520A6;
+  }
+  ul:nth-child(4n+3) {
+    background-color: #4FFF96;
+    border: 3px solid #1AA652;
+  }
+  ul:nth-child(4n+0) {
+    background-color: #FFBB4F;
+    border: 3px solid #A66F1A;
+  }
+}
+
+ul.team {
   list-style-type: none;
+  border-radius: 10px;
+  float: left;
+  display: block;
+  padding-bottom: 15px;
+  text-align: center;
 
-  li {
-    border: 3px solid #56D7D7;
-    border-radius: 5px;
+  width: 92%;
+  margin-right: 6%;
+  margin-left: 2%;
+  min-height: 13em;
+
+  div {
     float: left;
-    padding: 5px;
-    margin-right: 5px;
-    width: 8%;
-    min-height: 11em;
+    display: block;
+    width: 100%;
 
-    img {
-      width: 80%;
-      margin-left: 10%;
-    }
+    li {
+      border: 3px solid #56D7D7;
+      border-radius: 5px;
+      float: left;
+      padding: 5px;
+      margin-right: 5px;
+      width: 7em;
+      min-height: 11em;
 
-    div {
-      margin-left: 25%;
-    }
+      background-color: white;
 
-    &.ng-enter, .ng-move {
-      -webkit-animation: fadeIn 1s;
-      -moz-animation: fadeIn 1s;
-      -o-animation: fadeIn 1s;
-      animation: fadeIn 1s;
-    }
+      img {
+        width: 80%;
+        margin-left: 10%;
+      }
 
-    &.ng-leave {
-      -webkit-animation: fadeOut 1s;
-      -moz-animation: fadeOut 1s;
-      -o-animation: fadeOut 1s;
-      animation: fadeOut 1s;
+      &.ng-enter, .ng-move {
+        -webkit-animation: fadeIn 1s;
+        -moz-animation: fadeIn 1s;
+        -o-animation: fadeIn 1s;
+        animation: fadeIn 1s;
+      }
+
+      &.ng-leave {
+        -webkit-animation: fadeOut 1s;
+        -moz-animation: fadeOut 1s;
+        -o-animation: fadeOut 1s;
+        animation: fadeOut 1s;
+      }
     }
+  }
+
+  &.ng-enter, .ng-move {
+    -webkit-animation: fadeIn 1s;
+    -moz-animation: fadeIn 1s;
+    -o-animation: fadeIn 1s;
+    animation: fadeIn 1s;
+  }
+
+  &.ng-leave {
+    -webkit-animation: fadeOut 1s;
+    -moz-animation: fadeOut 1s;
+    -o-animation: fadeOut 1s;
+    animation: fadeOut 1s;
   }
 }
