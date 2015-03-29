@@ -26,16 +26,16 @@ exports.update = function(req, res) {
 	var playerEmail = req.params.playerEmail;
 	var failure = function(err) {console.log(err);};
 
-	console.log('About to call find by email:');
+	// console.log('About to call find by email:');
 	players.findByEmail(playerEmail, function(player) {
-		console.log("Here with player: " + JSON.stringify(player, null, "  "));
+		// console.log("Here with player: " + JSON.stringify(player, null, "  "));
 		teams.findByName(teamName, function(team) {
-			console.log("Here with team: " + JSON.stringify(team, null, "  "));
+			// console.log("Here with team: " + JSON.stringify(team, null, "  "));
 			player._team = team;
 			player.save(function(err, updatedPlayer) {
-				console.log("Here with updated player: " + JSON.stringify(updatedPlayer, null, "  "));
+				// console.log("Here with updated player: " + JSON.stringify(updatedPlayer, null, "  "));
 				maps.buildTeamPlayersMap(function(result) {
-					console.log("Here with result: " + JSON.stringify(result, null, "  "));
+					// console.log("Here with result: " + JSON.stringify(result, null, "  "));
 					res.json(result);
 				});
 			}, failure);

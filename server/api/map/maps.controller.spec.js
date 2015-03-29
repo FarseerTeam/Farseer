@@ -69,21 +69,6 @@ var execAndCheck = function(expected, done) {
     });
 };
 
-var performUpdateAndCheck = function(playerEmail, teamName, expected, done) {
-  request(app)
-    .post('/api/maps/' + playerEmail + '/' + teamName)
-    .expect(200)
-    .expect('Content-Type', /json/)
-    .end(function(err, res) {
-      if (err) {
-        console.log(err);
-      }
-      res.body.should.be.instanceof(Array);
-      expected.should.be.eql(res.body);
-      done();
-    });
-};
-
 describe('/api/maps', function() {
   // describe('GET when database is empty ', function() {
   //   it('should respond with an empty JSON array', function(done) {
@@ -126,10 +111,50 @@ describe('/api/maps', function() {
 
 describe('/api/maps/:playerEmail/:teamName', function() {
 
-  describe('Given a player with no team, and an existing team...', function(){
+  var performUpdateAndCheck = function(playerEmail, teamName, expected, done) {
+    request(app)
+      .post('/api/maps/' + playerEmail + '/' + teamName)
+      .expect(200)
+      .expect('Content-Type', /json/)
+      .end(function(err, res) {
+        if (err) {
+          console.log(err);
+        }
+        res.body.should.be.instanceof(Array);
+        expected.should.be.eql(res.body);
+        done();
+      });
+  };
+
+  var createTeam = function(teamName, callback) {
+      teams.Team.create({
+        name: teamName
+      }, function (err, doc) {callback(doc);});
+  };
+
+  var createPlayer = function(team, playerName, callback) {
+      var player = {
+        name: playerName,
+        email: (playerName.split(' ')[0] + '@gmail.com')
+      };
+      if (team) {
+        player._team =  team;
+      }
+
+      players.Player.create(player, function(err, doc) {callback(doc);});
+  };
+
+
+  describe('Given a player with no assignment, and an existing team...', function(){
 
     beforeEach(function(done) {
-      createDataWithLogging(done);
+      createTeam('Gryffindor', function(createdTeam) {
+        createPlayer(createdTeam, 'Hermione Granger', function() {
+          createPlayer(undefined, 'Harry Potter', function() {
+            done();
+          });
+        });
+      });
     });
 
     afterEach(function(done){
@@ -144,66 +169,41 @@ describe('/api/maps/:playerEmail/:teamName', function() {
         ]
       }];
 
-    it('updating the map with player email with the team name puts the player on the team.', function(done) {
+    it('updating the map with player email and team name puts the player on the team.', function(done) {
       performUpdateAndCheck('Harry@gmail.com', 'Gryffindor', expectedMap, done);
     });
+  });
 
-    var createData = function(done) {
-      createTeam('Gryffindor', function(createdTeam) {
-        createPlayer(createdTeam, 'Hermione Granger', function() {
-          createPlayer(undefined, 'Harry Potter', function() {
+
+  describe('Given a player with an existing assignment, and two existing teams...', function(){
+
+    beforeEach(function(done) {
+      createTeam('Muggle', function(createdTeam) {
+        createPlayer(createdTeam, 'Harry Potter', function() {
+          createTeam('Gryffindor', function() {
             done();
           });
         });
       });
-    };
+    });
 
-    var createDataWithLogging = function(done) {
+    afterEach(function(done){
+      clearAll(done);
+    });
 
-        var player1;
-        var player2;
-        var team;
+    var expectedMap = [
+      {
+        team: 'Muggle',
+        players: []
+      },{
+        team: 'Gryffindor',
+        players: [
+          {name: 'Harry Potter'}
+        ]
+      }];
 
-        createTeam('Gryffindor', function(createdTeam) {
-            team = createdTeam;
-            createPlayer(createdTeam, 'Hermione Granger', function(createdPlayer) {
-              player1 = createdPlayer;
-              createPlayer(undefined, 'Harry Potter', function(createdPlayer) {
-                player2 = createdPlayer;
-                logIt();
-                done();
-              });
-            });
-        });
-
-        var logIt = function() {
-          console.log("************************************************************************************************");
-          console.log("TEAM: " + JSON.stringify(team, null, "  "));
-          console.log("P1: " + JSON.stringify(player1, null, "  "));
-          console.log("P2: " + JSON.stringify(player2, null, "  "));
-          console.log("************************************************************************************************");
-        };
-    };
-
-    var createTeam = function(teamName, callback) {
-        teams.Team.create({
-          name: teamName
-        }, function (err, doc) {callback(doc);});
-    };
-
-    var createPlayer = function(team, playerName, callback) {
-        var player = {
-          name: playerName,
-          email: (playerName.split(' ')[0] + '@gmail.com')
-        };
-
-        if (team) {
-          player._team =  team;
-        }
-
-        players.Player.create(player, function(err, doc) {callback(doc);});
-    };
-
+    it('updating the map with player email and a different team name removes the player from the old team and puts the player on the new team.', function(done) {
+      performUpdateAndCheck('Harry@gmail.com', 'Gryffindor', expectedMap, done);
+    });
   });
-
 });
