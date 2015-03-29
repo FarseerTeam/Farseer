@@ -67,7 +67,21 @@ var execAndCheck = function(expected, done) {
       expected.should.be.eql(res.body);
       done();
     });
+};
 
+var performUpdateAndCheck = function(playerEmail, teamName, expected, done) {
+  request(app)
+    .post('/api/maps/' + playerEmail + '/' + teamName)
+    .expect(200)
+    .expect('Content-Type', /json/)
+    .end(function(err, res) {
+      if (err) {
+        console.log(err);
+      }
+      res.body.should.be.instanceof(Array);
+      expected.should.be.eql(res.body);
+      done();
+    });
 };
 
 describe('/api/maps', function() {
@@ -107,4 +121,89 @@ describe('/api/maps', function() {
       clearAll(done);
     });
   });
+});
+
+
+describe('/api/maps/:playerEmail/:teamName', function() {
+
+  describe('Given a player with no team, and an existing team...', function(){
+
+    beforeEach(function(done) {
+      createDataWithLogging(done);
+    });
+
+    afterEach(function(done){
+      clearAll(done);
+    });
+
+    var expectedMap = [{
+        team: 'Gryffindor',
+        players: [
+          {name: 'Hermione Granger'},
+          {name: 'Harry Potter'}
+        ]
+      }];
+
+    it('updating the map with player email with the team name puts the player on the team.', function(done) {
+      performUpdateAndCheck('Harry@gmail.com', 'Gryffindor', expectedMap, done);
+    });
+
+    var createData = function(done) {
+      createTeam('Gryffindor', function(createdTeam) {
+        createPlayer(createdTeam, 'Hermione Granger', function() {
+          createPlayer(undefined, 'Harry Potter', function() {
+            done();
+          });
+        });
+      });
+    };
+
+    var createDataWithLogging = function(done) {
+
+        var player1;
+        var player2;
+        var team;
+
+        createTeam('Gryffindor', function(createdTeam) {
+            team = createdTeam;
+            createPlayer(createdTeam, 'Hermione Granger', function(createdPlayer) {
+              player1 = createdPlayer;
+              createPlayer(undefined, 'Harry Potter', function(createdPlayer) {
+                player2 = createdPlayer;
+                logIt();
+                done();
+              });
+            });
+        });
+
+        var logIt = function() {
+          console.log("************************************************************************************************");
+          console.log("TEAM: " + JSON.stringify(team, null, "  "));
+          console.log("P1: " + JSON.stringify(player1, null, "  "));
+          console.log("P2: " + JSON.stringify(player2, null, "  "));
+          console.log("************************************************************************************************");
+        };
+    };
+
+    var createTeam = function(teamName, callback) {
+        teams.Team.create({
+          name: teamName
+        }, function (err, doc) {callback(doc);});
+    };
+
+    var createPlayer = function(team, playerName, callback) {
+        var player = {
+          name: playerName,
+          email: (playerName.split(' ')[0] + '@gmail.com')
+        };
+
+        if (team) {
+          player._team =  team;
+        }
+
+        players.Player.create(player, function(err, doc) {callback(doc);});
+    };
+
+  });
+
 });

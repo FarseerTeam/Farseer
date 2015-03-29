@@ -11,17 +11,10 @@ router.route('/')
 	})
 	.get(controller.index);
 
-// 	.post(controller.create);
-
-
-
-// router.route('/:team_id')
-// 	.all(function(req, res, next) {
-// 	  next();
-// 	})
-// 	.get(controller.read)
-// 	.put(controller.update)
-// 	.delete(controller.delete);	
-
+router.route('/:playerEmail/:teamName')
+	.all(function(req, res, next){
+		next();
+	})
+	.post(controller.update);
 
 module.exports = router;
