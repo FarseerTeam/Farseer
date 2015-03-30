@@ -9,6 +9,7 @@ var players = require("../../components/players")
 var dataService = require('../../components/dataService')
 var _ = require('lodash');
 var format = require("string-format");
+var mongoose = require("mongoose");
 dataService.connect();
 
 /*
@@ -126,6 +127,22 @@ describe('/api/maps/:playerEmail/:teamName', function() {
       });
   };
 
+  var performUpdateAndCheckForError = function(playerEmail, teamName, expected, errorCode, done) {
+    request(app)
+      .post('/api/maps/' + playerEmail + '/' + teamName)
+      .expect(errorCode)
+      .expect('Content-Type', /json/)
+      .end(function(err, res) {
+        if (err) {
+          console.log(err);
+        } 
+        else {
+          expected.should.be.eql(res.body);
+          done();
+        }
+      });
+  };
+
   var createTeam = function(teamName, callback) {
       teams.Team.create({
         name: teamName
@@ -175,7 +192,7 @@ describe('/api/maps/:playerEmail/:teamName', function() {
   });
 
 
-  describe('Given a player with an existing assignment, and two existing teams...', function(){
+  describe('Given a player with an existing assignment, as well as another existing team...', function(){
 
     beforeEach(function(done) {
       createTeam('Muggle', function(createdTeam) {
@@ -204,6 +221,98 @@ describe('/api/maps/:playerEmail/:teamName', function() {
 
     it('updating the map with player email and a different team name removes the player from the old team and puts the player on the new team.', function(done) {
       performUpdateAndCheck('Harry@gmail.com', 'Gryffindor', expectedMap, done);
+    });
+  });
+
+
+  describe('Given a player with an existing assignment...', function(){
+
+    beforeEach(function(done) {
+      createTeam('Gryffindor', function(createdTeam) {
+        createPlayer(createdTeam, 'Harry Potter', function() {
+          done();
+        });
+      });
+    });
+
+    afterEach(function(done){
+      clearAll(done);
+    });
+
+    var expectedMap = [
+      {
+        team: 'Gryffindor',
+        players: [
+          {name: 'Harry Potter'}
+        ]
+      }];
+
+    it('updating the map with a player/team combination that already exists returns an unchanged map.', function(done) {
+      performUpdateAndCheck('Harry@gmail.com', 'Gryffindor', expectedMap, done);
+    });
+  });
+
+
+  describe('Given a player with an existing assignment...', function(){
+
+    beforeEach(function(done) {
+      createTeam('Gryffindor', function(createdTeam) {
+        createPlayer(createdTeam, 'Harry Potter', function() {
+          done();
+        });
+      });
+    });
+
+    afterEach(function(done){
+      clearAll(done);
+    });
+
+    var expectedEmailError = {message: 'The provided playerEmail (Nonexistent@gmail.com) does not exist.'};
+    var expectedTeamError = {message: 'The provided teamName (Nonexistent) does not exist.'};
+
+    it('updating the map with a nonexistent player email returns an error.', function(done) {
+      performUpdateAndCheckForError('Nonexistent@gmail.com', 'Gryffindor', expectedEmailError, 400, done);
+    });
+
+    it('updating the map with a nonexistent team name returns an error.', function(done) {
+      performUpdateAndCheckForError('Harry@gmail.com', 'Nonexistent', expectedTeamError, 400, done);
+    });
+  });
+
+
+  describe('Given a player with an existing assignment...', function(){
+
+    beforeEach(function(done) {
+      createTeam('Gryffindor', function(createdTeam) {
+        createPlayer(createdTeam, 'Harry Potter', function() {
+          mockTheDatabase_ToReturnAnError();
+          done();
+        });
+      });
+    });
+
+    var actualFindOne;
+
+    var mockTheDatabase_ToReturnAnError = function() {
+        actualFindOne = mongoose.Model.findOne;
+        mongoose.Model.findOne = function(modelObject, callback){
+            callback('Hi this is the error', undefined);
+        }; 
+    };
+
+    var unmock = function() {
+        mongoose.Model.findOne = actualFindOne;
+    };
+
+    afterEach(function(done){
+      unmock();
+      clearAll(done);
+    });
+
+    var expectedDatabaseError = {message: 'An unexpected application error has occured.  Please try again.'};
+
+    it('a database problem causes a 409 error.', function(done) {
+      performUpdateAndCheckForError('Harry@gmail.com', 'Gryffindor', expectedDatabaseError, 409, done);
     });
   });
 });

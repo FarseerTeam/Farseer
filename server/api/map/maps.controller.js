@@ -24,33 +24,33 @@ exports.index = function(req, res) {
 exports.update = function(req, res) {
 	var teamName = req.params.teamName;
 	var playerEmail = req.params.playerEmail;
-	var failure = function(err) {console.log(err);};
+	
+	var dbCallFailure = function(err) {
+		res.status(409).json({message: 'An unexpected application error has occured.  Please try again.'});
+	};
+	
+	var badInputFailure = function(errorText) {
+		res.status(400).json({message: errorText});
+	};
 
-	// console.log('About to call find by email:');
 	players.findByEmail(playerEmail, function(player) {
-		// console.log("Here with player: " + JSON.stringify(player, null, "  "));
+		if (!player) {
+			badInputFailure('The provided playerEmail (' + playerEmail + ') does not exist.');
+			return;
+		};
+
 		teams.findByName(teamName, function(team) {
-			// console.log("Here with team: " + JSON.stringify(team, null, "  "));
+			if (!team) {
+				badInputFailure('The provided teamName (' + teamName + ') does not exist.');
+				return;
+			};
+
 			player._team = team;
 			player.save(function(err, updatedPlayer) {
-				// console.log("Here with updated player: " + JSON.stringify(updatedPlayer, null, "  "));
 				maps.buildTeamPlayersMap(function(result) {
-					// console.log("Here with result: " + JSON.stringify(result, null, "  "));
 					res.json(result);
 				});
-			}, failure);
-		}, failure);
-	}, failure);
-
-
-	//TODO - 
-	// get the player 
-	// get the team
-	// add the team to the player (overwriting if another team connection exists ?)
-	// save it to mongo
-	// ? return the new map?
-	// what if an error happens inside of the save function?  - probably need some kind of err check and call the failure function
-
-	// ? need a DELETE function for a mapping ?
-
+			}, dbCallFailure);
+		}, dbCallFailure);
+	}, dbCallFailure);
 };
