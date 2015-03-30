@@ -13,15 +13,15 @@ var mongoose = require("mongoose");
 dataService.connect();
 
 /*
- Given players: [{name:'Zuko', team:'/fireNation/royalty'}, 
-                {name: 'Aang', team: '/avatar}, 
-                 {name: 'Katara', team: '/avatar' }, 
+ Given players: [{name:'Zuko', team:'/fireNation/royalty'},
+                {name: 'Aang', team: '/avatar},
+                 {name: 'Katara', team: '/avatar' },
                  {name: 'Iroh', team: '/fireNation/royalty'}]
 
-                 [{team: 'avatar', players: [{name: 'Aang'}, 
-                 {name: 'Katara'}]}, 
-          {team: 'fireNation', 
-          subteams: [{team: 'royalty', 
+                 [{team: 'avatar', players: [{name: 'Aang'},
+                 {name: 'Katara'}]},
+          {team: 'fireNation',
+          subteams: [{team: 'royalty',
           players: [{name: 'Zuko'}, {name: 'Iroh'}]}]}]
 
 */
@@ -135,7 +135,7 @@ describe('/api/maps/:playerEmail/:teamName', function() {
       .end(function(err, res) {
         if (err) {
           console.log(err);
-        } 
+        }
         else {
           expected.should.be.eql(res.body);
           done();
@@ -280,7 +280,7 @@ describe('/api/maps/:playerEmail/:teamName', function() {
   });
 
 
-  describe('Given a player with an existing assignment...', function(){
+  describe('Given an email with no associated player', function(){
 
     beforeEach(function(done) {
       createTeam('Gryffindor', function(createdTeam) {
@@ -297,7 +297,7 @@ describe('/api/maps/:playerEmail/:teamName', function() {
         actualFindOne = mongoose.Model.findOne;
         mongoose.Model.findOne = function(modelObject, callback){
             callback('Hi this is the error', undefined);
-        }; 
+        };
     };
 
     var unmock = function() {
@@ -309,10 +309,11 @@ describe('/api/maps/:playerEmail/:teamName', function() {
       clearAll(done);
     });
 
-    var expectedDatabaseError = {message: 'An unexpected application error has occured.  Please try again.'};
+    var expectedDatabaseError = {message: 'Player with email "Harry@gmail.com" does not exist.'};
 
-    it('a database problem causes a 409 error.', function(done) {
-      performUpdateAndCheckForError('Harry@gmail.com', 'Gryffindor', expectedDatabaseError, 409, done);
+    it('the application returns 404', function(done) {
+      performUpdateAndCheckForError('Harry@gmail.com', 'Gryffindor', expectedDatabaseError, 404, done);
     });
+
   });
 });

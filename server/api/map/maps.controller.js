@@ -29,6 +29,10 @@ exports.update = function(req, res) {
 		res.status(409).json({message: 'An unexpected application error has occured.  Please try again.'});
 	};
 
+  var playerNotFound = function(err) {
+    res.status(404).json({message: 'Player with email "'+playerEmail+'" does not exist.'});
+  };
+
 	var badInputFailure = function(errorText) {
 		res.status(400).json({message: errorText});
 	};
@@ -52,5 +56,5 @@ exports.update = function(req, res) {
 				});
 			}, dbCallFailure);
 		}, dbCallFailure);
-	}, dbCallFailure);
+	}, playerNotFound);
 };
