@@ -114,7 +114,7 @@ describe('/api/maps/:playerEmail/:teamName', function() {
 
   var performUpdateAndCheck = function(playerEmail, teamName, expected, done) {
     request(app)
-      .post('/api/maps/' + playerEmail + '/' + teamName)
+      .put('/api/maps/' + playerEmail + '/' + teamName)
       .expect(200)
       .expect('Content-Type', /json/)
       .end(function(err, res) {
@@ -129,7 +129,7 @@ describe('/api/maps/:playerEmail/:teamName', function() {
 
   var performUpdateAndCheckForError = function(playerEmail, teamName, expected, errorCode, done) {
     request(app)
-      .post('/api/maps/' + playerEmail + '/' + teamName)
+      .put('/api/maps/' + playerEmail + '/' + teamName)
       .expect(errorCode)
       .expect('Content-Type', /json/)
       .end(function(err, res) {

@@ -15,6 +15,6 @@ router.route('/:playerEmail/:teamName')
 	.all(function(req, res, next){
 		next();
 	})
-	.post(controller.update);
+	.put(controller.update);
 
 module.exports = router;
