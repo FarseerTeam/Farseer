@@ -14,7 +14,7 @@ module.exports = (function() {
         unique: true,
         required: true
       }
-    }	
+    }
   });
   TeamSchema.plugin(tree);
   var _model = mongoose.model('Team', TeamSchema);
@@ -25,7 +25,11 @@ module.exports = (function() {
         name: teamName
       },
       function(err, doc) {
-        err ? errorCB(err) : successCB(doc);
+        if(err) {
+          errorCB(err);
+        } else {
+          successCB(doc);
+        }
       }
     )
   };
