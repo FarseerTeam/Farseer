@@ -14,14 +14,29 @@ module.exports = (function() {
         unique: true,
         required: true
       }
-    }	
+    }
   });
   TeamSchema.plugin(tree);
   var _model = mongoose.model('Team', TeamSchema);
 
+  var _findByName = function(teamName, successCB, errorCB) {
+    _model.findOne(
+      {
+        name: teamName
+      },
+      function(err, doc) {
+        if(err) {
+          errorCB(err);
+        } else {
+          successCB(doc);
+        }
+      }
+    )
+  };
 
   return {
     Team: _model,
     schema: TeamSchema,
+    findByName: _findByName
   }
 })();
