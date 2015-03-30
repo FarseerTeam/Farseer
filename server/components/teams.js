@@ -19,9 +19,20 @@ module.exports = (function() {
   TeamSchema.plugin(tree);
   var _model = mongoose.model('Team', TeamSchema);
 
+  var _findByName = function(teamName, successCB, errorCB) {
+    _model.findOne(
+      {
+        name: teamName
+      },
+      function(err, doc) {
+        err ? errorCB(err) : successCB(doc);
+      }
+    )
+  };
 
   return {
     Team: _model,
     schema: TeamSchema,
+    findByName: _findByName
   }
 })();
