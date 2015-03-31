@@ -12,7 +12,8 @@
 
 var _ = require('lodash');
 
-var players = require("../../components/players")
+var players = require("../../components/players");
+var teams = require("../../components/teams");
 // Get list of players
 
 exports.index = function(req, res) {
@@ -20,6 +21,7 @@ exports.index = function(req, res) {
         res.json(doc);
     });
 };
+
 exports.create = function(req, res) {
     var player = new players.Player(req.body);
     player.save(function(err) {
@@ -60,4 +62,19 @@ exports.delete = function(req, res) {
 
 exports.read = function(req, res) {
     res.json(req.player);
+};
+
+exports.updatePlayersTeam = function(req, res) {
+    var team = req.team;
+    var player = req.player;
+
+    var dbCallFailure = function(err) {
+        res.status(409).json({message: 'An unexpected application error has occured.  Please try again.'});
+        req.end();
+    };
+
+    player._team = team;
+    player.save(function(err, updatedPlayer) {               
+        res.json(updatedPlayer);
+    }, dbCallFailure);
 };

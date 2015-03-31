@@ -11,10 +11,4 @@ router.route('/')
 	})
 	.get(controller.index);
 
-router.route('/:playerEmail/:teamName')
-	.all(function(req, res, next){
-		next();
-	})
-	.put(controller.update);
-
 module.exports = router;

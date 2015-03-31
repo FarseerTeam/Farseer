@@ -4,9 +4,11 @@ var nextIfError = require("callback-wrappers").nextIfError;
 var should = require('should');
 var app = require('../../app');
 var request = require('supertest');
-var players = require("../../components/players")
-var dataService = require('../../components/dataService')
-var format = require('string-format')
+var players = require("../../components/players");
+var teams = require("../../components/teams");
+var dataService = require('../../components/dataService');
+var format = require('string-format');
+var mongoose = require('mongoose');
 
 dataService.connect();
 
@@ -255,4 +257,207 @@ describe('/api/players/:player_id', function() {
             });
         });
     });
+});
+
+describe('/api/players/:playerUniqueIdentifier/:teamName', function() {
+
+    var clearAll = function(done) {
+        players.Player.remove({}, function() {
+            teams.Team.remove({}, function() {
+                done();
+            });
+        });
+    };
+
+    var performUpdateAndCheck = function(playerEmail, teamName, expected, done) {
+        request(app)
+            .put('/api/players/' + playerEmail + '/' + teamName)
+            .expect(200)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) {
+                    console.log(err);
+                }
+                expected.name.should.be.eql(res.body.name);
+                expected.email.should.be.eql(res.body.email);
+                expected._team.should.be.eql(res.body._team);
+                done();
+        });
+    };
+
+    var performUpdateAndCheckForError = function(playerEmail, teamName, expected, responseCode, done) {
+        request(app)
+            .put('/api/players/' + playerEmail + '/' + teamName)
+            .expect(responseCode)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) {
+                  console.log(err);
+                }
+                expected.should.be.eql(res.body);
+                done();
+        });
+    };
+
+    var createTeam = function(teamName, callback) {
+        teams.Team.create({
+            name: teamName
+        }, function (err, doc) {callback(doc);});
+    };
+
+    var createPlayer = function(team, playerName, callback) {
+        var player = {
+            name: playerName,
+            email: (playerName.split(' ')[0] + '@gmail.com')
+        };
+        if (team) {
+            player._team =  team;
+        }
+        players.Player.create(player, function(err, doc) {callback(doc);});
+    };
+
+
+    describe('Given a player with no team assignment, and an existing team...', function(){
+
+        var expectedPlayer = {
+            name: 'Harry Potter',
+            email: 'Harry@gmail.com'      
+        };
+
+        beforeEach(function(done) {
+            createTeam('Gryffindor', function(createdTeam) {
+                expectedPlayer._team = createdTeam._doc.path;
+                createPlayer(undefined, 'Harry Potter', function() {
+                    done();
+                });
+            });
+        });                 
+
+        afterEach(function(done){
+            clearAll(done);
+        });
+
+        it('updating the player with the team assigns the player to the team.', function(done) {
+            performUpdateAndCheck('Harry@gmail.com', 'Gryffindor', expectedPlayer, done);
+        });
+    });
+
+
+    describe('Given a player with an existing assignment, as well as another existing team...', function(){
+
+        var expectedPlayer = {
+            name: 'Harry Potter',
+            email: 'Harry@gmail.com'      
+        };
+
+        beforeEach(function(done) {
+            createTeam('Muggle', function(createdTeam) {
+                createPlayer(createdTeam, 'Harry Potter', function() {
+                    createTeam('Gryffindor', function(targetTeam) {
+                        expectedPlayer._team = targetTeam._doc.path;
+                        done();
+                    });
+                });
+            });
+        });
+
+        afterEach(function(done){
+            clearAll(done);
+        });
+
+        it('updating with a new team name removes the player from the old team and puts the player on the new team.', function(done) {
+            performUpdateAndCheck('Harry@gmail.com', 'Gryffindor', expectedPlayer, done);
+        });
+    });
+
+
+    describe('Given a player with an existing assignment...', function(){
+
+        var expectedPlayer = {
+            name: 'Harry Potter',
+            email: 'Harry@gmail.com'      
+        };
+
+        beforeEach(function(done) {
+            createTeam('Gryffindor', function(createdTeam) {
+                expectedPlayer._team = createdTeam._doc.path;
+                createPlayer(createdTeam, 'Harry Potter', function() {
+                    done();
+                });
+            });
+        });
+
+        afterEach(function(done){
+            clearAll(done);
+        });
+
+        it('updating the map with a player/team combination that already exists returns an unchanged player.', function(done) {
+            performUpdateAndCheck('Harry@gmail.com', 'Gryffindor', expectedPlayer, done);
+        });
+    });
+
+
+    describe('Given a player with an existing assignment...', function(){
+
+        beforeEach(function(done) {
+            createTeam('Gryffindor', function(createdTeam) {
+                createPlayer(createdTeam, 'Harry Potter', function() {
+                    done();
+                });
+            });
+        });
+
+        afterEach(function(done){
+            clearAll(done);
+        });
+
+        var expectedEmailError = {message: 'Player with email "Nonexistent@gmail.com" does not exist.'};
+        var expectedTeamError = {message: 'A team with teamName "Nonexistent" does not exist.'};
+
+        it('updating the map with a nonexistent player email returns an error.', function(done) {
+            performUpdateAndCheckForError('Nonexistent@gmail.com', 'Gryffindor', expectedEmailError, 400, done);
+        });
+
+        it('updating the map with a nonexistent team name returns an error.', function(done) {
+            performUpdateAndCheckForError('Harry@gmail.com', 'Nonexistent', expectedTeamError, 400, done);
+        });
+    });
+
+
+    describe('Given an email with no associated player', function(){
+
+        beforeEach(function(done) {
+            createTeam('Gryffindor', function(createdTeam) {
+                createPlayer(createdTeam, 'Harry Potter', function() {
+                    mockTheDatabase_ToReturnAnError();
+                    done();
+                });
+            });
+        });
+
+        var actualFindOne;
+
+        var mockTheDatabase_ToReturnAnError = function() {
+            actualFindOne = mongoose.Model.findOne;
+            mongoose.Model.findOne = function(modelObject, callback) {
+                callback('Hi this is the error', undefined);
+            };
+        };
+
+        var unmock = function() {
+            mongoose.Model.findOne = actualFindOne;
+        };
+
+        afterEach(function(done){
+            unmock();
+            clearAll(done);
+        });
+
+        var expectedDatabaseError = {message: 'Player with email "Harry@gmail.com" does not exist.'};
+
+        it('the application returns 404', function(done) {
+            performUpdateAndCheckForError('Harry@gmail.com', 'Gryffindor', expectedDatabaseError, 404, done);
+        });
+    });
+
 });
