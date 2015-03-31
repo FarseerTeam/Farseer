@@ -89,19 +89,27 @@ describe("In the components/teams module,", function() {
 
         it('when searched, calls the error callback function if an error is returned from the DB.', function(done) {
             var success = function(returnedTeam){
+                unmock();
                 should.fail();
             };
             var error = function(error){
+                unmock();
                 done();
             };
             mockTheDatabase_ToReturnAnError();
             teams.findByName('Expecting error', success, error);
         });
 
+        var actualFindOne;
         var mockTheDatabase_ToReturnAnError = function() {
+            actualFindOne = mongoose.Model.findOne;
             mongoose.Model.findOne = function(modelObject, callback){
                 callback('Hi this is the error', undefined);
             };
+        };
+
+        var unmock = function () {
+            mongoose.Model.findOne = actualFindOne;
         };
 
         afterEach(function(done) {
