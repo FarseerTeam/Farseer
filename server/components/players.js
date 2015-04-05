@@ -40,7 +40,6 @@ module.exports = (function() {
   }
 
   var _findByAnyUniqueIdentifier = function(uniqueIdentifier, success, fail) {
-
     if(isObjectId(uniqueIdentifier)) {
       _findById(uniqueIdentifier, success, fail);
     }

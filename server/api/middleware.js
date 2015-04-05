@@ -24,22 +24,23 @@ exports.idInterceptor = function(modelReference, model) {
 };
 
 exports.playerUniqueIdentifierInterceptor = function(paramName) {
-	return function(req, res, next, id) {
 
-	    var playerNotFound = function() {
-    		res.status(404).json({message: 'Player with email "' + id + '" does not exist.'});
-            res.end();
-		};
-
-		players.findByEmail(id, function(player) {
-	        if (!player) {
-	        	playerNotFound();
-	        } else {
-				req[paramName] = player;
-				next();
-	        }
-    	}, playerNotFound);
+	var handler = function(req, res, next, id) {	
+		players.findByAnyUniqueIdentifier(id, function(player) {
+			storePlayerAsParam(player, req, res, next, id);
+		}, databaseCallFailure(res));
 	};
+
+	var storePlayerAsParam = function(player, req, res, next, id) {
+        if (!player) {
+        	playerNotFound(id, res)();
+        } else {
+			req[paramName] = player;
+			next();
+        }
+	};
+
+	return handler;
 };
 
 exports.teamNameInterceptor = function(paramName) {
@@ -47,13 +48,7 @@ exports.teamNameInterceptor = function(paramName) {
 
 		var badInputFailure = function() {
         	res.status(404).json({message: 'A team with teamName "' + id + '" does not exist.'});
-            res.end();
     	};
-
-	    var dbCallFailure = function(err) {
-	        res.status(409).json({message: 'An unexpected application error has occured.  Please try again.'});
-	        res.end();
-	    };
 
 		teams.findByName(id, function(team) {
             if (!team) {
@@ -62,6 +57,25 @@ exports.teamNameInterceptor = function(paramName) {
 				req[paramName] = team;
 				next();
             }
-        }, dbCallFailure);
+        }, databaseCallFailure(res));
+	};
+}
+
+function playerNotFound(id, res) {
+	return function() {
+		res.status(404).json({message: 'Player with identifier "' + id + '" does not exist.'});
+	};
+}
+
+function databaseCallFailure(res) {
+	return function(err) {
+    	res.status(500).json(buildApplicationErrorBody(err));
+	}
+}
+
+function buildApplicationErrorBody(err) {
+	return {
+		message: 'An unexpected application error has occured.',
+		err: err
 	};
 }

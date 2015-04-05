@@ -397,7 +397,7 @@ describe('/api/players/:playerUniqueIdentifier/:teamName', function() {
     });
 
 
-    describe('Given a player with an existing assignment...', function(){
+    describe('Given a team name with no associated team... ', function(){
 
         beforeEach(function(done) {
             createTeam('Gryffindor', function(createdTeam) {
@@ -411,41 +411,54 @@ describe('/api/players/:playerUniqueIdentifier/:teamName', function() {
             clearAll(done);
         });
 
-        var expectedEmailError = {message: 'Player with email "Nonexistent@gmail.com" does not exist.'};
-        var expectedTeamError = {message: 'A team with teamName "Nonexistent" does not exist.'};
+        var expectedError = {message: 'A team with teamName "Nonexistent" does not exist.'};
 
-        it('updating the map with a nonexistent player email returns an error.', function(done) {
-            performUpdateAndCheckForError('Nonexistent@gmail.com', 'Gryffindor', expectedEmailError, 400, done);
-        });
-
-        it('updating the map with a nonexistent team name returns an error.', function(done) {
-            performUpdateAndCheckForError('Harry@gmail.com', 'Nonexistent', expectedTeamError, 400, done);
+        it('the application returns 404', function(done) {
+            performUpdateAndCheckForError('Harry@gmail.com', 'Nonexistent', expectedError, 404, done);
         });
     });
 
 
-    describe('Given an email with no associated player', function(){
+    describe('Given an email with no associated player... ', function(){
 
         beforeEach(function(done) {
             createTeam('Gryffindor', function(createdTeam) {
                 createPlayer(createdTeam, 'Harry Potter', function() {
-                    mockTheDatabase_ToReturnAnError();
                     done();
                 });
             });
         });
 
-        var actualFindOne;
+        afterEach(function(done){
+            clearAll(done);
+        });
+
+        var expectedError = {message: 'Player with identifier "Nonexistent@gmail.com" does not exist.'};
+        
+        it('the application returns 404', function(done) {
+            performUpdateAndCheckForError('Nonexistent@gmail.com', 'Gryffindor', expectedError, 404, done);
+        });
+    });
+
+
+    describe('Given an unexpected application error... ', function(){
+
+        var actualFindOneFunction;
+
+        beforeEach(function(done) {
+            mockTheDatabase_ToReturnAnError();
+            done();
+        });
 
         var mockTheDatabase_ToReturnAnError = function() {
-            actualFindOne = mongoose.Model.findOne;
+            actualFindOneFunction = mongoose.Model.findOne;
             mongoose.Model.findOne = function(modelObject, callback) {
-                callback('Hi this is the error', undefined);
+                callback('error', undefined);
             };
         };
 
         var unmock = function() {
-            mongoose.Model.findOne = actualFindOne;
+            mongoose.Model.findOne = actualFindOneFunction;
         };
 
         afterEach(function(done){
@@ -453,10 +466,10 @@ describe('/api/players/:playerUniqueIdentifier/:teamName', function() {
             clearAll(done);
         });
 
-        var expectedDatabaseError = {message: 'Player with email "Harry@gmail.com" does not exist.'};
+        var expectedError = {err: 'error', message: 'An unexpected application error has occured.'};
 
-        it('the application returns 404', function(done) {
-            performUpdateAndCheckForError('Harry@gmail.com', 'Gryffindor', expectedDatabaseError, 404, done);
+        it('the application returns 500', function(done) {
+            performUpdateAndCheckForError('Harry@gmail.com', 'Gryffindor', expectedError, 500, done);
         });
     });
 
