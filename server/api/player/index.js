@@ -13,9 +13,7 @@ router.route('/')
 	.get(controller.index)
 	.post(controller.create);
 
-router.param('player_id', middleware.idInterceptor(players.Player, 'player'));
-router.param('playerUniqueIdentifier', middleware.playerUniqueIdentifierInterceptor('player'));
-router.param('teamName', middleware.teamNameInterceptor('team'));
+router.param('player_id', middleware.playerUniqueIdentifierInterceptor('player'));
 
 router.route('/:player_id')
 	.all(function(req, res, next) {
@@ -24,11 +22,5 @@ router.route('/:player_id')
 	.get(controller.read)
 	.put(controller.update)
 	.delete(controller.delete);	
-
-router.route('/:playerUniqueIdentifier/:teamName')
-	.all(function(req, res, next){
-		next();
-	})
-	.put(controller.updatePlayersTeam);
 
 module.exports = router;
