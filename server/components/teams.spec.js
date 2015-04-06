@@ -119,4 +119,125 @@ describe("In the components/teams module,", function() {
         });
     });
 
+    describe('The findByAnyUniqueIdentifier function... ', function(){
+        
+        var savedTeam = null;
+
+        beforeEach(function(done) {
+            teams.Team.create({
+                name: "The best team"
+            }).then(function(doc) {
+                savedTeam = doc;
+                done();
+            }, function(err) {
+                done(err)
+            });
+        });
+
+        it("Teams can be found by name", function(done) {
+            teams.findByAnyUniqueIdentifier(savedTeam.name, function(doc) {
+                validateTeam(doc, done);
+            }, function(e) {
+                console.log(e);
+                should.fail();
+            });
+        });
+
+        it("Teams can be found by id", function(done) {
+            teams.findByAnyUniqueIdentifier(savedTeam._id, function(doc) {
+                validateTeam(doc, done);
+            }, function(e) {
+                should.fail();
+            });
+        });
+
+        it("Teams can be found by path", function(done) {
+            teams.findByAnyUniqueIdentifier(savedTeam.path, function(doc) {
+                validateTeam(doc, done);
+            }, function(e) {
+                should.fail();
+            });
+        });
+
+        it("'null' is returned (with no error) if no team matches the passed value.", function(done) {
+            teams.findByAnyUniqueIdentifier('bad-value', function(doc) {
+                should.not.exist(doc);
+                done();
+            }, function(e) {
+                should.fail();
+            });
+        });
+
+        var validateTeam = function(team, done) {
+            should.exist(team);
+            savedTeam.name.should.equal(team.name);
+            savedTeam.path.should.equal(team.path);
+            (savedTeam._id.equals(team._id)).should.be.ok;
+            done();
+        }
+
+        afterEach(function(done) {
+            teams.Team.remove({}, function() {
+                done();
+            });
+        });
+
+        describe("if there is a database error... ", function() {
+
+            var actualDatabaseFindOneFunction;
+            var actualDatabaseFindByIdFunction;
+            var findByNameError = 'findByNameError';
+            var expectedIdError = 'findByIdError';
+            var validId = '552058b0469006560cad7c58';
+            var name = "Team the best team";
+
+            beforeEach(function(done) {
+                mockTheDatabase_ToReturnAnError();
+                done();
+            });
+
+            afterEach(function(done) {
+                unmock();
+                done();
+            });
+
+            var mockTheDatabase_ToReturnAnError = function() {
+                actualDatabaseFindOneFunction = mongoose.Model.findOne;
+                actualDatabaseFindByIdFunction = mongoose.Model.findById;
+
+                mongoose.Model.findOne = function(modelObject, callback) {
+                    callback(findByNameError, undefined);
+                };
+                mongoose.Model.findById = function(id, callback) {
+                    callback(expectedIdError, undefined);
+                };
+            };
+
+            var unmock = function() {
+                mongoose.Model.findOne = actualDatabaseFindOneFunction;
+                mongoose.Model.findById = actualDatabaseFindByIdFunction;
+            }
+
+            it("the error function is called with the error returned from the database when finding by name.", function(done) {
+                teams.findByAnyUniqueIdentifier(name, function(doc) {
+                    should.fail();
+                }, function(error) {
+                    findByNameError.should.be.equal(error);
+                    done();
+                });
+            });
+
+            it("the error function is called with the error returned from the database when finding by id.", function(done) {
+                teams.findByAnyUniqueIdentifier(validId, function(doc) {
+                    should.fail();
+                }, function(error) {
+                    expectedIdError.should.be.equal(error);
+                    done();
+                });
+            });
+
+        });
+
+    });
+
 });

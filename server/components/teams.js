@@ -34,9 +34,34 @@ module.exports = (function() {
     )
   };
 
+  var _findById = function(id, successCB, errorCB) {
+    _model.findById(id, function(err, doc) {
+      if(err) {
+        errorCB(err);
+      } else {
+        successCB(doc);
+      }
+    });
+  }
+
+  var _findByAnyUniqueIdentifier = function(uniqueIdentifier, successCB, errorCB) {
+    if(isObjectId(uniqueIdentifier)) {
+      _findById(uniqueIdentifier, successCB, errorCB);
+    }
+    else {
+      _findByName(uniqueIdentifier, successCB, errorCB);
+    }
+  }
+
+  var isObjectId = function(id) {
+    var strId = String(id);
+    return /^[0-9a-fA-F]{24}$/.test(strId); 
+  }
+
   return {
     Team: _model,
     schema: TeamSchema,
-    findByName: _findByName
+    findByName: _findByName,
+    findByAnyUniqueIdentifier: _findByAnyUniqueIdentifier
   }
 })();
