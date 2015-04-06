@@ -1,15 +1,8 @@
 'use strict';
 
-var nextIfError = require("callback-wrappers").nextIfError;
 var should = require('should');
-var app = require('../app');
-var request = require('supertest');
 var players = require("../components/players");
-var teams = require("../components/teams");
-var dataService = require('../components/dataService');
 var middleware = require('./middleware');
-var format = require('string-format');
-var mongoose = require('mongoose');
 
 describe('The middleware module... ', function(){
 

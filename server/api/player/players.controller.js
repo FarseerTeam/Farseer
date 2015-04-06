@@ -50,13 +50,13 @@ exports.read = function(req, res) {
 
 exports.update = function(req, res) {
     
-    var player = req.player;
-
     var handleUpdate = function() {
-        
-        player = _.extend(player, req.body);
-        findTeamAndThen(player._team, function(team) {
-            player._team = team;
+        var player = req.player;
+        findTeamAndThen(req.body._team, function(team) {         
+            if (team) {
+                req.body._team = team.path;
+            }
+            player = _.extend(player, req.body);
             updateThePlayer(player);
         });
     }
@@ -76,7 +76,7 @@ exports.update = function(req, res) {
     }
 
     var updateThePlayer = function(playerToSave) {
-        player.save(function(err, updatedPlayer) {   
+        playerToSave.save(function(err, updatedPlayer) {   
             if(err) {
               uniqueKeyViolation(err);
             } else {           
@@ -90,12 +90,13 @@ exports.update = function(req, res) {
     };
 
     var uniqueKeyViolation = function(err) {
-        res.status(409).send({message: 'A player with email ' + player.email + ' already exists'});
+        res.status(409).send({message: 'A player with email ' + req.player.email + ' already exists'});
     }
 
     var teamNotFoundError = function(err) {
-        res.status(404).send({message: "A team with identifier '" + player._team + "' does not exist"});
+        res.status(404).send({message: "A team with identifier '" + req.body._team + "' does not exist"});
     }
 
     handleUpdate();
+
 };

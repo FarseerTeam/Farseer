@@ -2,6 +2,7 @@ module.exports = (function() {
 
   var mongoose = require('mongoose');
   var Schema = mongoose.Schema;
+  var common = require('./common');
 
   // define the _playerSchema
   var _playerSchema = new Schema({
@@ -21,38 +22,23 @@ module.exports = (function() {
     _model.findOne({
       email: email
     }, function(err, doc) {
-      if (err) {
-        fail(err);
-      } else {
-        success(doc);
-      }
+      common.performCallBack(err, doc, success, fail);
     });
   }
 
   var _findById = function(id, success, fail) {
     _model.findById(id, function(err, doc) {
-      if(err) {
-        fail(err);
-      } else {
-        success(doc);
-      }
+      common.performCallBack(err, doc, success, fail);
     });
   }
 
   var _findByAnyUniqueIdentifier = function(uniqueIdentifier, success, fail) {
-    if(isObjectId(uniqueIdentifier)) {
+    if(common.isObjectId(uniqueIdentifier)) {
       _findById(uniqueIdentifier, success, fail);
     }
     else {
       _findByEmail(uniqueIdentifier, success, fail);
     }
-  }
-
-  var isObjectId = function(id) {
-    var strId = String(id);
-    return /^[0-9a-fA-F]{24}$/.test(strId); 
-    // http://stackoverflow.com/questions/11985228/mongodb-node-check-if-objectid-is-valid 
-    // https://github.com/mongodb/js-bson/blob/master/lib/bson/objectid.js
   }
 
   return {
