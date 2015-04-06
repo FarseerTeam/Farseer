@@ -3,7 +3,6 @@
 var express = require('express');
 var controller = require('./players.controller');
 var middleware = require('../middleware');
-var players = require('../../components/players');
 var router = express.Router();
 
 router.route('/')
