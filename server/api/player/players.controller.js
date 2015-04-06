@@ -26,27 +26,11 @@ exports.create = function(req, res) {
     var player = new players.Player(req.body);
     player.save(function(err) {
         if (err) {
-            return res.status(409).send({
+            return res.status(409).json({
                 message: 'A player with email ' + player.email + ' already exists'
             });
         } else {
             res.json(player);
-        }
-    });
-};
-
-exports.update = function(req, res) {
-    var player = req.player;
-
-    player = _.extend(player, req.body);
-
-    player.save(function(err) {
-        if(err) {
-          return res.status(409).send({
-            message: 'A player with email ' + player.email + ' already exists'
-          });
-        } else {
-          res.json(player);
         }
     });
 };
@@ -64,17 +48,54 @@ exports.read = function(req, res) {
     res.json(req.player);
 };
 
-exports.updatePlayersTeam = function(req, res) {
-    var team = req.team;
+exports.update = function(req, res) {
+    
     var player = req.player;
 
+    var handleUpdate = function() {
+        
+        player = _.extend(player, req.body);
+        findTeamAndThen(player._team, function(team) {
+            player._team = team;
+            updateThePlayer(player);
+        });
+    }
+
+    var findTeamAndThen = function(identifier, callback) {
+        if (!identifier) {
+            callback(undefined)
+        } else { 
+            teams.findByAnyUniqueIdentifier(identifier, function(team) {
+                if (!team) {
+                    teamNotFoundError();
+                } else {
+                    callback(team);
+                }
+            }, dbCallFailure);
+        }
+    }
+
+    var updateThePlayer = function(playerToSave) {
+        player.save(function(err, updatedPlayer) {   
+            if(err) {
+              uniqueKeyViolation(err);
+            } else {           
+                res.json(updatedPlayer);
+            }
+        }, dbCallFailure);
+    }
+
     var dbCallFailure = function(err) {
-        res.status(409).json({message: 'An unexpected application error has occured.  Please try again.'});
-        req.end();
+        res.status(409).json({message: 'An unexpected application error has occured.', err: err});
     };
 
-    player._team = team;
-    player.save(function(err, updatedPlayer) {               
-        res.json(updatedPlayer);
-    }, dbCallFailure);
+    var uniqueKeyViolation = function(err) {
+        res.status(409).send({message: 'A player with email ' + player.email + ' already exists'});
+    }
+
+    var teamNotFoundError = function(err) {
+        res.status(404).send({message: "A team with identifier '" + player._team + "' does not exist"});
+    }
+
+    handleUpdate();
 };

@@ -136,12 +136,12 @@ describe('/api/players/:player_id', function() {
             var url = '/api/players/' + randomId;
             request(app)
             .get(url)
-            .expect(200)
+            .expect(404)
             .expect('Content-Type', /json/)
             .end(
                 nextIfError(
                     function(res) {
-                        res.body.errorMessage.should.be.equal(format("PLAYER with id {} does not exist.", randomId));
+                        res.body.message.should.be.equal(format("PLAYER with identifier '{}' does not exist.", randomId));
                         done();
                     },
                     function(err) {
@@ -259,7 +259,7 @@ describe('/api/players/:player_id', function() {
     });
 });
 
-describe('/api/players/:playerUniqueIdentifier/:teamName', function() {
+describe('/api/players/:playerUniqueIdentifier', function() {
 
     var clearAll = function(done) {
         players.Player.remove({}, function() {
@@ -269,14 +269,20 @@ describe('/api/players/:playerUniqueIdentifier/:teamName', function() {
         });
     };
 
-    var performUpdateAndCheck = function(playerEmail, teamName, expected, done) {
+    var performUpdateAndCheck = function(playerEmail, teamIdentifier, expected, done) {
         request(app)
-            .put('/api/players/' + playerEmail + '/' + teamName)
+            .put('/api/players/' + playerEmail)
+            .send({
+                _team: teamIdentifier
+            })
             .expect(200)
             .expect('Content-Type', /json/)
             .end(function(err, res) {
                 if (err) {
                     console.log(err);
+                }
+                if (res.body.message) {
+                    console.log(res.body);
                 }
                 expected.name.should.be.eql(res.body.name);
                 expected.email.should.be.eql(res.body.email);
@@ -285,16 +291,19 @@ describe('/api/players/:playerUniqueIdentifier/:teamName', function() {
         });
     };
 
-    var performUpdateAndCheckForError = function(playerEmail, teamName, expected, responseCode, done) {
+    var performUpdateAndCheckForError = function(playerEmail, teamIdentifier, expectedError, responseCode, done) {
         request(app)
-            .put('/api/players/' + playerEmail + '/' + teamName)
+            .put('/api/players/' + playerEmail)
+            .send({
+                _team: teamIdentifier
+            })
             .expect(responseCode)
             .expect('Content-Type', /json/)
             .end(function(err, res) {
                 if (err) {
                   console.log(err);
                 }
-                expected.should.be.eql(res.body);
+                expectedError.should.be.eql(res.body);
                 done();
         });
     };
@@ -326,7 +335,7 @@ describe('/api/players/:playerUniqueIdentifier/:teamName', function() {
 
         beforeEach(function(done) {
             createTeam('Gryffindor', function(createdTeam) {
-                expectedPlayer._team = createdTeam._doc.path;
+                expectedPlayer._team = createdTeam.path;
                 createPlayer(undefined, 'Harry Potter', function() {
                     done();
                 });
@@ -338,7 +347,7 @@ describe('/api/players/:playerUniqueIdentifier/:teamName', function() {
         });
 
         it('updating the player with the team assigns the player to the team.', function(done) {
-            performUpdateAndCheck('Harry@gmail.com', 'Gryffindor', expectedPlayer, done);
+            performUpdateAndCheck('Harry@gmail.com', expectedPlayer._team, expectedPlayer, done);
         });
     });
 
@@ -354,7 +363,7 @@ describe('/api/players/:playerUniqueIdentifier/:teamName', function() {
             createTeam('Muggle', function(createdTeam) {
                 createPlayer(createdTeam, 'Harry Potter', function() {
                     createTeam('Gryffindor', function(targetTeam) {
-                        expectedPlayer._team = targetTeam._doc.path;
+                        expectedPlayer._team = targetTeam.path;
                         done();
                     });
                 });
@@ -366,7 +375,7 @@ describe('/api/players/:playerUniqueIdentifier/:teamName', function() {
         });
 
         it('updating with a new team name removes the player from the old team and puts the player on the new team.', function(done) {
-            performUpdateAndCheck('Harry@gmail.com', 'Gryffindor', expectedPlayer, done);
+            performUpdateAndCheck('Harry@gmail.com', expectedPlayer._team, expectedPlayer, done);
         });
     });
 
@@ -380,7 +389,7 @@ describe('/api/players/:playerUniqueIdentifier/:teamName', function() {
 
         beforeEach(function(done) {
             createTeam('Gryffindor', function(createdTeam) {
-                expectedPlayer._team = createdTeam._doc.path;
+                expectedPlayer._team = createdTeam.path;
                 createPlayer(createdTeam, 'Harry Potter', function() {
                     done();
                 });
@@ -392,12 +401,14 @@ describe('/api/players/:playerUniqueIdentifier/:teamName', function() {
         });
 
         it('updating the map with a player/team combination that already exists returns an unchanged player.', function(done) {
-            performUpdateAndCheck('Harry@gmail.com', 'Gryffindor', expectedPlayer, done);
+            performUpdateAndCheck('Harry@gmail.com', expectedPlayer._team, expectedPlayer, done);
         });
     });
 
 
     describe('Given a team name with no associated team... ', function(){
+
+        var nonexistentId = 'ffffffffffffffffffffffff';
 
         beforeEach(function(done) {
             createTeam('Gryffindor', function(createdTeam) {
@@ -411,10 +422,10 @@ describe('/api/players/:playerUniqueIdentifier/:teamName', function() {
             clearAll(done);
         });
 
-        var expectedError = {message: 'A team with teamName "Nonexistent" does not exist.'};
+        var expectedError = {message: "A team with identifier 'ffffffffffffffffffffffff' does not exist"};
 
         it('the application returns 404', function(done) {
-            performUpdateAndCheckForError('Harry@gmail.com', 'Nonexistent', expectedError, 404, done);
+            performUpdateAndCheckForError('Harry@gmail.com', nonexistentId, expectedError, 404, done);
         });
     });
 
@@ -433,7 +444,7 @@ describe('/api/players/:playerUniqueIdentifier/:teamName', function() {
             clearAll(done);
         });
 
-        var expectedError = {message: 'Player with identifier "Nonexistent@gmail.com" does not exist.'};
+        var expectedError = {message: "PLAYER with identifier 'Nonexistent@gmail.com' does not exist."};
         
         it('the application returns 404', function(done) {
             performUpdateAndCheckForError('Nonexistent@gmail.com', 'Gryffindor', expectedError, 404, done);
