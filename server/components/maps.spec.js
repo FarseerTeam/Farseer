@@ -242,7 +242,7 @@ describe('In the api/components/maps module,', function() {
 
                     var p = createTeam("avatar");
                     p = p.then(function(team) {
-                        console.log(team);
+                        // console.log(team);
                         return createPlayer(team, 'Aang').then(
                             doCreatePlayer(team, 'Katara'));
                     });

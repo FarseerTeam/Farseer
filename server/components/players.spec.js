@@ -131,7 +131,7 @@ describe("In the components/players module,", function() {
         });
 
         it("'null' is returned (with no error) if no player matches the passed value.", function(done) {
-            players.findByEmail('bad-value', function(doc) {
+            players.findByAnyUniqueIdentifier('bad-value', function(doc) {
                 should.not.exist(doc);
                 done();
             }, function(e) {
