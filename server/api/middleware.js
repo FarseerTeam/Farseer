@@ -43,27 +43,9 @@ exports.playerUniqueIdentifierInterceptor = function(paramName) {
 	return handler;
 };
 
-exports.teamNameInterceptor = function(paramName) {
-	return function(req, res, next, id) {
-
-		var badInputFailure = function() {
-        	res.status(404).json({message: 'A team with teamName "' + id + '" does not exist.'});
-    	};
-
-		teams.findByName(id, function(team) {
-            if (!team) {
-            	badInputFailure();
-            } else {
-				req[paramName] = team;
-				next();
-            }
-        }, databaseCallFailure(res));
-	};
-}
-
 function playerNotFound(id, res) {
 	return function() {
-		res.status(404).json({message: 'Player with identifier "' + id + '" does not exist.'});
+		res.status(404).json({message: "PLAYER with identifier '" + id + "' does not exist."});
 	};
 }
 

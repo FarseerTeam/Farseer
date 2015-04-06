@@ -60,7 +60,7 @@ describe('The middleware module... ', function(){
 
 			middleware.playerUniqueIdentifierInterceptor('player')(mockRequest, mockResponse, next, identifier);
 			should.exist(mockResponse.jsonObject);
-			mockResponse.jsonObject.message.should.equal('Player with identifier "' + identifier + '" does not exist.');
+			mockResponse.jsonObject.message.should.equal("PLAYER with identifier '" + identifier + "' does not exist.");
 			done();
 		});
 
