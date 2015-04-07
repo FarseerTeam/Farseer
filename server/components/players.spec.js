@@ -4,8 +4,9 @@ var players = require("./players");
 var teams = require("./teams");
 var should = require('should');
 var config = require('../config/environment/test');
+var rsvp = require('rsvp');
 
-var dataService = require('./dataService')
+var dataService = require('./dataService');
 
 dataService.connect();
 
@@ -13,34 +14,24 @@ dataService.connect();
 describe("In the components/players module,", function() {
 
     describe("A player ", function() {
-        
+
         it("has an optional team reference", function(done) {
-            
-            var theTeam;
-
-            teams.Team.create({
-                name: "Ford"
-            }).then(function(team) {
-                should(team._id).be.ok;
-                theTeam = team;
-
-                var thePlayer = {
-                    name: "AJohn",
-                    email: "Atest@test.com",
-                    _team: team
-                };
-
-                return players.Player.create(thePlayer);
-            }, function(err) {
-                done(err)
-            }).then(function(player) {
-                should(theTeam._id.equals(player._team)).be.truthy;
-
-                done();
-            }, function(err) {
-                done(err)
-            });
-
+          teams.Team.create({ name: "Ford" }, done)
+            .then(function(team) {
+              should(team._id).be.ok;
+              var thePlayer = {
+                name: "AJohn",
+                email: "Atest@test.com",
+                _team: team
+              };
+              return rsvp.all([players.Player.create(thePlayer), team]);
+          }, done)
+            .then(function(playerAndTeam) {
+            var player = playerAndTeam[0];
+            var team = playerAndTeam[1];
+            should(team._id.equals(player._team)).be.truthy;
+            done();
+          })
         });
 
         afterEach(function(done) {
@@ -53,7 +44,7 @@ describe("In the components/players module,", function() {
 
     });
 
-    
+
     describe("In the findByEmail function... ", function(){
 
         //holds a players to use in the each test

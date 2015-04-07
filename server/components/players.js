@@ -24,13 +24,13 @@ module.exports = (function() {
     }, function(err, doc) {
       common.performCallBack(err, doc, success, fail);
     });
-  }
+  };
 
   var _findById = function(id, success, fail) {
     _model.findById(id, function(err, doc) {
       common.performCallBack(err, doc, success, fail);
     });
-  }
+  };
 
   var _findByAnyUniqueIdentifier = function(uniqueIdentifier, success, fail) {
     if(common.isObjectId(uniqueIdentifier)) {

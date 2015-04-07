@@ -1,22 +1,22 @@
 var should = require('should');
-var teams = require("./teams")
-var players = require("./players")
+var teams = require("./teams");
+var players = require("./players");
 var maps = require("./maps");
-var dataService = require('./dataService')
+var dataService = require('./dataService');
 var _ = require('lodash');
 var format = require("string-format");
 format.extend(String.prototype);
 dataService.connect();
 /*
-   Given players: [{name:'Zuko', team:'/fireNation/royalty'}, 
-   {name: 'Aang', team: '/avatar}, 
-   {name: 'Katara', team: '/avatar' }, 
+   Given players: [{name:'Zuko', team:'/fireNation/royalty'},
+   {name: 'Aang', team: '/avatar},
+   {name: 'Katara', team: '/avatar' },
    {name: 'Iroh', team: '/fireNation/royalty'}]
 
-   [{team: 'avatar', players: [{name: 'Aang'}, 
-   {name: 'Katara'}]}, 
-   {team: 'fireNation', 
-   subteams: [{team: 'royalty', 
+   [{team: 'avatar', players: [{name: 'Aang'},
+   {name: 'Katara'}]},
+   {team: 'fireNation',
+   subteams: [{team: 'royalty',
    players: [{name: 'Zuko'}, {name: 'Iroh'}]}]}]
 
 */
@@ -33,22 +33,19 @@ describe('In the api/components/maps module,', function() {
 
     var callDone = function(done) {
         return function() {
-            //console.log("Calling Done");
             done();
         };
-    }
+    };
 
     var callDoneWithError = function(done) {
         return function(err) {
-            //console.log("Done with Error");
             done(err);
         }
-    }
+    };
 
     var execAndCheck = function(expected, done) {
         maps.buildTeamPlayersMap(function(result) {
             result.should.be.instanceof(Array);
-            // console.log("Actual result %s" , JSON.stringify(result));
             expected.should.be.eql(result);
             done();
         });
@@ -57,7 +54,6 @@ describe('In the api/components/maps module,', function() {
 
 
     var createTeam = function(teamName, parent) {
-        // console.log("Creating team %s parent %s ", teamName, parent);
         return teams.Team.create({
             name: teamName,
             parent: parent
@@ -65,7 +61,6 @@ describe('In the api/components/maps module,', function() {
 
     };
     var createPlayer = function(team, playerName) {
-        // console.log("Creating player %s for team %s", playerName, team.name);
         return players.Player.create({
             name: playerName,
             email: format("{}@test.smith.com", playerName),
@@ -265,7 +260,7 @@ describe('In the api/components/maps module,', function() {
                     }]
                 }, {
                     team: 'fireNation',
-                    players: [], 
+                    players: [],
                     subTeams: [{
                         team: 'royalty',
                         players: [{
@@ -285,8 +280,8 @@ describe('In the api/components/maps module,', function() {
                     clearAll(done);
                 });
             });
-        
-        describe("Players with no team assignment exist in the map.  " + 
+
+        describe("Players with no team assignment exist in the map.  " +
                  "Given players: [{name:'Tui'}, {name:'Wan Shi Tong'}, {name: 'Aang', team: '/avatar}]", function() {
 
             beforeEach(function(done) {
@@ -298,7 +293,7 @@ describe('In the api/components/maps module,', function() {
                 p = p.then(callDone(done), callDoneWithError(done));
             });
 
-            var expected = 
+            var expected =
                 [{
                     team: 'avatar',
                     players: [
@@ -307,7 +302,7 @@ describe('In the api/components/maps module,', function() {
                 }, {
                     team: undefined,
                     players: [
-                        {name: 'Tui'}, 
+                        {name: 'Tui'},
                         {name: 'Wan Shi Tong'}
                     ]
                 }];
