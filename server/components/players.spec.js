@@ -16,7 +16,7 @@ describe("In the components/players module,", function() {
     describe("A player ", function() {
 
         it("has an optional team reference", function(done) {
-          teams.Team.create({ name: "Ford" }, done)
+          teams.Team.create({ name: "Ford" })
             .then(function(team) {
               should(team._id).be.ok;
               var thePlayer = {
