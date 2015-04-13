@@ -1,4 +1,3 @@
-
 module.exports = (function() {
 
   var mongoose = require('mongoose');
@@ -21,11 +20,7 @@ module.exports = (function() {
   var _model = mongoose.model('Team', TeamSchema);
 
   var _findByName = function(teamName, successCB, errorCB) {
-    _model.findOne(
-      {
-        name: teamName
-      },
-      function(err, doc) {
+    _model.findOne({name: teamName}, function(err, doc) {
         common.performCallBack(err, doc, successCB, errorCB);
       }
     )
@@ -40,8 +35,7 @@ module.exports = (function() {
   var _findByAnyUniqueIdentifier = function(uniqueIdentifier, successCB, errorCB) {
     if(common.isObjectId(uniqueIdentifier)) {
       _findById(uniqueIdentifier, successCB, errorCB);
-    }
-    else {
+    } else {
       _findByName(uniqueIdentifier, successCB, errorCB);
     }
   }
