@@ -3,10 +3,15 @@ input.searchBox(type="text" ng-model="searchText" placeholder="Search Cards...")
 p
 input.searchBox(type="text" ng-model="searchTeam" placeholder="Search Teams...")
 p
-div(class='teamMapHolder')
+div(ng-include="'teamMapTemplate'" class='teamMapHolder')
+
+script(type='text/ng-template' id='teamMapTemplate')
   ul(ng-repeat='team in teamPlayersMap | filter: searchTeam' class='team')
-    div
-      p {{team.team}}
-      li(ng-repeat='player in team.players | filter: searchText')
-        img(src='assets/images/pillow.jpg', alt='Profile Icon')
-        div {{player.name}}
+    div(ng-include="'teamTemplate'")
+
+script(type='text/ng-template' id='teamTemplate')
+  p {{team.team}}
+  li(ng-repeat='player in team.players | filter: searchText')
+    img(src='assets/images/pillow.jpg', alt='Profile Icon')
+    div {{player.name}}
+  div(ng-if='team.subTeams' ng-include="'teamMapTemplate'" ng-init='teamPlayersMap = team.subTeams' class='teamMapHolder')
