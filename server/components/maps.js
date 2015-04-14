@@ -34,10 +34,23 @@ var doBuildTeamPlayersMap = function(parentTeams, existingPlayers, cb) {
 };
 
 
-exports.buildTeamPlayersMap = function(callbackWithResult) {
-    players.Player.find({}).exec().then(function(foundPlayers){
-      teams.Team.getChildrenTree(function(err, fullTree){
-      doBuildTeamPlayersMap(fullTree, foundPlayers, callbackWithResult);
+exports.buildTeamPlayersMap = function() {
+    return players.Player.find({}).exec().then(function(foundPlayers) {
+      var teamPlayersMap = [];
+
+      for (var i = foundPlayers.length - 1; i >= 0; i--) {
+        var player = foundPlayers[i]
+        var pathElements = player._team.split('/');
+        var map = {
+          team : pathElements[1],
+          players : [player.toJSON()]
+        }
+
+console.log('SERVER');
+        console.info(player);
+        teamPlayersMap.push(map);
+      }
+
+      return teamPlayersMap;
     });
-  });
 };

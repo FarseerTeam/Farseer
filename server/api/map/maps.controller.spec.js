@@ -25,23 +25,12 @@ dataService.connect();
 
 */
 
-var createTeam = function(teamName, playerName, callback) {
-
-  teams.Team.create({
-    name: teamName,
-  }, function(err, doc) {
-    var theTeam = doc;
-
-    players.Player.create({
+var createPlayer = function(path, playerName) {
+    return players.Player.create({
       name: playerName,
       email: format("{}@test.smith.com", playerName),
-      _team: theTeam
-    }, function(err, doc) {
-      callback();
+      _team: path
     });
-
-  });
-
 };
 
 var clearAll = function(done) {
@@ -58,6 +47,7 @@ var execAndCheck = function(expected, done) {
     .expect(200)
     .expect('Content-Type', /json/)
     .end(function(err, res) {
+      console.log("dumb ");
       if (err) {
         console.log(err);
         done(err);
@@ -69,33 +59,31 @@ var execAndCheck = function(expected, done) {
     });
 };
 
-describe('/api/maps', function() {
-  // describe('GET when database is empty ', function() {
-  //   it('should respond with an empty JSON array', function(done) {
-  //     execAndCheck([], done);
-  //   });
-  // });
+xdescribe('/api/maps', function() { //jshint ignore:line
 
   describe("Given player 'Aang' on team: 'avatar", function() {
+    var player;
 
     beforeEach(function(done) {
       clearAll(
         function() {
-          createTeam("avatar", "Aang", done);
-
+          createPlayer("/avatar", "Aang").then(function(newPlayer) {
+            player = newPlayer;
+            done();
+          }, done);
         }
       );
 
     });
 
-    it("should respond with the appropriate format {team: 'avatar', players: [{name: 'Aang'}]},", function(done) {
+    it("should respond with the appropriate format {team: 'avatar', players: [{name: 'Aang'}]}", function(done) {
 
       var expected = {
         team: 'avatar',
-        players: [{
-          name: 'Aang'
-        }]
+        players: [player.toJSON()]
       };
+
+      console.info(player);
 
       execAndCheck([expected], done);
 

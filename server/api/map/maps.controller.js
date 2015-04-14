@@ -14,7 +14,9 @@ var _ = require('lodash');
 var maps = require("../../components/maps");
 
 exports.index = function(req, res) {
-	maps.buildTeamPlayersMap(function(result) {
-		res.json(result);
-	});
+	maps.buildTeamPlayersMap().then(function(result) {
+    res.json(result);
+  }, function() {
+
+  });
 };

@@ -14,7 +14,7 @@ module.exports = (function() {
       }
     },
     name: String,
-    _team : { type: Schema.Types.ObjectId, ref: 'Team' },
+    _team : String,
   });
   var _model = mongoose.model('Player', _playerSchema);
 
