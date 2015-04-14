@@ -15,9 +15,27 @@ module.exports = (function() {
 		// https://github.com/mongodb/js-bson/blob/master/lib/bson/objectid.js
 	}
 
+	var _isPath = function(path) {
+		if (!path || typeof path !== 'string') {
+			return false;
+		}
+
+		return _isEveryOneAnObjectId(path.split("#"));
+	}
+
+	var _isEveryOneAnObjectId = function(arrayOfStrings) {
+		for (var i = 0; i < arrayOfStrings.length; i++) {
+			if (! _isObjectId(arrayOfStrings[i])) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	return {
 		performCallBack: _performCallBack,
-		isObjectId: _isObjectId
+		isObjectId: _isObjectId,
+		isPath: _isPath
 	}
 
 })();

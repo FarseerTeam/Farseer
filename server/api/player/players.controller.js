@@ -54,7 +54,7 @@ exports.update = function(req, res) {
         var player = req.player;
         findTeamAndThen(req.body._team, function(team) {         
             if (team) {
-                req.body._team = team.path;
+                req.body._team = team._id;
             }
             player = _.extend(player, req.body);
             updateThePlayer(player);

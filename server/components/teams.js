@@ -26,6 +26,13 @@ module.exports = (function() {
     )
   };
 
+  var _findByPath = function(path, successCB, errorCB) {
+    _model.findOne({path: path}, function(err, doc) {
+        common.performCallBack(err, doc, successCB, errorCB);
+      }
+    )
+  };
+
   var _findById = function(id, successCB, errorCB) {
     _model.findById(id, function(err, doc) {
       common.performCallBack(err, doc, successCB, errorCB);
@@ -35,7 +42,11 @@ module.exports = (function() {
   var _findByAnyUniqueIdentifier = function(uniqueIdentifier, successCB, errorCB) {
     if(common.isObjectId(uniqueIdentifier)) {
       _findById(uniqueIdentifier, successCB, errorCB);
-    } else {
+
+    } else if (common.isPath(uniqueIdentifier)) {
+      _findByPath(uniqueIdentifier, successCB, errorCB);
+
+    }else {
       _findByName(uniqueIdentifier, successCB, errorCB);
     }
   }

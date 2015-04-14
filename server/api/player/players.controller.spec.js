@@ -381,6 +381,39 @@ describe('/api/players/:player_id', function() {
             });
 
 
+            describe('When trying to assign a player to a subTeam...', function(){
+
+                var expectedTeam;
+                beforeEach(function(done) {
+                    createTeam('Gryffindor', function(createdTeam) {
+                        createPlayer(createdTeam, 'Harry Potter', function() {
+                            createTeamWithSubteam('Hogwarts', createdTeam, function(subTeam) {
+                                expectedTeam = subTeam;
+                                expectedPlayer._team = subTeam._id;
+                                done();
+                            });
+                        });
+                    });
+                });
+
+                afterEach(function(done){
+                    clearAll(done);
+                });
+
+                it('the update is successful with a team name', function(done) {
+                    performUpdateAndCheck(expectedPlayer.email, expectedTeam.name, expectedPlayer, done);
+                });
+
+                it('the update is successful with a team path', function(done) {
+                    performUpdateAndCheck(expectedPlayer.email, expectedTeam.path, expectedPlayer, done);
+                });
+
+                it('the update is successful with a team id', function(done) {
+                    performUpdateAndCheck(expectedPlayer.email, expectedTeam._id, expectedPlayer, done);
+                });
+            });
+
+
             describe('When a team that does not exist is used to update... ', function(){
 
                 var nonexistentId = 'ffffffffffffffffffffffff';
@@ -475,9 +508,8 @@ describe('/api/players/:player_id', function() {
                         if (res.body.message) {
                             console.log(">>>>>>>>>>>>>>>>\n" + JSON.stringify(res.body, null, '  '));
                         }
-                        expected.name.should.be.eql(res.body.name);
                         expected.email.should.be.eql(res.body.email);
-                        expected._team.should.be.eql(res.body._team);
+                        expected._team.toString().should.be.eql(res.body._team.toString());
                         done();
                 });
             };
@@ -502,6 +534,13 @@ describe('/api/players/:player_id', function() {
             var createTeam = function(teamName, callback) {
                 teams.Team.create({
                     name: teamName
+                }, function (err, doc) {callback(doc);});
+            };
+
+            var createTeamWithSubteam = function(teamName, parent, callback) {
+                teams.Team.create({
+                    name: teamName,
+                    parent: parent._id
                 }, function (err, doc) {callback(doc);});
             };
 

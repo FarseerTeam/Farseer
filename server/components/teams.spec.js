@@ -122,13 +122,15 @@ describe("In the components/teams module,", function() {
     describe('The findByAnyUniqueIdentifier function... ', function(){
         
         var savedTeam = null;
+        var savedSubTeam;
 
         beforeEach(function(done) {
-            teams.Team.create({
-                name: "The best team"
-            }).then(function(doc) {
+            teams.Team.create({ name: "The best team" }).then(function(doc) {
                 savedTeam = doc;
-                done();
+                teams.Team.create({name: "subteam", parent: doc._id}).then(function(doc) {
+                    savedSubTeam = doc;
+                    done();
+                });
             }, function(err) {
                 done(err)
             });
@@ -159,6 +161,14 @@ describe("In the components/teams module,", function() {
             });
         });
 
+        it("Sub-teams can be found by path", function(done) {
+            teams.findByAnyUniqueIdentifier(savedSubTeam.path, function(doc) {
+                validateSubTeam(doc, done);
+            }, function(e) {
+                should.fail();
+            });
+        });
+
         it("'null' is returned (with no error) if no team matches the passed value.", function(done) {
             teams.findByAnyUniqueIdentifier('bad-value', function(doc) {
                 should.not.exist(doc);
@@ -173,6 +183,14 @@ describe("In the components/teams module,", function() {
             savedTeam.name.should.equal(team.name);
             savedTeam.path.should.equal(team.path);
             (savedTeam._id.equals(team._id)).should.be.ok;
+            done();
+        }
+
+        var validateSubTeam = function(team, done) {
+            should.exist(team);
+            savedSubTeam.name.should.equal(team.name);
+            savedSubTeam.path.should.equal(team.path);
+            (savedSubTeam._id.equals(team._id)).should.be.ok;
             done();
         }
 
