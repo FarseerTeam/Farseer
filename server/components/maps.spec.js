@@ -1,8 +1,8 @@
 var should = require('should');
-var teams = require("./teams")
-var players = require("./players")
+var teams = require("./teams");
+var players = require("./players");
 var maps = require("./maps");
-var dataService = require('./dataService')
+var dataService = require('./dataService');
 var _ = require('lodash');
 var format = require("string-format");
 format.extend(String.prototype);
@@ -22,13 +22,13 @@ xdescribe('In the api/components/maps module,', function () { //jshint ignore:li
     return function () {
       done();
     };
-  }
+  };
 
   var callDoneWithError = function (done) {
     return function (err) {
       done(err);
     }
-  }
+  };
 
   var execAndCheck = function (expected, done) {
     maps.buildTeamPlayersMap().then(function (result) {
@@ -61,7 +61,7 @@ xdescribe('In the api/components/maps module,', function () { //jshint ignore:li
   };
   var shouldReturn = function (obj) {
     return "Should return {} ".format(JSON.stringify(obj));
-  }
+  };
   describe('for the buildTeamPlayersMap function', function () {
     describe('Given an empty database', function () {
       beforeEach(function (done) {
@@ -133,20 +133,15 @@ xdescribe('In the api/components/maps module,', function () { //jshint ignore:li
 
 
     describe("Given player 'Aang' on team: 'avatar' and player 'Yung' on 'fireNation'", function () {
-
-
       beforeEach(function (done) {
-
-        var p = createTeam("avatar").then(
+        createTeam("avatar").then(
           function (team) {
             return createPlayer(team, "Aang");
-          });
-        p = p.then(createTeam("fireNation").then(
+          }).then(createTeam("fireNation").then(
           function (team) {
-            return createPlayer(team, "Yung");
-          }));
-
-        p = p.then(callDone(done), callDoneWithError(done));
+            createPlayer(team, "Yung")
+            return null;
+          })).then(done, done);
       });
 
       var teamOne = {
