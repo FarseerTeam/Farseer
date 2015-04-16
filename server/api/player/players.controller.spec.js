@@ -59,10 +59,7 @@ describe('/api/players', function () {
         .set('Accept', 'application/json')
         .expect(200)
         .expect('Content-Type', /json/)
-        .end(function (err, res) {
-          if (err) return done(err);
-          done();
-        });
+        .end(done);
     });
 
     describe('when adding duplicate player', function () {
@@ -70,9 +67,7 @@ describe('/api/players', function () {
         players.Player.create({
           name: "Smith ",
           email: "test@test.smith.com"
-        }, function (err, doc) {
-          done();
-        });
+        }, done);
       });
 
       it('should return a human error message', function (done) {
@@ -85,10 +80,7 @@ describe('/api/players', function () {
           .set('Accept', 'application/json')
           .expect(409)
           .expect('Content-Type', /json/)
-          .expect({message: "A player with email test@test.smith.com already exists"}, function (error) {
-            done(error);
-          });
-
+          .expect({message: "A player with email test@test.smith.com already exists"}, done);
       });
     });
 
@@ -189,10 +181,7 @@ describe('/api/players/:player_id', function () {
       request(app)
         .delete(url)
         .expect(200)
-        .end(function (err, res) {
-          if (err) return done(err);
-          done();
-        });
+        .end(done);
     });
     afterEach(function (done) {
       players.Player.remove({}, function () {

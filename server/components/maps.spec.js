@@ -1,4 +1,6 @@
 var should = require('should');
+var expect = require('chai').expect;
+var RSVP = require('rsvp');
 var teams = require("./teams");
 var players = require("./players");
 var maps = require("./maps");
@@ -8,7 +10,7 @@ var format = require("string-format");
 format.extend(String.prototype);
 dataService.connect();
 
-xdescribe('In the api/components/maps module,', function () { //jshint ignore:line
+describe('In the api/components/maps module,', function () { //jshint ignore:line
   var clearAll = function (done) {
     players.Player.remove({},
       function () {
@@ -30,15 +32,13 @@ xdescribe('In the api/components/maps module,', function () { //jshint ignore:li
     }
   };
 
-  var execAndCheck = function (expected, done) {
-    maps.buildTeamPlayersMap().then(function (result) {
-      result.should.be.instanceof(Array);
-      expected.should.be.eql(result);
-      done();
-    }, function (err) {
-      done(err);
-    }).end();
-  };
+  function checkMapMatches(expected) {
+    return function (result) {
+      expect(result).to.be.instanceof(Array);
+      expect(result).to.be.eql(expected);
+      return null;
+    };
+  }
 
   var createTeam = function (teamName, parent) {
     return teams.Team.create({
@@ -62,13 +62,16 @@ xdescribe('In the api/components/maps module,', function () { //jshint ignore:li
   var shouldReturn = function (obj) {
     return "Should return {} ".format(JSON.stringify(obj));
   };
+
   describe('for the buildTeamPlayersMap function', function () {
     describe('Given an empty database', function () {
       beforeEach(function (done) {
         clearAll(done);
       });
       it('should respond with an empty array when there are no records in database.', function (done) {
-        execAndCheck([], done);
+        (function (expected, done) {
+          maps.buildTeamPlayersMap().then(checkMapMatches(expected)).then(done, done);
+        })([], done);
       });
 
     });
@@ -79,7 +82,6 @@ xdescribe('In the api/components/maps module,', function () { //jshint ignore:li
       beforeEach(function (done) {
         createPlayer("/avatar", "Aang").then(function (newPlayer) {
           player = newPlayer;
-          console.info(newPlayer);
           done();
         }, done);
       });
@@ -91,7 +93,9 @@ xdescribe('In the api/components/maps module,', function () { //jshint ignore:li
           players: [player.toObject()]
         };
 
-        execAndCheck([expected], done);
+        (function (expected, done) {
+          maps.buildTeamPlayersMap().then(checkMapMatches(expected)).then(done, done);
+        })([expected], done);
 
       });
 
@@ -102,35 +106,33 @@ xdescribe('In the api/components/maps module,', function () { //jshint ignore:li
     });
 
     describe("Given player 'Aang' AND 'Yung' on team: 'avatar", function () {
+
+      var expected;
+
       beforeEach(function (done) {
-        createTeam("avatar").then(
-          function (team) {
-            createPlayer(team, "Aang")
-              .then(doCreatePlayer(team, "Yung"))
-              .then(callDone(done, callDoneWithError(done)));
-          });
+        RSVP.hash({
+          aang: createPlayer('/avatar', "Aang"),
+          yung: createPlayer('/avatar', "Yung")
+        })
+          .then(function (players) {
+            var aang = players.aang;
+            var yung = players.yung;
+            expected = {
+              team: 'avatar',
+              players: [aang.toObject(), yung.toObject()]
+            };
+            return null;
+          })
+          .then(done.bind(null, null), done);
       });
-      var expected = {
-        team: 'avatar',
-        players: [{
-          name: 'Aang'
-        }, {
-          name: 'Yung'
-        }]
-      };
+
 
       it(shouldReturn(expected), function (done) {
-
-        execAndCheck([expected], done);
-
+        maps.buildTeamPlayersMap().then(checkMapMatches([expected])).then(done, done);
       });
 
-
-      afterEach(function (done) {
-        clearAll(done);
-      });
+      afterEach(clearAll);
     });
-
 
     describe("Given player 'Aang' on team: 'avatar' and player 'Yung' on 'fireNation'", function () {
       beforeEach(function (done) {
@@ -138,10 +140,10 @@ xdescribe('In the api/components/maps module,', function () { //jshint ignore:li
           function (team) {
             return createPlayer(team, "Aang");
           }).then(createTeam("fireNation").then(
-          function (team) {
-            createPlayer(team, "Yung")
-            return null;
-          })).then(done, done);
+            function (team) {
+              createPlayer(team, "Yung");
+              return null;
+            })).then(done, done);
       });
 
       var teamOne = {
@@ -161,7 +163,9 @@ xdescribe('In the api/components/maps module,', function () { //jshint ignore:li
       it(shouldReturn([teamOne, teamTwo]), function (done) {
 
 
-        execAndCheck([teamOne, teamTwo], done);
+        (function (expected, done) {
+          maps.buildTeamPlayersMap().then(checkMapMatches(expected)).then(done, done);
+        })([teamOne, teamTwo], done);
 
       });
 
@@ -195,7 +199,9 @@ xdescribe('In the api/components/maps module,', function () { //jshint ignore:li
         }]
       };
       it(shouldReturn(teamNode), function (done) {
-        execAndCheck([teamNode], done);
+        (function (expected, done) {
+          maps.buildTeamPlayersMap().then(checkMapMatches(expected)).then(done, done);
+        })([teamNode], done);
       });
 
 
@@ -251,7 +257,9 @@ xdescribe('In the api/components/maps module,', function () { //jshint ignore:li
         }];
 
         it(shouldReturn(expected), function (done) {
-          execAndCheck(expected, done);
+          (function (expected, done) {
+            maps.buildTeamPlayersMap().then(checkMapMatches(expected)).then(done, done);
+          })(expected, done);
         });
 
 
@@ -293,7 +301,9 @@ xdescribe('In the api/components/maps module,', function () { //jshint ignore:li
         }];
 
       it(shouldReturn(expected), function (done) {
-        execAndCheck(expected, done);
+        (function (expected, done) {
+          maps.buildTeamPlayersMap().then(checkMapMatches(expected)).then(done, done);
+        })(expected, done);
       });
 
       afterEach(function (done) {
