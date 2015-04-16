@@ -38,7 +38,7 @@ exports.buildTeamPlayersMap = function () {
   function getTeamMap(teamName, teamPlayersMap) {
     for (var index = 0; index < teamPlayersMap.length; index++) {
       var teamSection = teamPlayersMap[index];
-      if(teamSection.team == teamName) {
+      if(teamSection.team === teamName) {
         return teamSection;
       }
     }
