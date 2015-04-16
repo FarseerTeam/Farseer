@@ -63,6 +63,8 @@ describe('In the api/components/maps module,', function () { //jshint ignore:lin
     return "Should return {} ".format(JSON.stringify(obj));
   };
 
+  afterEach(clearAll);
+
   describe('for the buildTeamPlayersMap function', function () {
     describe('Given an empty database', function () {
       beforeEach(function (done) {
@@ -105,33 +107,17 @@ describe('In the api/components/maps module,', function () { //jshint ignore:lin
       });
     });
 
-    describe("Given player 'Aang' AND 'Yung' on team: 'avatar", function () {
-
-      var expected;
-
-      beforeEach(function (done) {
-        RSVP.hash({
-          aang: createPlayer('/avatar', "Aang"),
-          yung: createPlayer('/avatar', "Yung")
-        })
-          .then(function (players) {
-            var aang = players.aang;
-            var yung = players.yung;
-            expected = {
-              team: 'avatar',
-              players: [aang.toObject(), yung.toObject()]
-            };
-            return null;
-          })
-          .then(done.bind(null, null), done);
-      });
-
-
-      it(shouldReturn(expected), function (done) {
-        maps.buildTeamPlayersMap().then(checkMapMatches([expected])).then(done, done);
-      });
-
-      afterEach(clearAll);
+    it("Given player 'Aang' AND 'Yung' on team: 'avatar' will return a map containing both.", function (done) {
+      RSVP.hash({
+        aang: createPlayer('/avatar', "Aang"),
+        yung: createPlayer('/avatar', "Yung")
+      }).then(function (players) {
+        var expectedMap = {
+          team: 'avatar',
+          players: [players.aang.toObject(), players.yung.toObject()]
+        };
+        return maps.buildTeamPlayersMap().then(checkMapMatches([expectedMap]));
+      }).then(done, done);
     });
 
     describe("Given player 'Aang' on team: 'avatar' and player 'Yung' on 'fireNation'", function () {
