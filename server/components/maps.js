@@ -2,55 +2,64 @@ var _ = require('lodash');
 var players = require("./players");
 var teams = require("./teams");
 
-var ROOT = {id:"ROOT"}
-var doBuildTeamPlayersMap = function(parentTeams, existingPlayers, cb) {
-    var hashOfPlayers = _.reduce(existingPlayers,
-        function(memo, item) {
-            memo[item._team] = memo[item._team] || []
-            memo[item._team].push({name:item.name});
-            return memo;
-        }, {});
+var ROOT = {id: "ROOT"}
+var doBuildTeamPlayersMap = function (parentTeams, existingPlayers, cb) {
+  var hashOfPlayers = _.reduce(existingPlayers,
+    function (memo, item) {
+      memo[item._team] = memo[item._team] || []
+      memo[item._team].push({name: item.name});
+      return memo;
+    }, {});
 
-    var buildNode = function(teams){
-        return  _.map(teams, function(team){
+  var buildNode = function (teams) {
+    return _.map(teams, function (team) {
 
-            var result = {
-                team: team.name,
-            players: hashOfPlayers[team._id] || []
-            };
-            if(!_.isEmpty(team.children))
-                result.subTeams = buildNode(team.children);
-            return result;
-        });
-    };
+      var result = {
+        team: team.name,
+        players: hashOfPlayers[team._id] || []
+      };
+      if (!_.isEmpty(team.children))
+        result.subTeams = buildNode(team.children);
+      return result;
+    });
+  };
 
-    var result = buildNode(parentTeams);
+  var result = buildNode(parentTeams);
 
-    if (hashOfPlayers[undefined]) {
-        result.push({'team': undefined, players : hashOfPlayers[undefined]});
-    }
+  if (hashOfPlayers[undefined]) {
+    result.push({'team': undefined, players: hashOfPlayers[undefined]});
+  }
 
-    cb(result);
+  cb(result);
 };
 
 
-exports.buildTeamPlayersMap = function() {
-    return players.Player.find({}).exec().then(function(foundPlayers) {
-      var teamPlayersMap = [];
-
-      for (var i = foundPlayers.length - 1; i >= 0; i--) {
-        var player = foundPlayers[i]
-        var pathElements = player._team.split('/');
-        var map = {
-          team : pathElements[1],
-          players : [player.toJSON()]
-        }
-
-console.log('SERVER');
-        console.info(player);
-        teamPlayersMap.push(map);
+exports.buildTeamPlayersMap = function () {
+  function getTeamMap(teamName, teamPlayersMap) {
+    for (var index = 0; index < teamPlayersMap.length; index++) {
+      var teamSection = teamPlayersMap[index];
+      if(teamSection.team == teamName) {
+        return teamSection;
       }
+    }
 
-      return teamPlayersMap;
-    });
+    var map = {
+      team: teamName,
+      players: []
+    };
+    teamPlayersMap.push(map);
+    return map;
+  }
+
+  return players.Player.find({}).exec().then(function (foundPlayers) {
+    var teamPlayersMap = [];
+
+    for (var index = 0; index < foundPlayers.length; index++) {
+      var player = foundPlayers[index];
+      var pathElements = player._team.split('/');
+      var map = getTeamMap(pathElements[1], teamPlayersMap);
+      map.players.push(player.toJSON());
+    }
+    return teamPlayersMap;
+  });
 };
