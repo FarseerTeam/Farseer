@@ -1,7 +1,7 @@
 Farseer 
 =======
 
-[![Circle CI](https://circleci.com/gh/robertfmurdock/Farseer.png?style=badge)](https://circleci.com/gh/robertfmurdock/Farseer)
+[![Circle CI](https://circleci.com/gh/robertfmurdock/Farseer.png?style=badge)](https://circleci.com/gh/FarseerTeam/Farseer)
 
 This is a web application intended to make it easy to tell how a group of people is divided into teams, and to move people from one team to another.
 
