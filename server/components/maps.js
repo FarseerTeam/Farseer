@@ -38,7 +38,7 @@ exports.buildTeamPlayersMap = function () {
   function getTeamMap(teamName, teamPlayersMap) {
     for (var index = 0; index < teamPlayersMap.length; index++) {
       var teamSection = teamPlayersMap[index];
-      if(teamSection.team === teamName) {
+      if (teamSection.team === teamName) {
         return teamSection;
       }
     }
@@ -57,18 +57,20 @@ exports.buildTeamPlayersMap = function () {
 
     for (var index = 0; index < foundPlayers.length; index++) {
       var player = foundPlayers[index];
-      var pathElements = player._team.split('/');
+      if (player._team) {
+        var pathElements = player._team.split('/');
 
-      var map = getTeamMap(pathElements[1], teamPlayersMap);
+        var map = getTeamMap(pathElements[1], teamPlayersMap);
 
-      var parentTeam = map;
-      var subTeam = map;
-      for (var i = 2; i < pathElements.length; i++) {
-        var pathElement = pathElements[i];
-        subTeam = getTeamMap(pathElement, parentTeam.subTeams);
-      };
+        var parentTeam = map;
+        var subTeam = map;
+        for (var i = 2; i < pathElements.length; i++) {
+          var pathElement = pathElements[i];
+          subTeam = getTeamMap(pathElement, parentTeam.subTeams);
+        }
 
-      subTeam.players.push(player.toJSON());
+        subTeam.players.push(player.toJSON());
+      }
     }
     return teamPlayersMap;
   });
