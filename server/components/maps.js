@@ -38,7 +38,7 @@ exports.buildTeamPlayersMap = function () {
   function getTeamMap(teamName, teamPlayersMap) {
     for (var index = 0; index < teamPlayersMap.length; index++) {
       var teamSection = teamPlayersMap[index];
-      if(teamSection.team === teamName) {
+      if (teamSection.team === teamName) {
         return teamSection;
       }
     }
@@ -56,9 +56,11 @@ exports.buildTeamPlayersMap = function () {
 
     for (var index = 0; index < foundPlayers.length; index++) {
       var player = foundPlayers[index];
-      var pathElements = player._team.split('/');
-      var map = getTeamMap(pathElements[1], teamPlayersMap);
-      map.players.push(player.toJSON());
+      if (player._team) {
+        var pathElements = player._team.split('/');
+        var map = getTeamMap(pathElements[1], teamPlayersMap);
+        map.players.push(player.toJSON());
+      }
     }
     return teamPlayersMap;
   });

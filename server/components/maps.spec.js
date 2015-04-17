@@ -20,18 +20,6 @@ describe('The maps module', function () { //jshint ignore:line
       });
   };
 
-  var callDone = function (done) {
-    return function () {
-      done();
-    };
-  };
-
-  var callDoneWithError = function (done) {
-    return function (err) {
-      done(err);
-    }
-  };
-
   function checkMapMatches(expected) {
     return function (result) {
       expect(result).to.be.instanceof(Array);
@@ -40,13 +28,6 @@ describe('The maps module', function () { //jshint ignore:line
     };
   }
 
-  var createTeam = function (teamName, parent) {
-    return teams.Team.create({
-      name: teamName,
-      parent: parent
-    });
-
-  };
   var createPlayer = function (path, playerName) {
     return players.Player.create({
       name: playerName,
@@ -56,57 +37,23 @@ describe('The maps module', function () { //jshint ignore:line
       return playerMongoose.toObject();
     });
   };
-  var doCreatePlayer = function (team, playerName) {
-    return function () {
-      return createPlayer(team, playerName)
-    }
-  };
-  var shouldReturn = function (obj) {
-    return "Should return {} ".format(JSON.stringify(obj));
-  };
 
   afterEach(clearAll);
-
-  describe('buildTeamPlayersMap', function () {
-    describe('Given an empty database', function () {
-      beforeEach(function (done) {
-        clearAll(done);
-      });
-      it('should respond with an empty array when there are no records in database.', function (done) {
-        (function (expected, done) {
-          maps.buildTeamPlayersMap().then(checkMapMatches(expected)).then(done, done);
-        })([], done);
-      });
-
+  describe("buildTeamPlayersMap", function () {
+    it('Given an empty database should respond with an empty array when there are no records in database.', function (done) {
+      var expected = [];
+      maps.buildTeamPlayersMap().then(checkMapMatches(expected)).then(done, done);
     });
 
-    describe("Given only player 'Aang' on team: 'avatar", function () {
-      var player;
-
-      beforeEach(function (done) {
-        createPlayer("/avatar", "Aang").then(function (newPlayer) {
-          player = newPlayer;
-          done();
-        }, done);
-      });
-
-      it("should respond with the appropriate format {team: 'avatar', players: [{name: 'Aang'}]},", function (done) {
-
-        var expected = {
-          team: 'avatar',
-          players: [player.toObject()]
-        };
-
-        (function (expected, done) {
-          maps.buildTeamPlayersMap().then(checkMapMatches(expected)).then(done, done);
-        })([expected], done);
-
-      });
-
-
-      afterEach(function (done) {
-        clearAll(callDone(done));
-      });
+    it("Given only player 'Aang' on team: 'avatar should respond with the appropriate format {team: 'avatar', players: [{name: 'Aang'}]},", function (done) {
+      createPlayer('/avatar', "Aang")
+        .then(function (aang) {
+          var expectedMap = {
+            team: 'avatar',
+            players: [aang]
+          };
+          return maps.buildTeamPlayersMap().then(checkMapMatches([expectedMap]));
+        }).then(done, done);
     });
 
     it("Given player 'Aang' AND 'Yung' on team: 'avatar' will return a map containing both.", function (done) {
@@ -153,103 +100,40 @@ describe('The maps module', function () { //jshint ignore:line
         }).then(done, done);
     });
 
-    describe("Given players: [{name:'Zuko', team:'/fireNation/royalty'}, " + //
-      "{name: 'Aang', team: '/avatar}, {name: 'Katara', team: '/avatar' }" + //
-      ", {name: 'Iroh', team: '/fireNation/royalty'}]",
-      function () {
-
-        beforeEach(function (done) {
-
-          var p = createTeam("avatar");
-          p = p.then(function (team) {
-            return createPlayer(team, 'Aang').then(
-              doCreatePlayer(team, 'Katara'));
-          });
-          p = p.then(function () {
-            return createTeam("fireNation")
-          });
-          p = p.then(function (team) {
-            return createTeam("royalty", team);
-          });
-          p = p.then(function (team) {
-            return createPlayer(team, "Zuko").then(doCreatePlayer(team, "Iroh"));
-          });
-          p = p.then(callDone(done), callDoneWithError(done));
-        });
-
-        var expected = [{
-          team: 'avatar',
-          players: [{
-            name: 'Aang'
-          }, {
-            name: 'Katara'
-          }]
-        }, {
-          team: 'fireNation',
-          players: [],
-          subTeams: [{
-            team: 'royalty',
-            players: [{
-              name: 'Zuko'
-            }, {
-              name: 'Iroh'
-            }]
-          }]
-        }];
-
-        it(shouldReturn(expected), function (done) {
-          (function (expected, done) {
-            maps.buildTeamPlayersMap().then(checkMapMatches(expected)).then(done, done);
-          })(expected, done);
-        });
-
-
-        afterEach(function (done) {
-          clearAll(done);
-        });
-      });
-
-    describe("Players with no team assignment exist in the map.  " +
-    "Given players: [{name:'Tui'}, {name:'Wan Shi Tong'}, {name: 'Aang', team: '/avatar}]", function () {
-
-      beforeEach(function (done) {
-
-        var p = createTeam("avatar");
-        p = p.then(function (team) {
-          return createPlayer(team, 'Aang');
-        });
-        p = p.then(function () {
-          return createPlayer(undefined, 'Tui')
-        });
-        p = p.then(function () {
-          return createPlayer(undefined, 'Wan Shi Tong')
-        });
-        p = p.then(callDone(done), callDoneWithError(done));
-      });
-
-      var expected =
-        [{
-          team: 'avatar',
-          players: [
-            {name: 'Aang'}
-          ]
-        }, {
-          team: undefined,
-          players: [
-            {name: 'Tui'},
-            {name: 'Wan Shi Tong'}
-          ]
-        }];
-
-      it(shouldReturn(expected), function (done) {
-        (function (expected, done) {
-          maps.buildTeamPlayersMap().then(checkMapMatches(expected)).then(done, done);
-        })(expected, done);
-      });
-
-      afterEach(function (done) {
-        clearAll(done);
-      });
+    it("Given players: [{name:'Zuko', team:'/fireNation/royalty'}, " + //
+    "{name: 'Aang', team: '/avatar}, {name: 'Katara', team: '/avatar' }" + //
+    ", {name: 'Iroh', team: '/fireNation/royalty'}]", function (done) {
+      RSVP.hash({
+        aang: createPlayer('/avatar', "Aang"),
+        katara: createPlayer('/avatar', "Katara"),
+        zuko: createPlayer('/fireNation/royalty', "Zuko"),
+        iroh: createPlayer('/fireNation/royalty', "Iroh")
+      }).then(function (players) {
+        var expectedMap = [
+          {team: 'avatar', players: [players.aang, players.katara]},
+          {
+            team: 'fireNation', players: [],
+            subTeams: [{team: 'royalty', players: [players.zuko, players.iroh]}]
+          }
+        ];
+        return maps.buildTeamPlayersMap().then(checkMapMatches(expectedMap));
+      }).then(done, done);
     });
+
+    it("Players with no team assignment exist in the map.  " +
+      "Given players: [{name:'Tui'}, {name:'Wan Shi Tong'}, {name: 'Aang', team: '/avatar}]", function (done) {
+        RSVP.hash({
+          aang: createPlayer('/avatar', "Aang"),
+          tui: createPlayer(undefined, 'Tui'),
+          wan: createPlayer(undefined, 'Wan Shi Ton')
+        }).then(function (players) {
+          var expectedMap = [
+            {team: 'avatar', players: [players.aang, players.katara]},
+            {team: undefined, players: [players.tui, players.wan]}
+          ];
+          return maps.buildTeamPlayersMap().then(checkMapMatches(expectedMap));
+        }).then(done, done);
+      }
+    );
   });
 });
