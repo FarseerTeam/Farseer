@@ -4,8 +4,9 @@ var players = require("./players");
 var teams = require("./teams");
 var should = require('should');
 var config = require('../config/environment/test');
+var rsvp = require('rsvp');
 
-var dataService = require('./dataService')
+var dataService = require('./dataService');
 
 dataService.connect();
 
