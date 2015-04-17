@@ -133,8 +133,8 @@ describe('The maps module', function () { //jshint ignore:line
         wan: createPlayer(undefined, 'Wan Shi Ton')
       }).then(function (players) {
         var expectedMap = [
-          {team: 'avatar', players: [players.aang, players.katara]},
-          {team: undefined, players: [players.tui, players.wan]}
+          {team: 'avatar', players: [players.aang], subTeams: []},
+          {team: undefined, players: [players.tui, players.wan], subTeams: []}
         ];
         return maps.buildTeamPlayersMap().then(checkMapMatches(expectedMap));
       }).then(done, done);

@@ -52,25 +52,33 @@ exports.buildTeamPlayersMap = function () {
     return map;
   }
 
+  function getPathElements(player) {
+    if (player._team) {
+      return player._team.split('/');
+    } else {
+      return [null, undefined];
+    }
+  }
+
   return players.Player.find({}).exec().then(function (foundPlayers) {
     var teamPlayersMap = [];
 
     for (var index = 0; index < foundPlayers.length; index++) {
       var player = foundPlayers[index];
-      if (player._team) {
-        var pathElements = player._team.split('/');
 
-        var map = getTeamMap(pathElements[1], teamPlayersMap);
+      var pathElements = getPathElements(player);
 
-        var parentTeam = map;
-        var subTeam = map;
-        for (var i = 2; i < pathElements.length; i++) {
-          var pathElement = pathElements[i];
-          subTeam = getTeamMap(pathElement, parentTeam.subTeams);
-        }
+      var map = getTeamMap(pathElements[1], teamPlayersMap);
 
-        subTeam.players.push(player.toJSON());
+      var parentTeam = map;
+      var subTeam = map;
+      for (var i = 2; i < pathElements.length; i++) {
+        var pathElement = pathElements[i];
+        subTeam = getTeamMap(pathElement, parentTeam.subTeams);
       }
+
+      subTeam.players.push(player.toJSON());
+
     }
     return teamPlayersMap;
   });
