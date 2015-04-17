@@ -1,41 +1,10 @@
 var _ = require('lodash');
+var RSVP = require('rsvp');
 var players = require("./players");
 var teams = require("./teams");
 
-var ROOT = {id: "ROOT"}
-var doBuildTeamPlayersMap = function (parentTeams, existingPlayers, cb) {
-  var hashOfPlayers = _.reduce(existingPlayers,
-    function (memo, item) {
-      memo[item._team] = memo[item._team] || []
-      memo[item._team].push({name: item.name});
-      return memo;
-    }, {});
-
-  var buildNode = function (teams) {
-    return _.map(teams, function (team) {
-
-      var result = {
-        team: team.name,
-        players: hashOfPlayers[team._id] || []
-      };
-      if (!_.isEmpty(team.children))
-        result.subTeams = buildNode(team.children);
-      return result;
-    });
-  };
-
-  var result = buildNode(parentTeams);
-
-  if (hashOfPlayers[undefined]) {
-    result.push({'team': undefined, players: hashOfPlayers[undefined]});
-  }
-
-  cb(result);
-};
-
-
 exports.buildTeamPlayersMap = function () {
-  function getTeamMap(teamName, teamPlayersMap) {
+  function getTeamMap(teamPath, teamName, teamPlayersMap, teams) {
     for (var index = 0; index < teamPlayersMap.length; index++) {
       var teamSection = teamPlayersMap[index];
       if (teamSection.team === teamName) {
@@ -48,6 +17,15 @@ exports.buildTeamPlayersMap = function () {
       players: [],
       subTeams: []
     };
+
+    var team = _.findWhere(teams, {path: teamPath});
+    if (team) {
+      _.extend(map, team.toObject());
+    }
+
+    delete map._id;
+    delete map.__v;
+
     teamPlayersMap.push(map);
     return map;
   }
@@ -60,21 +38,24 @@ exports.buildTeamPlayersMap = function () {
     }
   }
 
-  return players.Player.find({}).exec().then(function (foundPlayers) {
+  return RSVP.hash({
+    players: players.Player.find({}).exec(),
+    teams: teams.Team.find({}).exec()
+  }).then(function (data) {
     var teamPlayersMap = [];
 
-    for (var index = 0; index < foundPlayers.length; index++) {
-      var player = foundPlayers[index];
+    for (var index = 0; index < data.players.length; index++) {
+      var player = data.players[index];
 
       var pathElements = getPathElements(player);
 
-      var map = getTeamMap(pathElements[1], teamPlayersMap);
+      var map = getTeamMap(player._team, pathElements[1], teamPlayersMap, data.teams);
 
       var parentTeam = map;
       var subTeam = map;
       for (var i = 2; i < pathElements.length; i++) {
         var pathElement = pathElements[i];
-        subTeam = getTeamMap(pathElement, parentTeam.subTeams);
+        subTeam = getTeamMap(player._team, pathElement, parentTeam.subTeams, data.teams);
       }
 
       subTeam.players.push(player.toJSON());

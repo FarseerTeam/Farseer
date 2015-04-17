@@ -13,9 +13,8 @@ module.exports = (function () {
         required: true
       }
     },
-    name: {
-      type: String
-    }
+    name: {type: String},
+    image: {type: String}
   });
   var _model = mongoose.model('Team', TeamSchema);
 

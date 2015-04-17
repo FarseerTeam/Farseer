@@ -39,6 +39,7 @@ describe('The maps module', function () { //jshint ignore:line
   };
 
   afterEach(clearAll);
+
   describe("buildTeamPlayersMap", function () {
     it('Given an empty database should respond with an empty array when there are no records in database.', function (done) {
       var expected = [];
@@ -146,7 +147,7 @@ describe('The maps module', function () { //jshint ignore:line
         aang: createPlayer('/avatar', "Aang")
       }).then(function (prereqs) {
         var expectedMap = [
-          {team: 'avatar', path: '/avatar', name: 'Avatar', image: 'avatar.jpg', players: [prereqs.aang]}
+          {team: 'avatar', path: '/avatar', name: 'Avatar', image: 'avatar.jpg', players: [prereqs.aang], subTeams: []}
         ];
         return maps.buildTeamPlayersMap().then(checkMapMatches(expectedMap));
       }).then(done, done);
