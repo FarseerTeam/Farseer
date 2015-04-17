@@ -45,7 +45,8 @@ describe("A team", function () {
     attemptedDuplicateTeam.save(function (err) {
       expect(err).not.to.be.null;
       (11000).should.eql(err.code);
-      expect(err.message).to.equal('E11000 duplicate key error index: farseer-test.teams.$path_1 dup key: { : \"/ford\" }');
+      expect(err.message.indexOf('farseer-test.teams.$path_1')).to.not.equal(0);
+      expect(err.message.indexOf('dup key: { : \"/ford\" }')).to.not.equal(0);
       done();
     });
   });
