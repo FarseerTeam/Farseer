@@ -105,8 +105,8 @@ describe('The maps module', function () { //jshint ignore:line
         }).then(done, done);
     });
 
-    it("Given players: [{name:'Zuko', team:'/fireNation/royalty'}, " + //
-    "{name: 'Aang', team: '/avatar}, {name: 'Katara', team: '/avatar' }" + //
+    it("Given players: [{name:'Zuko', team:'/fireNation/royalty'}, " +
+    "{name: 'Aang', team: '/avatar}, {name: 'Katara', team: '/avatar' }" +
     ", {name: 'Iroh', team: '/fireNation/royalty'}]", function (done) {
       RSVP.hash({
         aang: createPlayer('/avatar', "Aang"),
@@ -126,19 +126,30 @@ describe('The maps module', function () { //jshint ignore:line
     });
 
     it("Players with no team assignment exist in the map.  " +
-      "Given players: [{name:'Tui'}, {name:'Wan Shi Tong'}, {name: 'Aang', team: '/avatar}]", function (done) {
-        RSVP.hash({
-          aang: createPlayer('/avatar', "Aang"),
-          tui: createPlayer(undefined, 'Tui'),
-          wan: createPlayer(undefined, 'Wan Shi Ton')
-        }).then(function (players) {
-          var expectedMap = [
-            {team: 'avatar', players: [players.aang, players.katara]},
-            {team: undefined, players: [players.tui, players.wan]}
-          ];
-          return maps.buildTeamPlayersMap().then(checkMapMatches(expectedMap));
-        }).then(done, done);
-      }
-    );
+    "Given players: [{name:'Tui'}, {name:'Wan Shi Tong'}, {name: 'Aang', team: '/avatar}]", function (done) {
+      RSVP.hash({
+        aang: createPlayer('/avatar', "Aang"),
+        tui: createPlayer(undefined, 'Tui'),
+        wan: createPlayer(undefined, 'Wan Shi Ton')
+      }).then(function (players) {
+        var expectedMap = [
+          {team: 'avatar', players: [players.aang, players.katara]},
+          {team: undefined, players: [players.tui, players.wan]}
+        ];
+        return maps.buildTeamPlayersMap().then(checkMapMatches(expectedMap));
+      }).then(done, done);
+    });
+
+    it("Teams that have additional attributes have those attributes in the map.", function (done) {
+      RSVP.hash({
+        teamAvatar: teams.Team.create({path: '/avatar', name: 'Avatar', image: 'avatar.jpg'}),
+        aang: createPlayer('/avatar', "Aang")
+      }).then(function (prereqs) {
+        var expectedMap = [
+          {team: 'avatar', path: '/avatar', name: 'Avatar', image: 'avatar.jpg', players: [prereqs.aang]}
+        ];
+        return maps.buildTeamPlayersMap().then(checkMapMatches(expectedMap));
+      }).then(done, done);
+    });
   });
 });
