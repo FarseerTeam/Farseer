@@ -45,7 +45,8 @@ exports.buildTeamPlayersMap = function () {
 
     var map = {
       team: teamName,
-      players: []
+      players: [],
+      subTeams: []
     };
     teamPlayersMap.push(map);
     return map;
@@ -57,8 +58,17 @@ exports.buildTeamPlayersMap = function () {
     for (var index = 0; index < foundPlayers.length; index++) {
       var player = foundPlayers[index];
       var pathElements = player._team.split('/');
+
       var map = getTeamMap(pathElements[1], teamPlayersMap);
-      map.players.push(player.toJSON());
+
+      var parentTeam = map;
+      var subTeam = map;
+      for (var i = 2; i < pathElements.length; i++) {
+        var pathElement = pathElements[i];
+        subTeam = getTeamMap(pathElement, parentTeam.subTeams);
+      };
+
+      subTeam.players.push(player.toJSON());
     }
     return teamPlayersMap;
   });

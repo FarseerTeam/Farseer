@@ -94,7 +94,8 @@ describe('In the api/components/maps module,', function () { //jshint ignore:lin
 
         var expected = {
           team: 'avatar',
-          players: [player.toObject()]
+          players: [player],
+          subTeams: []
         };
 
         (function (expected, done) {
@@ -116,7 +117,8 @@ describe('In the api/components/maps module,', function () { //jshint ignore:lin
       }).then(function (players) {
         var expectedMap = {
           team: 'avatar',
-          players: [players.aang, players.yung]
+          players: [players.aang, players.yung],
+          subTeams: []
         };
         return maps.buildTeamPlayersMap().then(checkMapMatches([expectedMap]));
       }).then(done, done);
@@ -129,10 +131,12 @@ describe('In the api/components/maps module,', function () { //jshint ignore:lin
       }).then(function (players) {
         var expectedMap = [{
           team: 'avatar',
-          players: [players.aang]
+          players: [players.aang],
+          subTeams: []
         }, {
           team: 'fireNation',
-          players: [players.yung]
+          players: [players.yung],
+          subTeams: []
         }];
         return maps.buildTeamPlayersMap().then(checkMapMatches(expectedMap));
       }).then(done, done);
@@ -146,14 +150,15 @@ describe('In the api/components/maps module,', function () { //jshint ignore:lin
             players: [],
             subTeams: [{
               team: 'avatar',
-              players: [aang]
+              players: [aang],
+              subTeams: []
             }]
           }];
           return maps.buildTeamPlayersMap().then(checkMapMatches(expectedMap));
         }).then(done, done);
     });
 
-    describe("Given players: [{name:'Zuko', team:'/fireNation/royalty'}, " + //
+    describe.only("Given players: [{name:'Zuko', team:'/fireNation/royalty'}, " + //
       "{name: 'Aang', team: '/avatar}, {name: 'Katara', team: '/avatar' }" + //
       ", {name: 'Iroh', team: '/fireNation/royalty'}]",
       function () {
@@ -183,7 +188,8 @@ describe('In the api/components/maps module,', function () { //jshint ignore:lin
             name: 'Aang'
           }, {
             name: 'Katara'
-          }]
+          }],
+          subTeams: []
         }, {
           team: 'fireNation',
           players: [],
@@ -193,7 +199,8 @@ describe('In the api/components/maps module,', function () { //jshint ignore:lin
               name: 'Zuko'
             }, {
               name: 'Iroh'
-            }]
+            }],
+            subTeams: []
           }]
         }];
 

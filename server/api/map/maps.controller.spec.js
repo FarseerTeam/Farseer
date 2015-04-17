@@ -69,7 +69,8 @@ describe('/api/maps', function () { //jshint ignore:line
 
       var expected = {
         team: 'avatar',
-        players: [flattenId(player.toObject())]
+        players: [flattenId(player.toObject())],
+        subTeams: []
       };
 
       execAndCheck([expected], done);
