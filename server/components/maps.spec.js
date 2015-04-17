@@ -10,7 +10,7 @@ var format = require("string-format");
 format.extend(String.prototype);
 dataService.connect();
 
-describe('In the api/components/maps module,', function () { //jshint ignore:line
+describe('The maps module', function () { //jshint ignore:line
   var clearAll = function (done) {
     players.Player.remove({},
       function () {
@@ -67,7 +67,7 @@ describe('In the api/components/maps module,', function () { //jshint ignore:lin
 
   afterEach(clearAll);
 
-  describe('for the buildTeamPlayersMap function', function () {
+  describe('buildTeamPlayersMap', function () {
     describe('Given an empty database', function () {
       beforeEach(function (done) {
         clearAll(done);
@@ -138,7 +138,7 @@ describe('In the api/components/maps module,', function () { //jshint ignore:lin
       }).then(done, done);
     });
 
-    it("Given player 'Aang' on team: 'avatar' under 'fireNation'", function (done) {
+    it("Given player 'Aang' on team: 'avatar' under 'fireNation', fireNation shows up inside of avatar", function (done) {
       createPlayer('/fireNation/avatar', "Aang")
         .then(function (aang) {
           var expectedMap = [{
