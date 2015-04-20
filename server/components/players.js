@@ -4,7 +4,6 @@ module.exports = (function() {
   var Schema = mongoose.Schema;
   var common = require('./common');
 
-  // define the _playerSchema
   var _playerSchema = new Schema({
     email: {
       type: String,
@@ -14,7 +13,7 @@ module.exports = (function() {
       }
     },
     name: String,
-    _team : String,
+    _team : String
   });
   var _model = mongoose.model('Player', _playerSchema);
 
@@ -36,7 +35,7 @@ module.exports = (function() {
     } else {
       _findByEmail(uniqueIdentifier, success, fail);
     }
-  }
+  };
 
   return {
     Player: _model,

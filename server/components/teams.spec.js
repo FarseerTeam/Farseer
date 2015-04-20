@@ -1,9 +1,9 @@
 /*jshint expr: true*/
 var mongoose = require("mongoose");
 var teams = require("./teams");
-var should = require('should');
 var RSVP = require('rsvp');
 var expect = require('chai').expect;
+require('chai').use(require('dirty-chai'));
 var assert = require('assert');
 var config = require('../config/environment/test');
 
@@ -32,9 +32,9 @@ describe("A team", function () {
   });
 
   it("has a name", function (done) {
-    theTeam.should.be.ok;
+    expect(theTeam).to.be.ok();
     theTeam.save(function (err, doc) {
-      (err === null).should.be.true;
+      expect(err).to.be.null();
       doc.name.should.eql(theTeam.name);
       done();
     });
@@ -44,7 +44,7 @@ describe("A team", function () {
     var attemptedDuplicateTeam = new teams.Team();
     attemptedDuplicateTeam.path = theTeam.path;
     attemptedDuplicateTeam.save(function (err) {
-      expect(err).not.to.be.null;
+      expect(err).not.to.be.null();
       (11000).should.eql(err.code);
       expect(err.message.indexOf('farseer-test.teams.$path_1')).to.not.equal(0);
       expect(err.message.indexOf('dup key: { : \"/ford\" }')).to.not.equal(0);
@@ -135,23 +135,21 @@ describe('The findByAnyUniqueIdentifier function... ', function () {
 
   it("'null' is returned (with no error) if no team matches the passed value.", function (done) {
     teams.findByAnyUniqueIdentifier('bad-value', function (doc) {
-      should.not.exist(doc);
+      expect(doc).to.not.exist();
       done();
     }, done);
   });
 
-        it("Sub-teams can be found by path", function(done) {
-            teams.findByAnyUniqueIdentifier(savedSubTeam.path, function(doc) {
-                validateSubTeam(doc, done);
-            }, function(e) {
-                should.fail();
-            });
-        });
+  it("Sub-teams can be found by path", function (done) {
+    teams.findByAnyUniqueIdentifier(savedSubTeam.path, function (doc) {
+      validateSubTeam(doc, done);
+    }, done);
+  });
   var validateTeam = function (team, done) {
-    should.exist(team);
-    savedTeam.name.should.equal(team.name);
-    savedTeam.path.should.equal(team.path);
-    (savedTeam._id.equals(team._id)).should.be.ok;
+    expect(team).to.exist();
+    expect(savedTeam.name).to.equal(team.name);
+    expect(savedTeam.path).to.equal(team.path);
+    expect(savedTeam._id.equals(team._id)).to.be.ok();
     done();
   };
 
@@ -162,16 +160,15 @@ describe('The findByAnyUniqueIdentifier function... ', function () {
     });
   });
 
-        var validateSubTeam = function(team, done) {
-            should.exist(team);
-            savedSubTeam.name.should.equal(team.name);
-            savedSubTeam.path.should.equal(team.path);
-            (savedSubTeam._id.equals(team._id)).should.be.ok;
-            done();
-        }
+  var validateSubTeam = function (team, done) {
+    expect(team).to.exist();
+    savedSubTeam.name.should.equal(team.name);
+    savedSubTeam.path.should.equal(team.path);
+    expect(savedSubTeam._id.equals(team._id)).to.be.ok();
+    done();
+  };
+
   describe("if there is a database error... ", function () {
-
-
     var actualDatabaseFindOneFunction;
     var actualDatabaseFindByIdFunction;
     var findByNameError = 'findByNameError';
@@ -204,7 +201,7 @@ describe('The findByAnyUniqueIdentifier function... ', function () {
     var unmock = function () {
       mongoose.Model.findOne = actualDatabaseFindOneFunction;
       mongoose.Model.findById = actualDatabaseFindByIdFunction;
-    }
+    };
 
     it("the error function is called with the error returned from the database when finding by name.", function (done) {
       teams.findByAnyUniqueIdentifier(name, function () {
