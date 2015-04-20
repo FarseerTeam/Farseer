@@ -12,38 +12,22 @@ exports.buildTeamPlayersMap = function () {
 
     for (var index = 0; index < data.players.length; index++) {
       var player = data.players[index];
-      var destinationTeam = findDestinationTeam(player, teamPlayersMap, data.teams);
+      var destinationTeam = populateMapWithTeamsForPlayer(player, teamPlayersMap, data.teams);
       destinationTeam.players.push(player.toJSON());
-
     }
     return teamPlayersMap;
   });
 };
 
-function getTeamNode(teamPath, teamName, teamPlayersMap, teams) {
-  for (var index = 0; index < teamPlayersMap.length; index++) {
-    var teamSection = teamPlayersMap[index];
-    if (teamSection.team === teamName) {
-      return teamSection;
-    }
+function populateMapWithTeamsForPlayer(player, teamPlayersMap, teamsList) {
+  var pathElements = getPathElements(player);
+  var parentTeam = {subTeams: teamPlayersMap};
+
+  for (var index = 1; index < pathElements.length; index++) {
+    var pathElement = pathElements[index];
+    parentTeam = getTeamNode(player._team, pathElement, parentTeam.subTeams, teamsList);
   }
-
-  var teamNode = {
-    team: teamName,
-    players: [],
-    subTeams: []
-  };
-
-  var team = _.findWhere(teams, {path: teamPath});
-  if (team) {
-    _.extend(teamNode, team.toObject());
-  }
-
-  delete teamNode._id;
-  delete teamNode.__v;
-
-  teamPlayersMap.push(teamNode);
-  return teamNode;
+  return parentTeam;
 }
 
 function getPathElements(player) {
@@ -54,14 +38,32 @@ function getPathElements(player) {
   }
 }
 
-function findDestinationTeam(player, teamPlayersMap, teamsList) {
-  var pathElements = getPathElements(player);
-  var parentTeam = { subTeams: teamPlayersMap };
-
-  for (var i = 1; i < pathElements.length; i++) {
-    var pathElement = pathElements[i];
-    parentTeam = getTeamNode(player._team, pathElement, parentTeam.subTeams, teamsList);
+function getTeamNode(teamPath, teamName, teamPlayersMap, teams) {
+  for (var index = 0; index < teamPlayersMap.length; index++) {
+    var teamSection = teamPlayersMap[index];
+    if (teamSection.team === teamName) {
+      return teamSection;
+    }
   }
 
-  return parentTeam;
+  var team = _.findWhere(teams, {path: teamPath});
+  var teamNode = createTeamNode(teamName, team);
+  teamPlayersMap.push(teamNode);
+  return teamNode;
+}
+
+function createTeamNode(teamName, team) {
+  var teamNode = {
+    team: teamName,
+    players: [],
+    subTeams: []
+  };
+
+  if (team) {
+    _.extend(teamNode, team.toObject());
+  }
+
+  delete teamNode._id;
+  delete teamNode.__v;
+  return teamNode;
 }
