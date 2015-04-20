@@ -2,6 +2,7 @@
 var mongoose = require("mongoose");
 var teams = require("./teams");
 var should = require('should');
+var RSVP = require('rsvp');
 var expect = require('chai').expect;
 var assert = require('assert');
 var config = require('../config/environment/test');
@@ -101,13 +102,21 @@ describe("A team", function () {
 describe('The findByAnyUniqueIdentifier function... ', function () {
 
   var savedTeam = null;
+  var savedSubTeam = null;
 
   beforeEach(function (done) {
-    teams.Team.create({
-      name: "The best team",
-      path: "/best"
-    }).then(function (doc) {
-      savedTeam = doc;
+    RSVP.hash({
+      best: teams.Team.create({
+        name: "The best team",
+        path: "/best"
+      }),
+      subteam: teams.Team.create({
+        name: "subteam",
+        path: "/best/subteam"
+      })
+    }).then(function (teams) {
+      savedTeam = teams.best;
+      savedSubTeam = teams.subteam;
       done();
     }, done);
   });
@@ -131,6 +140,13 @@ describe('The findByAnyUniqueIdentifier function... ', function () {
     }, done);
   });
 
+        it("Sub-teams can be found by path", function(done) {
+            teams.findByAnyUniqueIdentifier(savedSubTeam.path, function(doc) {
+                validateSubTeam(doc, done);
+            }, function(e) {
+                should.fail();
+            });
+        });
   var validateTeam = function (team, done) {
     should.exist(team);
     savedTeam.name.should.equal(team.name);
@@ -139,13 +155,22 @@ describe('The findByAnyUniqueIdentifier function... ', function () {
     done();
   };
 
+
   afterEach(function (done) {
     teams.Team.remove({}, function () {
       done();
     });
   });
 
+        var validateSubTeam = function(team, done) {
+            should.exist(team);
+            savedSubTeam.name.should.equal(team.name);
+            savedSubTeam.path.should.equal(team.path);
+            (savedSubTeam._id.equals(team._id)).should.be.ok;
+            done();
+        }
   describe("if there is a database error... ", function () {
+
 
     var actualDatabaseFindOneFunction;
     var actualDatabaseFindByIdFunction;

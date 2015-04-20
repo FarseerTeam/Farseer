@@ -38,8 +38,7 @@ module.exports = (function () {
   var _findByAnyUniqueIdentifier = function (uniqueIdentifier, successCB, errorCB) {
     if (common.isObjectId(uniqueIdentifier)) {
       _findById(uniqueIdentifier, successCB, errorCB);
-    }
-    else {
+    } else {
       _findByPath(uniqueIdentifier, successCB, errorCB);
     }
   };
