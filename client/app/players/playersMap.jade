@@ -10,15 +10,15 @@ div(class='mapDisplayContainer')
 ////////////////////   Template for a list of teams   ///////////////////////////////////////////////////////
 
 script(type='text/ng-template' id='teamMapTemplate')
-  li(ng-repeat='team in teamPlayersMap | filter: searchTeam' class='team' ng-include="'teamTemplate'")
+  li(ng-repeat='team in teamPlayersMap | filter: searchTeam' ng-include="'teamTemplate'" class='team')
    
 
 ////////////////////   Template for a team - renders all players and sub-teams   ////////////////////////////
 
 script(type='text/ng-template' id='teamTemplate')
   p {{team.team}}
-  ul(class='players cf')
-    li(ng-repeat='player in team.players | filter: searchText' class='player')
+  ul(class='players cf' dnd-list='team.players' dnd-allowed-types="['playerType']" dnd-horizontal-list='true' dnd-drop="dropCallback(event, index, item, team);")
+    li(ng-repeat='player in team.players | filter: searchText' class='player' dnd-draggable='player' dnd-type="'playerType'" dnd-moved="team.players.splice($index, 1);logEvent('Player moved.', event);" dnd-effect-allowed='move')
       img(src='assets/images/pillow.jpg', alt='Profile Icon')
       div {{player.name}}
   ul(ng-if='team.subTeams' ng-init='teamPlayersMap = team.subTeams' ng-include="'teamMapTemplate'" class='teams cf')

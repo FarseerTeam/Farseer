@@ -32,6 +32,32 @@ angular.module('farseerApp')
       });
     };
 
+
+    $scope.dropCallback = function(event, index, player, team) {
+      console.log(arguments);
+      console.log(event);
+      console.log(index);
+      console.log(player);
+      console.log(team);
+      $scope.logListEvent('dropped at', event, index);
+
+      //TODO - call the api to change the player's team - notify the user if an error happened, and revert the changes
+      // this dnd functionality allows for shuffling players' ordering within teams - but the api has no way to store internal team ordering. 
+      // Do we care? It is a little discordant to be able to arrange team ordering, only to have it disappear the next time page loads
+
+      return player;
+    };
+
+    $scope.logEvent = function(message, event) {
+        console.log(message, '(triggered by the following', event.type, 'event)');
+        console.log(event);
+    };
+
+    $scope.logListEvent = function(action, event, index) {
+        var message = 'Player element is ' + action + ' position ' + index;
+        $scope.logEvent(message, event);
+    };
+
     function handleResponse(messageText, player, isError) {
       player.error = isError;
 

@@ -17,28 +17,14 @@ li.team {
   text-align: center;
   min-height: 13em;
   margin-top: 1em;
-
-  &.ng-enter, .ng-move {
-    -webkit-animation: slideInRight .5s;
-    -moz-animation: slideInRight .5s;
-    -o-animation: slideInRight .5s;
-    animation: slideInRight .5s;
-  }
-
-  &.ng-leave {
-    -webkit-animation: slideOutRight .5s;
-    -moz-animation: slideOutRight .5s;
-    -o-animation: slideOutRight .5s;
-    animation: slideOutRight .5s;
-  }
 }
 
 ul.players {
-
+  position: relative;
+  min-height: 11em;
 }
 
-li.player {
-  border: 3px solid #56D7D7;
+ul.players > li {
   border-radius: 5px;
   float: left;
   padding: 5px;
@@ -46,26 +32,21 @@ li.player {
   width: 7em;
   min-height: 11em;
   list-style-type: none;
+  position: relative;
+}
 
+ul.players > .dndPlaceholder {
+    border: 3px solid #bbb;
+    background-color: #bbb;
+}
+
+ul.players > li.player {
+  border: 3px solid #56D7D7;
   background-color: white;
 
   img {
     width: 80%;
     margin: 8% auto;
-  }
-
-  &.ng-enter, .ng-move {
-    -webkit-animation: fadeIn 1s;
-    -moz-animation: fadeIn 1s;
-    -o-animation: fadeIn 1s;
-    animation: fadeIn 1s;
-  }
-
-  &.ng-leave {
-    -webkit-animation: fadeOut 1s;
-    -moz-animation: fadeOut 1s;
-    -o-animation: fadeOut 1s;
-    animation: fadeOut 1s;
   }
 }
 
@@ -86,6 +67,17 @@ li.team:nth-child(4n+0) {
   border: 3px solid #A66F1A;
 }
 
+/**
+ * DRAG AND DROP STYLES  
+ */
+.dndDragging {
+  opacity: 0.7;
+}
+
+.dndDraggingSource {
+  display: none;
+}
+
 
 /**
  * http://nicolasgallagher.com/micro-clearfix-hack/
@@ -93,8 +85,8 @@ li.team:nth-child(4n+0) {
  */
 .cf:before,
 .cf:after {
-    content: " "; /* 1 */
-    display: table; /* 2 */
+    content: " ";
+    display: table;
 }
 
 .cf:after {
