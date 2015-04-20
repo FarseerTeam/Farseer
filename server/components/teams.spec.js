@@ -205,18 +205,18 @@ describe('The findByAnyUniqueIdentifier function... ', function () {
 
     it("the error function is called with the error returned from the database when finding by name.", function (done) {
       teams.findByAnyUniqueIdentifier(name, function () {
-        should.fail();
+        done("This should not succeed.");
       }, function (error) {
-        findByNameError.should.be.equal(error);
+        expect(findByNameError).to.equal(error);
         done();
       });
     });
 
     it("the error function is called with the error returned from the database when finding by id.", function (done) {
       teams.findByAnyUniqueIdentifier(validId, function () {
-        should.fail();
+        done('This should not succeed.');
       }, function (error) {
-        expectedIdError.should.be.equal(error);
+        expect(expectedIdError).to.equal(error);
         done();
       });
     });
