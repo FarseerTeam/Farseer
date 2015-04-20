@@ -61,7 +61,7 @@ describe('The components/common module... ', function(){
 		it('calls the error callback (with the passed error) if an error exists.', function(done){
 			var obj = {any: 'object'};
 			var err = {error: 'object'};
-			var successCB = function(doc) {should.fail();};
+			var successCB = function() {should.fail();};
 			var errorCB = function(error) {
 				err.should.be.equal(error);
 				done();
@@ -76,9 +76,7 @@ describe('The components/common module... ', function(){
 				obj.should.be.equal(doc);
 				done();
 			};
-			var errorCB = function(error) {should.fail();};
-
-			common.performCallBack(undefined, obj, successCB, errorCB);
+			common.performCallBack(undefined, obj, successCB, done);
 		});
 	});
 });
