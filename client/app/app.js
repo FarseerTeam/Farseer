@@ -5,7 +5,8 @@ angular.module('farseerApp', [
   'ngCookies',
   'ngResource',
   'ngSanitize',
-  'ngRoute'
+  'ngRoute',
+  'dndLists'
 ])
   .config(function ($routeProvider, $locationProvider) {
     $routeProvider

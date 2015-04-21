@@ -32,6 +32,16 @@ angular.module('farseerApp')
       });
     };
 
+    $scope.playerDroppedIntoTeamCB = function(player, team) {
+      if (player._team === team.path) {
+        return player;
+      }
+
+      player._team = team.path ? team.path : null;
+      httpService.update(player);
+      return player;
+    };
+
     function handleResponse(messageText, player, isError) {
       player.error = isError;
 
