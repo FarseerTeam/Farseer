@@ -47,7 +47,7 @@ describe('Controller: PlayersCtrl', function () {
       },
       getTeamToPlayersMap: function() {
         var deferred = $q.defer();
-        deferred.resolve([{team: 'Gryffindor', players: [{name: 'Harry Potter'}]}, {team: undefined, players: [{name: 'Poppy Pomfrey'}, {name: 'Irma Pince'}]}]);
+        deferred.resolve([{team: 'Gryffindor', path:'/Gryffindor' , players: [{name: 'Harry Potter', _team:'/Gryffindor'}]}, {team: undefined, players: [{name: 'Poppy Pomfrey'}, {name: 'Irma Pince'}]}, {team: 'Ravenclaw', path:'/Ravenclaw' , players: [{name: 'Penelope Clearwater', _team:'/Ravenclaw'}]}]);
         return deferred.promise;
       } 
     };
@@ -84,7 +84,7 @@ describe('Controller: PlayersCtrl', function () {
     it('should be complete when promise if fulfilled', function() {
       scope.$digest();
 
-      expect(scope.teamPlayersMap.length).toEqual(2);
+      expect(scope.teamPlayersMap.length).toEqual(3);
 
       expect(scope.teamPlayersMap[0].team).toBe('Gryffindor');
       expect(scope.teamPlayersMap[0].players.length).toBe(1);
@@ -189,6 +189,73 @@ describe('Controller: PlayersCtrl', function () {
       expect(scope.handler.message).toBe(expectedErrorMessage);
       expect(existingPlayer.error).toBe(true);
     });
+
+  });
+
+  describe('when a player is dropped onto a team... ', function() {
+
+    var playerWithTeam;
+    var playerWithNoTeam;
+    var originalTeam;
+    var targetTeam;
+    var undefinedTeam;
+    var updateWasNeverCalled = {name: 'neverCalled'};
+    var index = 'does not matter, but would be the index of the new location of the player in the new team'; 
+    var event = 'does not matter'; 
+
+    beforeEach(function() {
+      scope.update(updateWasNeverCalled);
+      scope.$digest();
+      playerWithTeam = scope.teamPlayersMap[0].players[0];
+      playerWithNoTeam = scope.teamPlayersMap[1].players[0];
+      originalTeam = scope.teamPlayersMap[0];
+      targetTeam = scope.teamPlayersMap[2];
+      undefinedTeam = scope.teamPlayersMap[1];
+      scope.update(updateWasNeverCalled);
+    });
+
+    it('the player is updated (using the httpService) with the new team, when moving from one team to another.', function() {
+      scope.playerDroppedIntoTeamCB(playerWithTeam, targetTeam, index, event);
+      scope.$digest();
+      expect(updatedPlayer.name).toBe(playerWithTeam.name);
+      expect(updatedPlayer._team).toBe(targetTeam.path);
+    }); 
+
+    it('the player is updated (using the httpService) with the new team, when moving from no team (the undefined team) to a team.', function() {
+      scope.playerDroppedIntoTeamCB(playerWithNoTeam, targetTeam, index, event);
+      scope.$digest();
+      expect(updatedPlayer.name).toBe(playerWithNoTeam.name);
+      expect(updatedPlayer._team).toBe(targetTeam.path);
+    }); 
+
+    it('the player is updated with an null team (not undefined), when moving from a team to no team (the undefined team).', function() {
+      scope.playerDroppedIntoTeamCB(playerWithTeam, undefinedTeam, index, event);
+      scope.$digest();
+      expect(updatedPlayer.name).toBe(playerWithTeam.name);
+      expect(updatedPlayer._team).toBe(null);
+    }); 
+
+    it('when moved to the same team, no update is made.', function() {
+      scope.playerDroppedIntoTeamCB(playerWithTeam, originalTeam, index, event);
+      scope.$digest();
+      expect(updatedPlayer).toBe(updateWasNeverCalled);
+    }); 
+
+    it('when an update happens, a copy of the updated player is returned.', function() {
+      var returnedValue = scope.playerDroppedIntoTeamCB(playerWithTeam, targetTeam, index, event);
+      scope.$digest();
+      expect(returnedValue).toBe(updatedPlayer);
+    });
+
+    // it('when the update fails, some awesome error handling happens.', function() {
+
+    // });
+
+    it('when no update is needed (moved within the same team), the player is returned unchanged.', function() {
+      var returnedValue = scope.playerDroppedIntoTeamCB(playerWithTeam, originalTeam, index, event);
+      scope.$digest();
+      expect(returnedValue).toBe(playerWithTeam);
+    }); 
 
   });
 
