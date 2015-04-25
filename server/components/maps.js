@@ -22,10 +22,12 @@ exports.buildTeamPlayersMap = function () {
 function populateMapWithTeamsForPlayer(player, teamPlayersMap, teamsList) {
   var pathElements = getPathElements(player);
   var parentTeam = {subTeams: teamPlayersMap};
+  var teamPath = '';
 
   for (var index = 1; index < pathElements.length; index++) {
     var pathElement = pathElements[index];
-    parentTeam = getTeamNode(player._team, pathElement, parentTeam.subTeams, teamsList);
+    teamPath += '/' + pathElement;
+    parentTeam = getTeamNode(teamPath, pathElement, parentTeam.subTeams, teamsList);
   }
   return parentTeam;
 }

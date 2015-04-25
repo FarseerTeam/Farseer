@@ -38,6 +38,16 @@ describe('The maps module', function() {
     });
   };
 
+  var createTeam = function(teamPath) {
+    var pathElements = teamPath.split('/')
+    return teams.Team.create({
+      name: pathElements[pathElements.length - 1],
+      path: teamPath
+    }).then(function(teamMongoose) {
+      return teamMongoose.toObject();
+    });
+  };
+
   afterEach(clearAll);
 
   describe("buildTeamPlayersMap", function() {
@@ -229,6 +239,32 @@ describe('The maps module', function() {
           image: 'avatar.jpg',
           players: [prereqs.aang],
           subTeams: []
+        }];
+        return maps.buildTeamPlayersMap().then(checkMapMatches(expectedMap));
+      }).then(done, done);
+    });
+
+    it("Teams from the database include correct paths when nested. This problem only occurs when child team player is created before the parent team player.", function(done) {
+      RSVP.hash({
+        teamAvatar: createTeam('/avatar'),
+        teamChild: createTeam('/avatar/children'),
+        aangsKid: createPlayer('/avatar/children', "AangsKid"),
+        aang: createPlayer('/avatar', "Aang")
+      }).then(function(prereqs) {
+        var expectedMap = [{
+          team: 'avatar',
+          path: '/avatar',
+          name: 'avatar',
+          players: [prereqs.aang],
+          subTeams: [
+            {
+              team: 'children',
+              path: '/avatar/children',
+              name: 'children',
+              players: [prereqs.aangsKid],
+              subTeams: []
+            }
+          ]
         }];
         return maps.buildTeamPlayersMap().then(checkMapMatches(expectedMap));
       }).then(done, done);
