@@ -35,11 +35,6 @@ ul.players > li {
   position: relative;
 }
 
-ul.players > .dndPlaceholder {
-    border: 3px solid #bbb;
-    background-color: #bbb;
-}
-
 ul.players > li.player {
   border: 3px solid #56D7D7;
   background-color: white;
@@ -68,6 +63,24 @@ li.team:nth-child(4n+0) {
 }
 
 /**
+* ERROR MESSAGES
+*/
+.errorMessage {
+  background-color: #eee;
+  border: 2px solid red;
+  border-radius: 5px;
+  color: red;
+  left: 50%;
+  margin-left: -10%;
+  padding: .5em;
+  position: fixed;
+  text-align: center;
+  top: 30px;
+  width: 20%;
+  z-index: 500;
+}
+
+/**
  * DRAG AND DROP STYLES  
  */
 .dndDragging {
@@ -76,6 +89,11 @@ li.team:nth-child(4n+0) {
 
 .dndDraggingSource {
   display: none;
+}
+
+ul.players > .dndPlaceholder {
+    border: 3px solid #bbb;
+    background-color: #bbb;
 }
 
 

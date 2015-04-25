@@ -1,17 +1,15 @@
 'use strict';
 
 angular.module('farseerApp')
-  .controller('PlayersCtrl', function ($scope, httpService) {
+  .controller('PlayersCtrl', function ($scope, $timeout, httpService) {
     $scope.players = [];
     $scope.teamPlayersMap = [];
+    $scope.error = undefined;
 
-    httpService.getPlayers().then(function(players) {
-      $scope.players = players;
-    });
-
-    httpService.getTeamToPlayersMap().then(function(map) {
-      $scope.teamPlayersMap = map;
-    });
+    (function initializeController() {
+      loadTeamToPlayersMap();
+      loadPlayers();
+    })();  //is called immediately
 
     $scope.update = function(player) {
       httpService.update(player).then(function() {
@@ -38,9 +36,15 @@ angular.module('farseerApp')
       }
 
       player._team = team.path ? team.path : null;
-      httpService.update(player);
+      httpService.update(player).catch(errorUpdatingPlayer);
       return player;
     };
+
+    function loadPlayers() {
+      httpService.getPlayers().then(function(players) {
+        $scope.players = players;
+      });
+    }
 
     function handleResponse(messageText, player, isError) {
       player.error = isError;
@@ -52,6 +56,22 @@ angular.module('farseerApp')
     }
 
     function addNewPlayerToScope(newPlayer) {
-        $scope.players.push(newPlayer);
+      $scope.players.push(newPlayer);
     }
+
+    function errorUpdatingPlayer(error) {
+      loadTeamToPlayersMap().then(displayErrorMessage('Error moving player to a new team: ' + error.data.message));
+    }
+
+    function loadTeamToPlayersMap() {
+      return httpService.getTeamToPlayersMap().then(function(map) {
+        $scope.teamPlayersMap = map;
+      });
+    }
+
+    function displayErrorMessage(errorMessage) {
+      $scope.error = {message: errorMessage};
+      $timeout(function() {$scope.error = undefined;}, 3000);
+    }
+
   });

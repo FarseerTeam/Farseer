@@ -7,11 +7,16 @@ describe('Controller: PlayersCtrl', function () {
   var PlayersCtrl,
       scope,
       mockService,
+      mockTimeout,
       addedPlayer,
       updatedPlayer;
   var rejectAddPlayer = false;
   var rejectUpdatePlayer = false;
+  var timeoutWasCalledWithTime = -1;
+  var shouldCallTimeoutFunctionImmediately = false;
   var expectedErrorMessage = 'Error Message, Error Message!';
+  var teamToPlayersMapFromServer = [{team: 'Gryffindor', path:'/Gryffindor' , players: [{name: 'Harry Potter', _team:'/Gryffindor'}]}, {/*team: undefined,*/ players: [{name: 'Poppy Pomfrey'}, {name: 'Irma Pince'}]}, {team: 'Ravenclaw', path:'/Ravenclaw' , players: [{name: 'Penelope Clearwater', _team:'/Ravenclaw'}]}];
+  var cloneObject = function(objectToClone){return JSON.parse(JSON.stringify(objectToClone));};
 
   beforeEach(inject(function ($controller, $rootScope, $q) {
     scope = $rootScope.$new();
@@ -47,13 +52,21 @@ describe('Controller: PlayersCtrl', function () {
       },
       getTeamToPlayersMap: function() {
         var deferred = $q.defer();
-        deferred.resolve([{team: 'Gryffindor', path:'/Gryffindor' , players: [{name: 'Harry Potter', _team:'/Gryffindor'}]}, {team: undefined, players: [{name: 'Poppy Pomfrey'}, {name: 'Irma Pince'}]}, {team: 'Ravenclaw', path:'/Ravenclaw' , players: [{name: 'Penelope Clearwater', _team:'/Ravenclaw'}]}]);
+        deferred.resolve(cloneObject(teamToPlayersMapFromServer));
         return deferred.promise;
       } 
     };
 
+    mockTimeout = function(functionToPerform, timeout) {
+      timeoutWasCalledWithTime = timeout;
+      if (shouldCallTimeoutFunctionImmediately) {
+        functionToPerform();
+      }
+    };
+
     PlayersCtrl = $controller('PlayersCtrl', {
       $scope: scope,
+      $timeout: mockTimeout,
       httpService: mockService
     });
 
@@ -83,17 +96,15 @@ describe('Controller: PlayersCtrl', function () {
 
     it('should be complete when promise if fulfilled', function() {
       scope.$digest();
+      expect(scope.teamPlayersMap).toEqual(teamToPlayersMapFromServer);
+    });
+  });
 
-      expect(scope.teamPlayersMap.length).toEqual(3);
-
-      expect(scope.teamPlayersMap[0].team).toBe('Gryffindor');
-      expect(scope.teamPlayersMap[0].players.length).toBe(1);
-      expect(scope.teamPlayersMap[0].players[0].name).toBe('Harry Potter');
-
-      expect(scope.teamPlayersMap[1].team).toBe(undefined);
-      expect(scope.teamPlayersMap[1].players.length).toBe(2);
-      expect(scope.teamPlayersMap[1].players[0].name).toBe('Poppy Pomfrey');
-      expect(scope.teamPlayersMap[1].players[1].name).toBe('Irma Pince');
+  describe('the error object attached to the scope: ', function() {
+    it('should be undefined when the page is loaded', function() {
+      expect(scope.error).toBe(undefined);
+      scope.$digest();
+      expect(scope.error).toBe(undefined);
     });
   });
 
@@ -200,8 +211,6 @@ describe('Controller: PlayersCtrl', function () {
     var targetTeam;
     var undefinedTeam;
     var updateWasNeverCalled = {name: 'neverCalled'};
-    var index = 'does not matter, but would be the index of the new location of the player in the new team'; 
-    var event = 'does not matter'; 
 
     beforeEach(function() {
       scope.update(updateWasNeverCalled);
@@ -211,51 +220,77 @@ describe('Controller: PlayersCtrl', function () {
       originalTeam = scope.teamPlayersMap[0];
       targetTeam = scope.teamPlayersMap[2];
       undefinedTeam = scope.teamPlayersMap[1];
-      scope.update(updateWasNeverCalled);
     });
 
     it('the player is updated (using the httpService) with the new team, when moving from one team to another.', function() {
-      scope.playerDroppedIntoTeamCB(playerWithTeam, targetTeam, index, event);
+      scope.playerDroppedIntoTeamCB(playerWithTeam, targetTeam);
       scope.$digest();
       expect(updatedPlayer.name).toBe(playerWithTeam.name);
       expect(updatedPlayer._team).toBe(targetTeam.path);
     }); 
 
     it('the player is updated (using the httpService) with the new team, when moving from no team (the undefined team) to a team.', function() {
-      scope.playerDroppedIntoTeamCB(playerWithNoTeam, targetTeam, index, event);
+      scope.playerDroppedIntoTeamCB(playerWithNoTeam, targetTeam);
       scope.$digest();
       expect(updatedPlayer.name).toBe(playerWithNoTeam.name);
       expect(updatedPlayer._team).toBe(targetTeam.path);
     }); 
 
     it('the player is updated with an null team (not undefined), when moving from a team to no team (the undefined team).', function() {
-      scope.playerDroppedIntoTeamCB(playerWithTeam, undefinedTeam, index, event);
+      scope.playerDroppedIntoTeamCB(playerWithTeam, undefinedTeam);
       scope.$digest();
       expect(updatedPlayer.name).toBe(playerWithTeam.name);
       expect(updatedPlayer._team).toBe(null);
     }); 
 
     it('when moved to the same team, no update is made.', function() {
-      scope.playerDroppedIntoTeamCB(playerWithTeam, originalTeam, index, event);
+      scope.playerDroppedIntoTeamCB(playerWithTeam, originalTeam);
       scope.$digest();
       expect(updatedPlayer).toBe(updateWasNeverCalled);
     }); 
 
     it('when an update happens, a copy of the updated player is returned.', function() {
-      var returnedValue = scope.playerDroppedIntoTeamCB(playerWithTeam, targetTeam, index, event);
+      var returnedValue = scope.playerDroppedIntoTeamCB(playerWithTeam, targetTeam);
       scope.$digest();
       expect(returnedValue).toBe(updatedPlayer);
     });
 
-    // it('when the update fails, some awesome error handling happens.', function() {
-
-    // });
-
     it('when no update is needed (moved within the same team), the player is returned unchanged.', function() {
-      var returnedValue = scope.playerDroppedIntoTeamCB(playerWithTeam, originalTeam, index, event);
+      var returnedValue = scope.playerDroppedIntoTeamCB(playerWithTeam, originalTeam);
       scope.$digest();
       expect(returnedValue).toBe(playerWithTeam);
     }); 
+
+    describe('when the update fails... ', function(){
+
+      beforeEach(function() {
+        rejectUpdatePlayer = true;
+        scope.teamPlayersMap = [];
+      });
+
+      it('the entire map is reloaded.', function() {
+        scope.playerDroppedIntoTeamCB(playerWithTeam, targetTeam);
+        scope.$digest();
+        expect(scope.teamPlayersMap).toEqual(teamToPlayersMapFromServer);
+      });
+
+      it('the error object in scope is updated.', function() {
+        scope.playerDroppedIntoTeamCB(playerWithTeam, targetTeam);
+        scope.$digest();
+        expect(scope.error).not.toBe(undefined);
+        expect(scope.error.message).not.toBe(undefined);
+      });
+
+      it('the error object disappears after a 3 seconds.', function() {
+        shouldCallTimeoutFunctionImmediately = true;
+        scope.playerDroppedIntoTeamCB(playerWithTeam, targetTeam);
+        scope.$digest();
+
+        expect(timeoutWasCalledWithTime).toEqual(3000);
+        expect(scope.error).toBe(undefined);
+      });
+
+    });
 
   });
 
