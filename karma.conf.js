@@ -22,6 +22,7 @@ module.exports = function(config) {
       'client/bower_components/lodash/dist/lodash.compat.js',
       'client/bower_components/underscore/underscore.js',
       'client/bower_components/angular-drag-and-drop-lists/angular-drag-and-drop-lists.js',
+      'client/bower_components/angular-gravatar/build/angular-gravatar.js',
       'client/app/app.js',
       'client/app/app.coffee',
       'client/app/**/*.js',

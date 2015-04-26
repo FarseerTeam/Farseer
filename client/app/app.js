@@ -6,7 +6,8 @@ angular.module('farseerApp', [
   'ngResource',
   'ngSanitize',
   'ngRoute',
-  'dndLists'
+  'dndLists',
+  'ui.gravatar'
 ])
   .config(function ($routeProvider, $locationProvider) {
     $routeProvider
@@ -15,3 +16,13 @@ angular.module('farseerApp', [
       });
     $locationProvider.html5Mode(true);
   });
+
+angular.module('ui.gravatar').config([
+  'gravatarServiceProvider', function(gravatarServiceProvider) {
+    gravatarServiceProvider.defaults = {
+      'default' : 'wavatar',
+      size: 92
+    };
+    gravatarServiceProvider.secure = true;
+  }
+]);
