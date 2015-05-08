@@ -87,7 +87,7 @@
   "scripts": {
     "start": "node server/app.js",
     "test": "grunt test",
-    "postinstall": "node node_modules/grunt-protractor-runner/node_modules/protractor/bin/webdriver-manager update --standalone"
+    "postinstall": "node node_modules/protractor/bin/webdriver-manager update --standalone"
   },
   "private": true
 }
