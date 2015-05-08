@@ -20,7 +20,7 @@ exports.config = {
   // Boolean. If true, Protractor will connect directly to the browser Drivers
   // at the locations specified by chromeDriver and firefoxPath. Only Chrome
   // and Firefox are supported for direct connect.
-  directConnect: true,
+  directConnect: false,
 
   // list of files / patterns to load in the browser
   specs: [
