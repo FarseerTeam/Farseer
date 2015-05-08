@@ -2,15 +2,17 @@
 
 describe('Main View', function() {
   var page;
+  var myElement;
 
   beforeEach(function() {
     browser.get('/');
+    myElement = element(by.id("email"));
     page = require('./main.po');
   });
 
-  it('should include jumbotron with correct data', function() {
-    expect(page.h1El.getText()).toBe('\'Allo, \'Allo!');
-    expect(page.imgEl.getAttribute('src')).toMatch(/assets\/images\/yeoman.png$/);
-    expect(page.imgEl.getAttribute('alt')).toBe('I\'m Yeoman');
+  it('... this is only a test to see if this thing works!', function() {
+    //console.log(myElement);
+    expect(myElement).toBeDefined();
+    expect(page.emailTextInput).toBeDefined();
   });
 });

@@ -12,9 +12,15 @@ exports.config = {
   // with relative paths will be prepended with this.
   baseUrl: 'http://localhost:' + (process.env.PORT || '9000'),
 
-  // If true, only chromedriver will be started, not a standalone selenium.
-  // Tests for browsers other than chrome will not run.
-  chromeOnly: true,
+  // **DEPRECATED**
+  // If true, only ChromeDriver will be started, not a Selenium Server.
+  // This should be replaced with directConnect.
+  // chromeOnly: true,
+
+  // Boolean. If true, Protractor will connect directly to the browser Drivers
+  // at the locations specified by chromeDriver and firefoxPath. Only Chrome
+  // and Firefox are supported for direct connect.
+  directConnect: true,
 
   // list of files / patterns to load in the browser
   specs: [
@@ -32,6 +38,7 @@ exports.config = {
   // https://code.google.com/p/selenium/source/browse/javascript/webdriver/capabilities.js
   capabilities: {
     'browserName': 'chrome'
+    // 'browserName': 'phantomjs'
   },
 
   // ----- The test framework -----
