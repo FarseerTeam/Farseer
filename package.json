@@ -87,7 +87,9 @@
   "scripts": {
     "start": "node server/app.js",
     "test": "grunt test",
-    "postinstall": "node node_modules/protractor/bin/webdriver-manager update --standalone"
+    "update-webdriver": "node node_modules/protractor/bin/webdriver-manager update --standalone",
+    "preprotractor": "npm run update-webdriver",
+    "postinstall": "npm run update-webdriver"
   },
   "private": true
 }

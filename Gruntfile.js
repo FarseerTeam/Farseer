@@ -460,12 +460,17 @@ module.exports = function (grunt) {
     protractor: {
       options: {
         configFile: 'protractor.conf.js',
-        keepAlive: false
+        keepAlive: false,
+        args: {
+            browser: 'chrome',
+            seleniumAddress: 'http://localhost:4444/wd/hub'
+          }
       },
       chrome: {
         options: {
           args: {
-            browser: 'chrome'
+            browser: 'chrome',
+            seleniumAddress: 'http://localhost:4444/wd/hub'
           }
         }
       }
