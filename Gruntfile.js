@@ -16,6 +16,7 @@ module.exports = function (grunt) {
     ngtemplates: 'grunt-angular-templates',
     cdnify: 'grunt-google-cdn',
     protractor: 'grunt-protractor-runner',
+    protractor_webdriver: 'grunt-protractor-webdriver',
     injector: 'grunt-asset-injector',
     buildcontrol: 'grunt-build-control'
   });
@@ -451,6 +452,11 @@ module.exports = function (grunt) {
       src: ['server/**/*.spec.js']
     },
 
+    protractor_webdriver: {
+        options: {keepAlive: true},
+        start: {}
+    },
+
     protractor: {
       options: {
         configFile: 'protractor.conf.js'
@@ -661,6 +667,7 @@ module.exports = function (grunt) {
         'wiredep',
         'autoprefixer',
         'express:dev',
+        'protractor_webdriver:start',
         'protractor'
       ]);
     }
