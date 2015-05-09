@@ -9,6 +9,9 @@ module.exports = function (grunt) {
     localConfig = {};
   }
 
+  grunt.loadNpmTasks('grunt-protractor-webdriver');
+  grunt.loadNpmTasks('grunt-protractor-runner');
+
   // Load grunt tasks automatically, when needed
   require('jit-grunt')(grunt, {
     express: 'grunt-express-server',
@@ -674,14 +677,13 @@ module.exports = function (grunt) {
         'autoprefixer',
         'express:dev',
         'protractor_webdriver:start',
-        'protractor'
+        'protractor:chrome'
       ]);
     }
 
     else grunt.task.run([
       'test:server',
-      'test:client',
-      'test:e2e'
+      'test:client'
     ]);
   });
 

@@ -88,7 +88,9 @@
     "start": "node server/app.js",
     "test": "grunt test",
     "update-webdriver": "node node_modules/protractor/bin/webdriver-manager update --standalone",
-    "preprotractor": "npm run update-webdriver",
+    "update-other-webdriver": "node node_modules/grunt-protractor-runner/node_modules/protractor/bin/webdriver-manager update",
+    "preprotractor": "npm run update-webdriver && npm run update-other-webdriver",
+    "protractor": "grunt test:e2e",
     "postinstall": "npm run update-webdriver"
   },
   "private": true
