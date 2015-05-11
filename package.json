@@ -56,7 +56,6 @@
     "protractor": "^2.0",
     "grunt-protractor-runner": "^2.0.0",
     "grunt-protractor-webdriver": "^0.2.0",
-    "phantomjs": "^1.9.16",
     "grunt-rev": "~0.1.0",
     "grunt-svgmin": "~2.0.1",
     "grunt-usemin": "~3.0.0",

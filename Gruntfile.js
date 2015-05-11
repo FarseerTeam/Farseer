@@ -689,8 +689,8 @@ module.exports = function (grunt) {
         'wiredep',
         'autoprefixer',
         'express:dev',
-        'protractor_webdriver:start',
-        'protractor:firefox'
+        // 'protractor_webdriver:start',
+        'protractor:chrome'
       ]);
     }
 
