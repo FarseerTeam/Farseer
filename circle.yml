@@ -8,6 +8,7 @@ test:
   post:
     - grunt newer:jshint
     - grunt test
+    - npm run protractor
 deployment:
   production:
     branch: master

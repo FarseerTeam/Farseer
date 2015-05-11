@@ -465,15 +465,28 @@ module.exports = function (grunt) {
         configFile: 'protractor.conf.js',
         keepAlive: false,
         args: {
-            browser: 'chrome',
+            browser: 'phantomjs',
             seleniumAddress: 'http://localhost:4444/wd/hub'
           }
       },
       chrome: {
         options: {
           args: {
-            browser: 'chrome',
-            seleniumAddress: 'http://localhost:4444/wd/hub'
+            browser: 'chrome'
+          }
+        }
+      },
+      phantomjs: {
+        options: {
+          args: {
+            browser: 'phantomjs'
+          }
+        }
+      },
+      firefox: {
+        options: {
+          args: {
+            browser: 'firefox'
           }
         }
       }
@@ -677,7 +690,7 @@ module.exports = function (grunt) {
         'autoprefixer',
         'express:dev',
         'protractor_webdriver:start',
-        'protractor:chrome'
+        'protractor:firefox'
       ]);
     }
 
