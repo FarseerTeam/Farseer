@@ -42,27 +42,8 @@ exports.update = function (request, response) {
 
   var handleUpdate = function () {
     var player = request.player;
-    findTeamAndThen(request.body._team, function (team) {
-      if (team) {
-        request.body._team = team.path;
-      }
       player = _.extend(player, request.body);
       updateThePlayer(player);
-    });
-  };
-
-  var findTeamAndThen = function (identifier, callback) {
-    if (!identifier) {
-      callback(undefined)
-    } else {
-      teams.findByAnyUniqueIdentifier(identifier, function (team) {
-        if (!team) {
-          teamNotFoundError();
-        } else {
-          callback(team);
-        }
-      }, dbCallFailure);
-    }
   };
 
   var updateThePlayer = function (playerToSave) {

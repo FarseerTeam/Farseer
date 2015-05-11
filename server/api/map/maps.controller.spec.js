@@ -65,10 +65,11 @@ describe('/api/maps', function () { //jshint ignore:line
         .then(done, done);
     });
 
-    it("should respond with the appropriate format {team: 'avatar', players: [{name: 'Aang'}]}", function (done) {
+    it("should respond with the appropriate format", function (done) {
 
       var expected = {
         team: 'avatar',
+        path: '/avatar',
         players: [flattenId(player.toObject())],
         subTeams: []
       };
