@@ -1,4 +1,9 @@
 dependencies:
+  pre:
+    - google-chrome --version
+    - sudo apt-get update
+    - sudo apt-get --only-upgrade install google-chrome-stable
+    - google-chrome --version
   override:
     - npm install -g bower
     - npm install -g grunt-cli
