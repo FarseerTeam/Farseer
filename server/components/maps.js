@@ -36,7 +36,7 @@ function getPathElements(player) {
   if (player._team) {
     return player._team.split('/');
   } else {
-    return [null, undefined];
+    return [null, 'unassigned'];
   }
 }
 
@@ -49,14 +49,15 @@ function getTeamNode(teamPath, teamName, teamPlayersMap, teams) {
   }
 
   var team = _.findWhere(teams, {path: teamPath});
-  var teamNode = createTeamNode(teamName, team);
+  var teamNode = createTeamNode(teamName, team, teamPath);
   teamPlayersMap.push(teamNode);
   return teamNode;
 }
 
-function createTeamNode(teamName, team) {
+function createTeamNode(teamName, team, teamPath) {
   var teamNode = {
     team: teamName,
+    path: teamPath,
     players: [],
     subTeams: []
   };

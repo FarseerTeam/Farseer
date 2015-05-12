@@ -13,5 +13,6 @@ ul(ng-repeat='player in players')
   li(ng-class='{disabled: !active}', ng-init='active=false; edited=false')
     input(type='text', ng-model='player.name', value='{{player.name}}', ng-focus='active=true', ng-blur='active=false', ng-change='edited=true', ng-readonly='!active')
     input(type='text', ng-model='player.email', value='{{player.email}}', ng-class='{error: player.error}', ng-focus='active=true', ng-blur='active=false', ng-change='edited=true', ng-readonly='!active')
+    input(type='text', ng-model='player._team', ng-focus='active=true', ng-blur='active=false', ng-change='edited=true', ng-readonly='!active')
     button(ng-click='update(player); active=false; edited=false', ng-show='edited') Save
 a(href='/playersMap', title='Map View') Map View
