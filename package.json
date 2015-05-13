@@ -53,9 +53,7 @@
     "grunt-node-inspector": "~0.1.6",
     "grunt-nodemon": "~0.4.0",
     "grunt-open": "~0.2.3",
-    "protractor": "^2.0",
     "grunt-protractor-runner": "^2.0.0",
-    "grunt-protractor-webdriver": "^0.2.0",
     "grunt-rev": "~0.1.0",
     "grunt-svgmin": "~2.0.1",
     "grunt-usemin": "~3.0.0",
@@ -87,11 +85,10 @@
   "scripts": {
     "start": "node server/app.js",
     "test": "grunt test",
-    "update-webdriver": "node node_modules/protractor/bin/webdriver-manager update --standalone",
-    "update-other-webdriver": "node node_modules/grunt-protractor-runner/node_modules/protractor/bin/webdriver-manager update",
-    "preprotractor": "npm run update-webdriver && npm run update-other-webdriver",
     "protractor": "grunt test:e2e",
-    "postinstall": "npm run update-webdriver"
+    "postinstall": "npm run update-webdriver",
+    "update-webdriver": "node node_modules/grunt-protractor-runner/node_modules/protractor/bin/webdriver-manager update"
   },
   "private": true
 }
+

@@ -9,9 +9,6 @@ module.exports = function (grunt) {
     localConfig = {};
   }
 
-  grunt.loadNpmTasks('grunt-protractor-webdriver');
-  grunt.loadNpmTasks('grunt-protractor-runner');
-
   // Load grunt tasks automatically, when needed
   require('jit-grunt')(grunt, {
     express: 'grunt-express-server',
@@ -19,7 +16,6 @@ module.exports = function (grunt) {
     ngtemplates: 'grunt-angular-templates',
     cdnify: 'grunt-google-cdn',
     protractor: 'grunt-protractor-runner',
-    protractor_webdriver: 'grunt-protractor-webdriver',
     injector: 'grunt-asset-injector',
     buildcontrol: 'grunt-build-control'
   });
@@ -455,17 +451,11 @@ module.exports = function (grunt) {
       src: ['server/**/*.spec.js']
     },
 
-    protractor_webdriver: {
-        options: {keepAlive: true},
-        start: {}
-    },
-
     protractor: {
       options: {
         configFile: 'protractor.conf.js',
         keepAlive: false,
         args: {
-            browser: 'chrome',
             seleniumAddress: 'http://localhost:4444/wd/hub'
           }
       },
@@ -473,13 +463,6 @@ module.exports = function (grunt) {
         options: {
           args: {
             browser: 'chrome'
-          }
-        }
-      },
-      phantomjs: {
-        options: {
-          args: {
-            browser: 'phantomjs'
           }
         }
       },
@@ -689,8 +672,8 @@ module.exports = function (grunt) {
         'wiredep',
         'autoprefixer',
         'express:dev',
-        'protractor_webdriver:start',
-        'protractor:chrome'
+        'protractor:chrome',
+        'protractor:firefox'
       ]);
     }
 
