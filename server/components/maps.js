@@ -3,7 +3,7 @@ var RSVP = require('rsvp');
 var players = require("./players");
 var teams = require("./teams");
 
-exports.buildTeamPlayersMap = function () {
+exports.buildTeamPlayersMap = function (path) {
   return RSVP.hash({
     players: players.Player.find({}).exec(),
     teams: teams.Team.find({}).exec()
@@ -15,9 +15,31 @@ exports.buildTeamPlayersMap = function () {
       var destinationTeam = populateMapWithTeamsForPlayer(player, teamPlayersMap, data.teams);
       destinationTeam.players.push(player.toJSON());
     }
+    
+    var result = findTeamWithPath(path, teamPlayersMap);
+    
+    if(result) {
+      return [result];
+    }
+    
     return teamPlayersMap;
   });
 };
+
+function findTeamWithPath(path, teamMap) {
+  for (var index = 0; index < teamMap.length; index++) {
+    var team = teamMap[index];
+    
+    if(team.path === path) {
+      return team;
+    } else {
+      var result = findTeamWithPath(path, team.subTeams);
+      if (result) {
+        return result;
+      }
+    }
+  }
+}
 
 function populateMapWithTeamsForPlayer(player, teamPlayersMap, teamsList) {
   var pathElements = getPathElements(player);

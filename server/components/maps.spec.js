@@ -121,7 +121,20 @@ describe('The maps module', function () {
         return maps.buildTeamPlayersMap().then(checkMapMatches(expectedMap));
       }).then(done, done);
     });
-
+    
+    it("can return only players on a subteam", function (done) {
+      createPlayer('/fireNation/avatar', "Aang")
+        .then(function (aang) {
+        var expectedMap = [{
+          team: 'avatar',
+          path: '/fireNation/avatar',
+          players: [aang],
+          subTeams: []
+        }];
+        return maps.buildTeamPlayersMap("/fireNation/avatar").then(checkMapMatches(expectedMap));
+      }).then(done, done);
+    });
+    
     it("can represent multiple players and multiple subteams",
       function (done) {
         RSVP.hash({

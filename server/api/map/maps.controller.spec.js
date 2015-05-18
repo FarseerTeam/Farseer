@@ -30,24 +30,6 @@ var clearAll = function () {
   });
 };
 
-var execAndCheck = function (expected, done) {
-  request(app)
-    .get('/api/maps')
-    .expect(200)
-    .expect('Content-Type', /json/)
-    .end(function (err, response) {
-      console.log("dumb ");
-      if (err) {
-        console.log(err);
-        done(err);
-        return;
-      }
-      expect(response.body).to.instanceof(Array);
-      expect(response.body).to.eql(expected);
-      done();
-    });
-};
-
 describe('/api/maps', function () { //jshint ignore:line
 
   describe("Given player 'Aang' on team: 'avatar", function () {
@@ -56,12 +38,12 @@ describe('/api/maps', function () { //jshint ignore:line
     beforeEach(function (done) {
       clearAll()
         .then(function () {
-          return createPlayer("/avatar", "Aang");
-        })
+        return createPlayer("/avatar", "Aang");
+      })
         .then(function (newPlayer) {
-          player = newPlayer;
-          return null;
-        })
+        player = newPlayer;
+        return null;
+      })
         .then(done, done);
     });
 
@@ -74,11 +56,62 @@ describe('/api/maps', function () { //jshint ignore:line
         subTeams: []
       };
 
-      execAndCheck([expected], done);
+      request(app)
+        .get('/api/maps')
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .end(function (err, response) {
+        if (err) {
+          console.log(err);
+          done(err);
+          return;
+        }
+        expect(response.body).to.instanceof(Array);
+        expect(response.body).to.eql([expected]);
+        done();
+      });
+    });
+
+    describe('/sub/team', function () {
+      var subTeamPlayer;
+
+      beforeEach(function (done) {
+        createPlayer("/avatar/sub/team", "Namoor")
+          .then(function (newPlayer) {
+          subTeamPlayer = newPlayer;
+          done();
+        });
+      });
+
+      it('should only return players in the sub team', function (done) {
+        var expected = {
+          team: 'team',
+          path: '/avatar/sub/team',
+          players: [flattenId(subTeamPlayer.toObject())],
+          subTeams: []
+        };
+
+        request(app)
+          .get('/api/maps/avatar/sub/team')
+          .expect(200)
+          .expect('Content-Type', /json/)
+          .end(function (err, response) {
+          if (err) {
+            console.log(err);
+            done(err);
+            return;
+          }
+          expect(response.body).to.instanceof(Array);
+          expect(response.body).to.eql([expected]);
+          done();
+        });
+
+      });
     });
 
     afterEach(function (done) {
       clearAll().then(done.bind(null, null), done);
     });
   });
+
 });

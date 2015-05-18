@@ -23,5 +23,4 @@ router.route('/:team_id')
 	.put(controller.update)
 	.delete(controller.delete);	
 
-// app.param('teamId', articles.articleByID);
 module.exports = router;

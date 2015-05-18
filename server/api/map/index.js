@@ -5,9 +5,9 @@ var controller = require('./maps.controller');
 
 var router = express.Router();
 
-router.route('/')
-	.all(function(req, res, next) {
-	  next();
+router.route('/*')
+	.all(function (req, res, next) {
+			next();
 	})
 	.get(controller.index);
 
