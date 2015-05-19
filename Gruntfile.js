@@ -679,9 +679,12 @@ module.exports = function (grunt) {
 
     else grunt.task.run([
       'test:server',
-      'test:client'
+      'test:client',
+      'test:e2e'
     ]);
   });
+
+  grunt.registerTask('e2e', ['test:e2e']);
 
   grunt.registerTask('build', [
     'clean:dist',
