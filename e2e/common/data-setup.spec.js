@@ -1,3 +1,4 @@
+'use strict'
 var players = require('../../server/components/players');
 var teams = require('../../server/components/teams');
 var setup = require('./data-setup');
@@ -85,7 +86,6 @@ describe('The data-setup module... ', function() {
 		});
 
 		it('can insert a single player using promises.', function(done) {
-			
 			setup.addPlayer(firstPlayer)
 				.then(findAllPlayers)
 				.then(validateCountOf(1))
@@ -94,7 +94,6 @@ describe('The data-setup module... ', function() {
 		});
 
 		it('can insert two players using promises.', function(done) {
-			
 			setup.addPlayer(firstPlayer)
 				.then(setup.addPlayer(secondPlayer))
 				.then(findAllPlayers)
@@ -127,7 +126,6 @@ describe('The data-setup module... ', function() {
 		});
 
 		it('can insert a single team using promises.', function(done) {
-			
 			setup.addTeam(firstTeam)
 				.then(findAllTeams)
 				.then(validateCountOf(1))
@@ -136,7 +134,6 @@ describe('The data-setup module... ', function() {
 		});
 
 		it('can insert two teams using promises.', function(done) {
-			
 			setup.addTeam(firstTeam)
 				.then(setup.addTeam(secondTeam))
 				.then(findAllTeams)

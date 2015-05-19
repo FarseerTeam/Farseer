@@ -1,3 +1,4 @@
+'use strict'
 module.exports = (function() {
 	
 	var players = require('../../server/components/players');
