@@ -8,11 +8,6 @@ describe('The data-setup module... ', function() {
 
 	dataService.connect();
 
-	var firstPlayer = {email: 'm@e.com', name: 'itsMe', _team:'/myTeam'};
-	var secondPlayer = {email: 'm@etoo.com', name: 'itsMeAgain', _team:'/myTeam'};
-	var firstTeam = {path: '/firstTeam', name: 'firstTeam'};
-	var secondTeam = {path: '/secondTeam', name: 'secondTeam'};
-
 	var findAllPlayers = function() {
 		return players.Player.find().exec();
 	}
@@ -38,14 +33,11 @@ describe('The data-setup module... ', function() {
 	describe('the purgeData function... ', function() {
 
 		beforeEach(function(done) {
-			setup.addPlayer(firstPlayer)
-				.then(setup.addPlayer(secondPlayer))
+			setup.addPlayer('Harry Potter', 'harry@potter.com', '/Gryffindor')
+				.then(setup.addPlayer('Hermione Granger', 'hermione@granger.com', '/Gryffindor'))
+				.then(setup.addTeam('Gryffindor', '/Gryffindor'))
+				.then(setup.addTeam('Slytherin', '/Slytherin'))
 				.then(done);
-		});
-
-		afterEach(function(done) {
-			players.Player.remove({})
-				.then(function() {done();});
 		});
 
 		it('clears all players from the database.', function(done) {
@@ -74,19 +66,24 @@ describe('The data-setup module... ', function() {
 	describe('the addPlayer function... ', function() {
 
 		beforeEach(function(done) {
-			players.Player.remove({})
-				.then(findAllPlayers)
-				.then(validateCountOf(0))
-				.then(done);
+			setup.purgeData().then(done);
 		});
 
 		afterEach(function(done) {
-			players.Player.remove({})
-				.then(function() {done();});
+			setup.purgeData().then(done);
 		});
 
+		var validatePlayerFields = function(name, email, team){
+			return function(players) {
+				var player = players[0];
+				expect(player.name).toEqual(name);
+				expect(player.email).toEqual(email);
+				expect(player._team).toEqual(team);
+			}
+		};
+
 		it('can insert a single player using promises.', function(done) {
-			setup.addPlayer(firstPlayer)
+			setup.addPlayer('Harry Potter','harry@potter.com','/Gryffindor')
 				.then(findAllPlayers)
 				.then(validateCountOf(1))
 				.then(done)
@@ -94,16 +91,23 @@ describe('The data-setup module... ', function() {
 		});
 
 		it('can insert two players using promises.', function(done) {
-			setup.addPlayer(firstPlayer)
-				.then(setup.addPlayer(secondPlayer))
+			setup.addPlayer('Harry Potter','harry@potter.com','/Gryffindor')
+				.then(setup.addPlayer('Hermione Granger','hermione@granger.com','/Gryffindor'))
 				.then(findAllPlayers)
 				.then(validateCountOf(2))
 				.then(done)
 				.then(null, handleError(done));
 		});
 
+		it('inserts the correct fields into the new player', function(done) {
+			setup.addPlayer('Harry Potter','harry@potter.com','/Gryffindor')
+				.then(findAllPlayers)
+				.then(validatePlayerFields('Harry Potter','harry@potter.com','/Gryffindor'))
+				.then(done);
+		});
+
 		it('returns no value - so that calling done like this will work: setup.addPlayer(player).then(done);', function() {
-			setup.addPlayer(firstPlayer)
+			setup.addPlayer('Harry Potter','harry@potter.com','/Gryffindor')
 				.then(function(arg){
 					expect(arg).not.toBeDefined();
 					done();
@@ -114,19 +118,24 @@ describe('The data-setup module... ', function() {
 	describe('the addTeam function... ', function() {
 
 		beforeEach(function(done) {
-			teams.Team.remove({})
-				.then(findAllTeams)
-				.then(validateCountOf(0))
-				.then(done);
+			setup.purgeData().then(done);
 		});
 
 		afterEach(function(done) {
-			teams.Team.remove({})
-				.then(function() {done();});
+			setup.purgeData().then(done);
 		});
 
+		var validateTeamFields = function(name, path){
+			return function(teams) {
+				var team = teams[0];
+				expect(team.name).toEqual(name);
+				expect(team.path).toEqual(path);
+			}
+		};
+
+
 		it('can insert a single team using promises.', function(done) {
-			setup.addTeam(firstTeam)
+			setup.addTeam('Gryffindor', '/Gryffindor')
 				.then(findAllTeams)
 				.then(validateCountOf(1))
 				.then(done)
@@ -134,16 +143,23 @@ describe('The data-setup module... ', function() {
 		});
 
 		it('can insert two teams using promises.', function(done) {
-			setup.addTeam(firstTeam)
-				.then(setup.addTeam(secondTeam))
+			setup.addTeam('Gryffindor', '/Gryffindor')
+				.then(setup.addTeam('Slytherin', '/Slytherin'))
 				.then(findAllTeams)
 				.then(validateCountOf(2))
 				.then(done)
 				.then(null, handleError(done));
 		});
 
+		it('inserts the correct fields into the new team', function(done) {
+			setup.addTeam('Gryffindor', '/Gryffindor')
+				.then(findAllTeams)
+				.then(validateTeamFields('Gryffindor', '/Gryffindor'))
+				.then(done);
+		});
+
 		it('returns no value - so that calling done like this will work: setup.addTeam(team).then(done);', function() {
-			setup.addTeam(firstTeam)
+			setup.addTeam('Gryffindor', '/Gryffindor')
 				.then(function(arg){
 					expect(arg).not.toBeDefined();
 					done();

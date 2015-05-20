@@ -10,7 +10,7 @@ describe('The playersMap page has teams on it, and... ', function() {
 		describe('and there are no players... ', function() {
 
 			beforeEach(function(done){
-				browser.get('#/playersMap')
+				browser.get('playersMap')
 					.then(done);
 			});
 
@@ -22,8 +22,8 @@ describe('The playersMap page has teams on it, and... ', function() {
 		describe('and there is at least one player... ', function(){
 
 			beforeEach(function(done) {
-				setup.addPlayer({name:'harry', email:'potter@gmail.com'})
-					.then(browser.get('#/playersMap'))
+				setup.addPlayer('harry', 'potter@gmail.com')
+					.then(browser.get('playersMap'))
 					.then(done);
 			});
 
@@ -32,13 +32,6 @@ describe('The playersMap page has teams on it, and... ', function() {
 			});
 
 			it('there is a single team displayed on screen.', function(done) {
-				// console.log('\n\npage: ' + page + '\n');
-				// console.log('page.teams: ' + page.teams + '\n');
-				// for (var p in page.teams) {
-				// 	console.log("-" + p);
-				// }
-
-				// ///////////////////
 				expect(page.teams.count()).toBe(1);
 				done();
 			});
