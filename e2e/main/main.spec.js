@@ -1,18 +1,15 @@
 'use strict';
 
-describe('Main View', function() {
-  var page;
+describe('The Home Page... ', function() {
   var myElement;
 
   beforeEach(function() {
-    browser.get('/');
-    myElement = element(by.id("email"));
-    page = require('./main.po');
+    browser.get('');
   });
 
-  it('... this is only a test to see if this thing works!', function() {
-    //console.log(myElement);
-    expect(myElement).toBeDefined();
-    expect(page.emailTextInput).toBeDefined();
+  it('is playersMap', function(done) {
+    expect(browser.getCurrentUrl()).toContain('/playersMap');
+    done();
   });
+
 });
