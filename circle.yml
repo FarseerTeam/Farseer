@@ -10,7 +10,7 @@ dependencies:
     - npm install
     - bower install
 test:
-  post:
+  override:
     - grunt newer:jshint
     - grunt test
 deployment:
