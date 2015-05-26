@@ -2,7 +2,6 @@
 
 var page = require('./players-map.po');
 var setup = require('../common/data-setup');
-var $ = require('jquery');
 
 describe('The playersMap page has images for each player on it, and... ', function() {
 
