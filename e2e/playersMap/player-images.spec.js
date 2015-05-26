@@ -14,6 +14,10 @@ describe('The playersMap page has images for each player on it, and... ', functi
 	    });
 	});
 
+	var pageIsLoaded = function() {
+        return browser.isElementPresent(by.css('li.player img'));
+    };
+
 	var allImagesAreLoaded = function() {
         return page.playerImages.then(function (images) {
         	console.log('here with images' + images);
@@ -36,6 +40,8 @@ describe('The playersMap page has images for each player on it, and... ', functi
 			.then(setup.addPlayer('p1', 'p1@somewhere.com', '/team1'))
 			.then(setup.addPlayer('p2', 'p2@somewhere.com', '/team1/team2'))
 			.then(browser.get('playersMap'))
+			.then(browser.waitForAngular())
+			.then(browser.wait(pageIsLoaded))
 			.then(browser.wait(allImagesAreLoaded))
 			.then(done);
 	});
