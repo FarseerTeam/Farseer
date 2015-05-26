@@ -1,5 +1,6 @@
 'use strict'
 
+var RSVP = require('rsvp');
 
 module.exports = (function() {
 	
@@ -20,7 +21,7 @@ module.exports = (function() {
 	}
 
 	var _purgeData = function() {
-		return Promise.all([
+		return RSVP.all([
 				players.Player.remove({}), 
 				teams.Team.remove({})])
 			.then(function(){return;});
