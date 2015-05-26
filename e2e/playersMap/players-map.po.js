@@ -12,6 +12,8 @@ var PlayersMapPage = function() {
 	this.allTeams = element.all(by.css('li.team'));
 
 	this.allPlayers = element.all(by.css('li.player'));
+
+	this.playerImages = element.all(by.css('li.player img')); 
 	
 	this.teamNameFor = function(team) {
 		return team.all(by.css('p')).get(0).getText();
@@ -30,6 +32,10 @@ var PlayersMapPage = function() {
 			return page.team(parentTeam).all(by.css('li.team'));
 		}
 		return parentTeam.all(by.css('li.team'));
+	};
+
+	this.imageSrc = function(image) {
+		return image.getAttribute('src');
 	};
 };
 
