@@ -22,7 +22,7 @@ angular.module('farseerApp')
     };
 
     this.getTeamToPlayersMap = function(path) {
-      var request = 'api/maps';
+      var request = '/api/maps';
       if(path) {
         request += path;
       }
