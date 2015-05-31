@@ -15,7 +15,7 @@ test:
     - grunt test
 general:
   artifacts:
-    - "~/tmp/screenshots"
+    - "tmp/screenshots"
 deployment:
   production:
     branch: master
