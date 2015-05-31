@@ -14,7 +14,7 @@ test:
     - grunt newer:jshint
     - grunt test
   post:
-    - "if [ -e /tmp/screenshots ] then mv /tmp/screenshots $CIRCLE_ARTIFACTS/screenshots"
+    - "if [ -d /tmp/screenshots ] then mv /tmp/screenshots $CIRCLE_ARTIFACTS/screenshots"
 deployment:
   production:
     branch: master
