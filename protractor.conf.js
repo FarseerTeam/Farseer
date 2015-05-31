@@ -58,24 +58,10 @@ exports.config = {
   onPrepare: function () {
 
     var ScreenShotReporter = require('protractor-screenshot-reporter');
-    var path = require('path');
-    var pathBuilderFunction = function(spec, descriptions, results, capabilities) {
-      var testDescription = [];
-      testDescription.push(spec.description);
-
-      var suite = spec.suite;
-      while (suite) {
-        testDescription.push(suite.description);
-        suite = suite.parentSuite;
-      }
-      testDescription.reverse();
-      return path.join(capabilities.caps_.browserName, testDescription.join(''));
-    };
 
     jasmine.getEnv().addReporter(new ScreenShotReporter({
       baseDirectory: '/tmp/screenshots',
-      captureOnlyFailedSpecs: true,
-      pathBuilder: pathBuilderFunction
+      captureOnlyFailedSpecs: true
     }));
 
   }
