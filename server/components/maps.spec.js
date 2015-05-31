@@ -135,6 +135,41 @@ describe('The maps module', function () {
       }).then(done, done);
     });
     
+    it("should return only players on a specified double nested subteam", function (done) {
+      createPlayer('/fireNation/avatar/airbender', "Aang")
+        .then(function (aang) {
+        var expectedMap = [{
+          team: 'airbender',
+          path: '/fireNation/avatar/airbender',
+          players: [aang],
+          subTeams: []
+        }];
+        return maps.buildTeamPlayersMap("/fireNation/avatar/airbender").then(checkMapMatches(expectedMap));
+      }).then(done, done);
+    });
+    
+    it("should return the entire map when requested path is not valid", function (done) {
+      RSVP.hash({
+        aang: createPlayer('/firenation/avatar', "Aang"),
+        yung: createPlayer('/firenation', "Yung")
+      }).then(function (players) {
+        var expectedMap = [{
+          team: 'firenation',
+          path: '/firenation',
+          players: [players.yung],
+          subTeams: [{
+            team: 'avatar',
+            path: '/firenation/avatar',
+            players: [players.aang],
+            subTeams: []
+          }]
+        }];
+        console.log('expected map!!!!');
+        console.info(expectedMap);
+        return maps.buildTeamPlayersMap('/firenation/airbender').then(checkMapMatches(expectedMap));
+      }).then(done, done);
+    });    
+    
     it("should handle multiple players and multiple subteams",
       function (done) {
         RSVP.hash({

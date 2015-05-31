@@ -32,7 +32,7 @@ var clearAll = function () {
 
 describe('/api/maps', function () { //jshint ignore:line
 
-  describe("Given player 'Aang' on team: 'avatar", function () {
+  describe("/avatar", function () {
     var player;
 
     beforeEach(function (done) {
@@ -47,7 +47,7 @@ describe('/api/maps', function () { //jshint ignore:line
         .then(done, done);
     });
 
-    it("should respond with the appropriate format", function (done) {
+    it("should return player on the team", function (done) {
 
       var expected = {
         team: 'avatar',
