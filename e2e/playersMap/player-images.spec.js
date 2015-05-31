@@ -9,7 +9,8 @@ describe('The playersMap page has images for each player on it, and... ', functi
 	var imageTagsExist = function() {
 		return element(by.css('li.player img')).isPresent().then(function(val){
 			console.log("Images are present: " + val);
-			return val;
+			// return val;
+			return false;
 		});
     };
 
