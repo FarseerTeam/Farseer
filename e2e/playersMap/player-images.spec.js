@@ -6,14 +6,6 @@ var RSVP = require('rsvp');
 
 describe('The playersMap page has images for each player on it, and... ', function() {
 
-	beforeEach(function() {
-		this.addMatchers({
-	        toHaveHeightOfAtLeast: function (expectedSize) {
-	        	return this.actual.height >= expectedSize;
-	        }
-	    });
-	});
-
 	var imageTagsExist = function() {
 		return element(by.css('li.player img')).isPresent().then(function(val){
 			console.log("Images are present: " + val);
@@ -36,6 +28,11 @@ describe('The playersMap page has images for each player on it, and... ', functi
 	};
 
 	beforeEach(function(done) {
+		this.addMatchers({
+	        toHaveHeightOfAtLeast: function (expectedSize) {
+	        	return this.actual.height >= expectedSize;
+	        }
+	    });
 		setup.purgeData()
 			.then(setup.addTeam('team1', '/team1'))
 			.then(setup.addTeam('team2', '/team1/team2'))
@@ -58,7 +55,7 @@ describe('The playersMap page has images for each player on it, and... ', functi
 			expect(page.imageSrc(page.playerImages.get(i))).toContain('gravatar.com/avatar');
 
 			//check that the link is not broken - broken links should have lower height - would like a better solution for this
-			// expect(page.playerImages.get(i).getSize()).toHaveHeightOfAtLeast(50);  
+			expect(page.playerImages.get(i).getSize()).toHaveHeightOfAtLeast(50);  
 		}
 	});
 });
