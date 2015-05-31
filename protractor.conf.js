@@ -61,7 +61,7 @@ exports.config = {
 
     jasmine.getEnv().addReporter(new ScreenShotReporter({
       baseDirectory: '/tmp/screenshots',
-      captureOnlyFailedSpecs: true
+      takeScreenShotsOnlyForFailedSpecs: true
     }));
 
   }
