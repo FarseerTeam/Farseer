@@ -33,8 +33,8 @@ describe('The playersMap page has images for each player on it, and... ', functi
 	        	return this.actual.height >= expectedSize;
 	        }
 	    });
-		setup.purgeData()
-			.then(setup.addTeam('team1', '/team1'))
+
+		setup.addTeam('team1', '/team1')
 			.then(setup.addTeam('team2', '/team1/team2'))
 			.then(setup.addPlayer('p0', 'p0@somewhere.com'))
 			.then(setup.addPlayer('p1', 'p1@somewhere.com', '/team1'))
