@@ -10,12 +10,14 @@ describe('Controller: PlayersCtrl', function () {
       mockTimeout,
       addedPlayer,
       updatedPlayer;
+  var subteamPath = '/Hogwarts/Ravenclaw';
   var rejectAddPlayer = false;
   var rejectUpdatePlayer = false;
   var timeoutWasCalledWithTime = -1;
   var shouldCallTimeoutFunctionImmediately = false;
   var expectedErrorMessage = 'Error Message, Error Message!';
   var teamToPlayersMapFromServer = [{team: 'Gryffindor', path:'/Gryffindor' , players: [{name: 'Harry Potter', _team:'/Gryffindor'}]}, {/*team: undefined,*/ players: [{name: 'Poppy Pomfrey'}, {name: 'Irma Pince'}]}, {team: 'Ravenclaw', path:'/Ravenclaw' , players: [{name: 'Penelope Clearwater', _team:'/Ravenclaw'}]}];
+  var subteamPlayersMapFromServer = [{team: 'Ravenclaw', path: '/Hogwarts/Raveclaw', players: ['Padma Patil'], subteams: []}];
   var cloneObject = function(objectToClone){return JSON.parse(JSON.stringify(objectToClone));};
 
   beforeEach(inject(function ($controller, $rootScope, $q) {
@@ -50,9 +52,13 @@ describe('Controller: PlayersCtrl', function () {
         }
         return deferred.promise;
       },
-      getTeamToPlayersMap: function() {
+      getTeamToPlayersMap: function(path) {
         var deferred = $q.defer();
-        deferred.resolve(cloneObject(teamToPlayersMapFromServer));
+        if(path === subteamPath) {
+          deferred.resolve(cloneObject(subteamPlayersMapFromServer));
+        } else {        
+          deferred.resolve(cloneObject(teamToPlayersMapFromServer));
+        }
         return deferred.promise;
       } 
     };
@@ -105,6 +111,14 @@ describe('Controller: PlayersCtrl', function () {
       expect(scope.error).toBe(undefined);
       scope.$digest();
       expect(scope.error).toBe(undefined);
+    });
+  });
+
+  describe('going to a subteam view', function() {
+    it('should only display desired subteam map', function() {
+      scope.goToTeam(subteamPath);
+      scope.$digest();
+      expect(scope.teamPlayersMap).toEqual(subteamPlayersMapFromServer);
     });
   });
 

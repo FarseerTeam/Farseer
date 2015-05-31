@@ -29,6 +29,10 @@ angular.module('farseerApp')
         handleResponse(error.data.message, $scope.newPlayer, true);
       });
     };
+    
+    $scope.goToTeam = function(teamPath) {
+      loadTeamToPlayersMap(teamPath);
+    };
 
     $scope.playerDroppedIntoTeamCB = function(player, team) {
       if (player._team === team.path) {
@@ -63,8 +67,8 @@ angular.module('farseerApp')
       loadTeamToPlayersMap().then(displayErrorMessage('Error moving player to a new team: ' + error.data.message));
     }
 
-    function loadTeamToPlayersMap() {
-      return httpService.getTeamToPlayersMap().then(function(map) {
+    function loadTeamToPlayersMap(teamPath) {
+      return httpService.getTeamToPlayersMap(teamPath).then(function(map) {
         $scope.teamPlayersMap = map;
       });
     }

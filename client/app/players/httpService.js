@@ -21,8 +21,12 @@ angular.module('farseerApp')
       });
     };
 
-    this.getTeamToPlayersMap = function() {
-      return $http.get('/api/maps').then(function(response) {
+    this.getTeamToPlayersMap = function(path) {
+      var request = 'api/maps';
+      if(path) {
+        request += path;
+      }
+      return $http.get(request).then(function(response) {
         return response.data;
       });
     };

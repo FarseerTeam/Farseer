@@ -60,4 +60,14 @@ describe('Http Service', function () {
     $httpBackend.flush();
   });
 
+  it('should return team-to-players map data for a specified subteam', function() {
+    var expectedResult = [{team: 'Ravenclaw', players: [{name: 'Luna Lovegood'}]}];
+    $httpBackend.expectGET('/api/maps/Hogwarts/Ravenclaw').respond(expectedResult);
+
+    service.getTeamToPlayersMap('/Hogwarts/Ravenclaw').then(function(returnedMap) {
+      expect(returnedMap).toEqual(expectedResult);
+    });
+
+    $httpBackend.flush();
+  });
 });
