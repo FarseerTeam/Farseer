@@ -13,6 +13,8 @@ test:
   override:
     - grunt newer:jshint
     - grunt test
+  post:
+    - mv /tmp/screenshots $CIRCLE_ARTIFACTS/screenshots
 deployment:
   production:
     branch: master
