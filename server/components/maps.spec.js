@@ -164,8 +164,6 @@ describe('The maps module', function () {
             subTeams: []
           }]
         }];
-        console.log('expected map!!!!');
-        console.info(expectedMap);
         return maps.buildTeamPlayersMap('/firenation/airbender').then(checkMapMatches(expectedMap));
       }).then(done, done);
     });    
