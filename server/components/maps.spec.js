@@ -51,12 +51,12 @@ describe('The maps module', function () {
   afterEach(clearAll);
 
   describe("buildTeamPlayersMap", function () {
-    it('Given an empty database should respond with an empty array when there are no records in database.', function (done) {
+    it('should respond with an empty map when there are no records in database.', function (done) {
       var expected = [];
       maps.buildTeamPlayersMap().then(checkMapMatches(expected)).then(done, done);
     });
 
-    it("Given only player 'Aang' on team 'avatar' should respond with the appropriate format", function (done) {
+    it("should handle single player on a team", function (done) {
       createPlayer('/avatar', "Aang")
         .then(function (aang) {
         var expectedMap = {
@@ -69,7 +69,7 @@ describe('The maps module', function () {
       }).then(done, done);
     });
 
-    it("Given player 'Aang' AND 'Yung' on team: 'avatar' will return a map containing both.", function (done) {
+    it("should handle two players on the same team", function (done) {
       RSVP.hash({
         aang: createPlayer('/avatar', "Aang"),
         yung: createPlayer('/avatar', "Yung")
@@ -84,7 +84,7 @@ describe('The maps module', function () {
       }).then(done, done);
     });
 
-    it("Player 'Aang' on team: 'avatar' and player 'Yung' on 'fireNation' are separated in map", function (done) {
+    it("should handle two players on two separate teams", function (done) {
       RSVP.hash({
         aang: createPlayer('/avatar', "Aang"),
         yung: createPlayer('/fireNation', "Yung")
@@ -104,7 +104,7 @@ describe('The maps module', function () {
       }).then(done, done);
     });
 
-    it("Given player 'Aang' on team: 'avatar' under 'fireNation', fireNation shows up inside of avatar", function (done) {
+    it("should handle single player on a subteam", function (done) {
       createPlayer('/fireNation/avatar', "Aang")
         .then(function (aang) {
         var expectedMap = [{
@@ -122,7 +122,7 @@ describe('The maps module', function () {
       }).then(done, done);
     });
     
-    it("can return only players on a subteam", function (done) {
+    it("should return only players on a specified subteam", function (done) {
       createPlayer('/fireNation/avatar', "Aang")
         .then(function (aang) {
         var expectedMap = [{
@@ -135,7 +135,7 @@ describe('The maps module', function () {
       }).then(done, done);
     });
     
-    it("can represent multiple players and multiple subteams",
+    it("should handle multiple players and multiple subteams",
       function (done) {
         RSVP.hash({
           aang: createPlayer('/avatar', "Aang"),
@@ -232,7 +232,7 @@ describe('The maps module', function () {
       }).then(done, done);
     });
 
-    it("can represent players with no team assignment",
+    it("should handle players with no team assignment",
       function (done) {
         RSVP.hash({
           aang: createPlayer('/avatar', "Aang"),
