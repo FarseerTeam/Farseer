@@ -13,9 +13,8 @@ test:
   override:
     - grunt newer:jshint
     - grunt test
-general:
-  artifacts:
-    - "tmp/screenshots"
+  post:
+    - "if [ -e /tmp/screenshots ] then mv /tmp/screenshots $CIRCLE_ARTIFACTS/screenshots"
 deployment:
   production:
     branch: master
