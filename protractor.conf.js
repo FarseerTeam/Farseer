@@ -3,6 +3,7 @@
 
 'use strict';
 
+
 exports.config = {
   // The timeout for each script run on the browser. This should be longer
   // than the maximum time your application needs to stabilize between tasks.
@@ -52,5 +53,30 @@ exports.config = {
   // See the full list at https://github.com/juliemr/minijasminenode
   jasmineNodeOpts: {
     defaultTimeoutInterval: 5000
+  },
+
+  onPrepare: function () {
+
+    var ScreenShotReporter = require('protractor-screenshot-reporter');
+    var path = require('path');
+    var pathBuilderFunction = function(spec, descriptions, results, capabilities) {
+      var testDescription = [];
+      testDescription.push(spec.description);
+
+      var suite = spec.suite;
+      while (suite) {
+        testDescription.push(suite.description);
+        suite = suite.parentSuite;
+      }
+      testDescription.reverse();
+      return path.join(capabilities.caps_.browserName, testDescription.join(''));
+    };
+
+    jasmine.getEnv().addReporter(new ScreenShotReporter({
+      baseDirectory: '/tmp/screenshots',
+      captureOnlyFailedSpecs: true,
+      pathBuilder: pathBuilderFunction
+    }));
+
   }
 };
