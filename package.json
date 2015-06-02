@@ -86,8 +86,10 @@
   },
   "scripts": {
     "start": "node server/app.js",
-    "test": "grunt test",
-    "postinstall": "npm run update-webdriver",
+    "jshint": "grunt newer:jshint",
+    "test": "grunt test:server && grunt test:client",
+    "protractor": "grunt e2e",
+    "preprotractor": "npm run update-webdriver",
     "update-webdriver": "node node_modules/grunt-protractor-runner/node_modules/protractor/bin/webdriver-manager update"
   },
   "private": true
