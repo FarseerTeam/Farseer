@@ -1,13 +1,20 @@
 dependencies:
+  pre:
+    - google-chrome --version
+    - sudo apt-get update
+    - sudo apt-get --only-upgrade install google-chrome-stable
+    - google-chrome --version
   override:
     - npm install -g bower
     - npm install -g grunt-cli
     - npm install
     - bower install
 test:
-  post:
+  override:
     - grunt newer:jshint
     - grunt test
+  post:
+    - "if [ -d /tmp/screenshots ]; then mv /tmp/screenshots $CIRCLE_ARTIFACTS/screenshots; fi;"
 deployment:
   production:
     branch: master

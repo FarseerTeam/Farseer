@@ -1,0 +1,169 @@
+'use strict'
+var players = require('../../server/components/players');
+var teams = require('../../server/components/teams');
+var setup = require('./data-setup');
+var dataService = require('../../server/components/dataService');
+
+describe('The data-setup module... ', function() {
+
+	dataService.connect();
+
+	var findAllPlayers = function() {
+		return players.Player.find().exec();
+	}
+
+	var findAllTeams = function() {
+		return teams.Team.find().exec();
+	}
+
+	var validateCountOf = function(expectedCount) {
+		return function(queryResults) {
+			// console.log('found results: ' + queryResults);
+			expect(queryResults.length).toEqual(expectedCount);	
+		}
+	}
+
+	var handleError = function(done) {
+		return function(err) {
+			console.log('Error!! - ' + error);
+			done(err);
+		}
+	}
+
+	describe('the purgeData function... ', function() {
+
+		beforeEach(function(done) {
+			setup.addPlayer('Harry Potter', 'harry@potter.com', '/Gryffindor')
+				.then(setup.addPlayer('Hermione Granger', 'hermione@granger.com', '/Gryffindor'))
+				.then(setup.addTeam('Gryffindor', '/Gryffindor'))
+				.then(setup.addTeam('Slytherin', '/Slytherin'))
+				.then(done);
+		});
+
+		it('clears all players from the database.', function(done) {
+			setup.purgeData()
+				.then(findAllPlayers)
+				.then(validateCountOf(0))
+				.then(done);
+		});
+
+		it('clears all teams from the database.', function(done) {
+			setup.purgeData()
+				.then(findAllTeams)
+				.then(validateCountOf(0))
+				.then(done);
+		});
+
+		it('returns no value - so that calling done like this will work: (like setup.purgeData().then(done);)', function(done) {
+			setup.purgeData()
+				.then(function(args) {
+					expect(args).not.toBeDefined();
+					done();
+				});
+		});
+	});
+
+	describe('the addPlayer function... ', function() {
+
+		beforeEach(function(done) {
+			setup.purgeData().then(done);
+		});
+
+		afterEach(function(done) {
+			setup.purgeData().then(done);
+		});
+
+		var validatePlayerFields = function(name, email, team){
+			return function(players) {
+				var player = players[0];
+				expect(player.name).toEqual(name);
+				expect(player.email).toEqual(email);
+				expect(player._team).toEqual(team);
+			}
+		};
+
+		it('can insert a single player using promises.', function(done) {
+			setup.addPlayer('Harry Potter','harry@potter.com','/Gryffindor')
+				.then(findAllPlayers)
+				.then(validateCountOf(1))
+				.then(done)
+				.then(null, handleError(done));
+		});
+
+		it('can insert two players using promises.', function(done) {
+			setup.addPlayer('Harry Potter','harry@potter.com','/Gryffindor')
+				.then(setup.addPlayer('Hermione Granger','hermione@granger.com','/Gryffindor'))
+				.then(findAllPlayers)
+				.then(validateCountOf(2))
+				.then(done)
+				.then(null, handleError(done));
+		});
+
+		it('inserts the correct fields into the new player', function(done) {
+			setup.addPlayer('Harry Potter','harry@potter.com','/Gryffindor')
+				.then(findAllPlayers)
+				.then(validatePlayerFields('Harry Potter','harry@potter.com','/Gryffindor'))
+				.then(done);
+		});
+
+		it('returns no value - so that calling done like this will work: setup.addPlayer(player).then(done);', function() {
+			setup.addPlayer('Harry Potter','harry@potter.com','/Gryffindor')
+				.then(function(arg){
+					expect(arg).not.toBeDefined();
+					done();
+				}); 
+		});
+	});
+
+	describe('the addTeam function... ', function() {
+
+		beforeEach(function(done) {
+			setup.purgeData().then(done);
+		});
+
+		afterEach(function(done) {
+			setup.purgeData().then(done);
+		});
+
+		var validateTeamFields = function(name, path){
+			return function(teams) {
+				var team = teams[0];
+				expect(team.name).toEqual(name);
+				expect(team.path).toEqual(path);
+			}
+		};
+
+
+		it('can insert a single team using promises.', function(done) {
+			setup.addTeam('Gryffindor', '/Gryffindor')
+				.then(findAllTeams)
+				.then(validateCountOf(1))
+				.then(done)
+				.then(null, handleError(done));
+		});
+
+		it('can insert two teams using promises.', function(done) {
+			setup.addTeam('Gryffindor', '/Gryffindor')
+				.then(setup.addTeam('Slytherin', '/Slytherin'))
+				.then(findAllTeams)
+				.then(validateCountOf(2))
+				.then(done)
+				.then(null, handleError(done));
+		});
+
+		it('inserts the correct fields into the new team', function(done) {
+			setup.addTeam('Gryffindor', '/Gryffindor')
+				.then(findAllTeams)
+				.then(validateTeamFields('Gryffindor', '/Gryffindor'))
+				.then(done);
+		});
+
+		it('returns no value - so that calling done like this will work: setup.addTeam(team).then(done);', function() {
+			setup.addTeam('Gryffindor', '/Gryffindor')
+				.then(function(arg){
+					expect(arg).not.toBeDefined();
+					done();
+				}); 
+		});
+	});
+});

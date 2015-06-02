@@ -1,16 +1,15 @@
 'use strict';
 
-describe('Main View', function() {
-  var page;
+describe('The Home Page... ', function() {
+  var myElement;
 
   beforeEach(function() {
-    browser.get('/');
-    page = require('./main.po');
+    browser.get('');
   });
 
-  it('should include jumbotron with correct data', function() {
-    expect(page.h1El.getText()).toBe('\'Allo, \'Allo!');
-    expect(page.imgEl.getAttribute('src')).toMatch(/assets\/images\/yeoman.png$/);
-    expect(page.imgEl.getAttribute('alt')).toBe('I\'m Yeoman');
+  it('is playersMap', function(done) {
+    expect(browser.getCurrentUrl()).toContain('/playersMap');
+    done();
   });
+
 });

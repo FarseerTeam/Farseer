@@ -58,6 +58,7 @@
     "grunt-svgmin": "~2.0.1",
     "grunt-usemin": "~3.0.0",
     "grunt-wiredep": "~2.0.0",
+    "jasmine-reporters": "^2.0.6",
     "jit-grunt": "^0.9.1",
     "jshint-stylish": "~1.0.1",
     "karma": "~0.12.31",
@@ -74,6 +75,7 @@
     "karma-requirejs": "~0.2.2",
     "karma-script-launcher": "~0.1.0",
     "open": "~0.0.5",
+    "protractor-screenshot-reporter": "0.0.5",
     "requirejs": "~2.1.17",
     "should": "^6.0.1",
     "supertest": "~0.15.0",
@@ -85,7 +87,9 @@
   "scripts": {
     "start": "node server/app.js",
     "test": "grunt test",
+    "postinstall": "npm run update-webdriver",
     "update-webdriver": "node node_modules/grunt-protractor-runner/node_modules/protractor/bin/webdriver-manager update"
   },
   "private": true
 }
+

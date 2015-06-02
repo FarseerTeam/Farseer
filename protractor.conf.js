@@ -3,6 +3,7 @@
 
 'use strict';
 
+
 exports.config = {
   // The timeout for each script run on the browser. This should be longer
   // than the maximum time your application needs to stabilize between tasks.
@@ -12,9 +13,15 @@ exports.config = {
   // with relative paths will be prepended with this.
   baseUrl: 'http://localhost:' + (process.env.PORT || '9000'),
 
-  // If true, only chromedriver will be started, not a standalone selenium.
-  // Tests for browsers other than chrome will not run.
-  chromeOnly: true,
+  // **DEPRECATED**
+  // If true, only ChromeDriver will be started, not a Selenium Server.
+  // This should be replaced with directConnect.
+  // chromeOnly: true,
+
+  // Boolean. If true, Protractor will connect directly to the browser Drivers
+  // at the locations specified by chromeDriver and firefoxPath. Only Chrome
+  // and Firefox are supported for direct connect.
+  directConnect: false,
 
   // list of files / patterns to load in the browser
   specs: [
@@ -31,7 +38,7 @@ exports.config = {
   // and
   // https://code.google.com/p/selenium/source/browse/javascript/webdriver/capabilities.js
   capabilities: {
-    'browserName': 'chrome'
+    
   },
 
   // ----- The test framework -----
@@ -45,6 +52,17 @@ exports.config = {
   //
   // See the full list at https://github.com/juliemr/minijasminenode
   jasmineNodeOpts: {
-    defaultTimeoutInterval: 30000
+    defaultTimeoutInterval: 5000
+  },
+
+  onPrepare: function () {
+
+    var ScreenShotReporter = require('protractor-screenshot-reporter');
+
+    jasmine.getEnv().addReporter(new ScreenShotReporter({
+      baseDirectory: '/tmp/screenshots',
+      takeScreenShotsOnlyForFailedSpecs: true
+    }));
+
   }
 };

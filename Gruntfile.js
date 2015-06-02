@@ -453,12 +453,23 @@ module.exports = function (grunt) {
 
     protractor: {
       options: {
-        configFile: 'protractor.conf.js'
+        configFile: 'protractor.conf.js',
+        keepAlive: false,
+        args: {
+            seleniumAddress: 'http://localhost:4444/wd/hub'
+          }
       },
       chrome: {
         options: {
           args: {
             browser: 'chrome'
+          }
+        }
+      },
+      firefox: {
+        options: {
+          args: {
+            browser: 'firefox'
           }
         }
       }
@@ -661,15 +672,19 @@ module.exports = function (grunt) {
         'wiredep',
         'autoprefixer',
         'express:dev',
-        'protractor'
+        'protractor:chrome',
+        'protractor:firefox'
       ]);
     }
 
     else grunt.task.run([
       'test:server',
-      'test:client'
+      'test:client',
+      'test:e2e'
     ]);
   });
+
+  grunt.registerTask('e2e', ['test:e2e']);
 
   grunt.registerTask('build', [
     'clean:dist',
