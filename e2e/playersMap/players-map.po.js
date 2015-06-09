@@ -28,14 +28,36 @@ var PlayersMapPage = function() {
 	};
 
 	this.childTeamsOf = function(parentTeam) {
+		var parentNode = parentTeam
 		if (typeof parentTeam === 'string') {
-			return page.team(parentTeam).all(by.css('li.team'));
+			parentNode = page.team(parentTeam)
 		}
-		return parentTeam.all(by.css('li.team'));
+		return parentNode.all(by.css('li.team'));
 	};
 
 	this.imageSrc = function(image) {
 		return image.getAttribute('src');
+	};
+
+	this.player = function(playerName) {
+		return page.allPlayers.filter(function(element, index){
+			return page.playerNameFor(element).then(function(text) {
+				return text === playerName;
+			});
+		}).get(0);
+	};
+
+	this.playerNameFor = function(player) {
+		return player.all(by.css('div')).first().getText();
+	}
+
+	this.teamNameForPlayer = function(player) {
+		var pathFromPlayerToTeamName = '../../p';
+		var playerNode = player;
+		if (typeof player === 'string') {
+			playerNode =  page.player(player);
+		}
+		return playerNode.all(by.xpath(pathFromPlayerToTeamName)).first().getText();
 	};
 };
 

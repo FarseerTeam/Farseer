@@ -114,4 +114,25 @@ describe('The playersMap page has teams on it, and... ', function() {
 		});
 
 	});
+
+	describe('when there are parent teams having no players... ', function() {
+
+		beforeEach(function(done) {
+			setup.addTeam('outerTeam', '/outerTeam')
+				.then(setup.addTeam('middleTeam', '/outerTeam/middleTeam'))
+				.then(setup.addTeam('innerTeam', '/outerTeam/middleTeam/innerTeam'))
+				.then(setup.addPlayer('a', 'amail', '/outerTeam/middleTeam/innerTeam'))
+				.then(browser.get('playersMap'))
+				.then(done);
+		});
+
+		afterEach(function(done) {
+			setup.purgeData().then(done);
+		});
+
+		it('the parent teams are still shown on screen', function(){
+			expect(page.allTeams.count()).toBe(3);
+		});
+
+	});
 });
