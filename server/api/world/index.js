@@ -5,6 +5,8 @@ var controller = require('./world.controller');
 
 var router = express.Router();
 
-router.get('/', controller.index);
+router.route('/')
+	.get(controller.index)
+	.post(controller.create);
 
 module.exports = router;
