@@ -5,11 +5,12 @@ angular.module('farseerApp')
     $scope.players = [];
     $scope.teamPlayersMap = [];
     $scope.error = undefined;
+    $scope.currentPath = '';
 
     (function initializeController() {
       loadTeamToPlayersMap();
       loadPlayers();
-    })();  //is called immediately
+    })();
 
     $scope.update = function(player) {
       httpService.update(player).then(function() {
@@ -70,6 +71,7 @@ angular.module('farseerApp')
     function loadTeamToPlayersMap(teamPath) {
       return httpService.getTeamToPlayersMap(teamPath).then(function(map) {
         $scope.teamPlayersMap = map;
+        $scope.currentPath = teamPath; 
       });
     }
 

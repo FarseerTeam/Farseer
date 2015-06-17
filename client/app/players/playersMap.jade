@@ -2,6 +2,8 @@ span(ng-show='error' class='errorMessage') {{error.message}}
 
 h1 Map
 
+p {{currentPath}}
+
 div(class='mapDisplayContainer')
   ul(ng-include="'teamMapTemplate'" class='teams cf')
 

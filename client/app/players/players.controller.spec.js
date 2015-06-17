@@ -5,65 +5,65 @@ describe('Controller: PlayersCtrl', function () {
   beforeEach(module('farseerApp'));
 
   var PlayersCtrl,
-      scope,
-      mockService,
-      mockTimeout,
-      addedPlayer,
-      updatedPlayer;
+    scope,
+    mockService,
+    mockTimeout,
+    addedPlayer,
+    updatedPlayer;
   var subteamPath = '/Hogwarts/Ravenclaw';
   var rejectAddPlayer = false;
   var rejectUpdatePlayer = false;
   var timeoutWasCalledWithTime = -1;
   var shouldCallTimeoutFunctionImmediately = false;
   var expectedErrorMessage = 'Error Message, Error Message!';
-  var teamToPlayersMapFromServer = [{team: 'Gryffindor', path:'/Gryffindor' , players: [{name: 'Harry Potter', _team:'/Gryffindor'}]}, {/*team: undefined,*/ players: [{name: 'Poppy Pomfrey'}, {name: 'Irma Pince'}]}, {team: 'Ravenclaw', path:'/Ravenclaw' , players: [{name: 'Penelope Clearwater', _team:'/Ravenclaw'}]}];
-  var subteamPlayersMapFromServer = [{team: 'Ravenclaw', path: '/Hogwarts/Raveclaw', players: ['Padma Patil'], subteams: []}];
-  var cloneObject = function(objectToClone){return JSON.parse(JSON.stringify(objectToClone));};
+  var teamToPlayersMapFromServer = [{ team: 'Gryffindor', path: '/Gryffindor', players: [{ name: 'Harry Potter', _team: '/Gryffindor' }] }, {players: [{ name: 'Poppy Pomfrey' }, { name: 'Irma Pince' }] }, { team: 'Ravenclaw', path: '/Ravenclaw', players: [{ name: 'Penelope Clearwater', _team: '/Ravenclaw' }] }];
+  var subteamPlayersMapFromServer = [{ team: 'Ravenclaw', path: '/Hogwarts/Raveclaw', players: ['Padma Patil'], subteams: [] }];
+  var cloneObject = function (objectToClone) { return JSON.parse(JSON.stringify(objectToClone)); };
 
   beforeEach(inject(function ($controller, $rootScope, $q) {
     scope = $rootScope.$new();
 
     mockService = {
-      getPlayers: function() {
+      getPlayers: function () {
         var deferred = $q.defer();
         deferred.resolve(['Harry Potter', 'Hermione Granger', 'Ron Weasley']);
         return deferred.promise;
       },
-      addPlayer: function(newPlayer) {
+      addPlayer: function (newPlayer) {
         addedPlayer = newPlayer;
 
         var deferred = $q.defer();
-        if(rejectAddPlayer) {
-          deferred.reject({data: {message: expectedErrorMessage}});
+        if (rejectAddPlayer) {
+          deferred.reject({ data: { message: expectedErrorMessage } });
         } else {
-          deferred.resolve({data: newPlayer});
+          deferred.resolve({ data: newPlayer });
         }
 
         return deferred.promise;
       },
-      update: function(player) {
+      update: function (player) {
         updatedPlayer = player;
 
         var deferred = $q.defer();
-        if(rejectUpdatePlayer) {
-          deferred.reject({data: {message: expectedErrorMessage}});
+        if (rejectUpdatePlayer) {
+          deferred.reject({ data: { message: expectedErrorMessage } });
         } else {
           deferred.resolve();
         }
         return deferred.promise;
       },
-      getTeamToPlayersMap: function(path) {
+      getTeamToPlayersMap: function (path) {
         var deferred = $q.defer();
-        if(path === subteamPath) {
+        if (path === subteamPath) {
           deferred.resolve(cloneObject(subteamPlayersMapFromServer));
-        } else {        
+        } else {
           deferred.resolve(cloneObject(teamToPlayersMapFromServer));
         }
         return deferred.promise;
-      } 
+      }
     };
 
-    mockTimeout = function(functionToPerform, timeout) {
+    mockTimeout = function (functionToPerform, timeout) {
       timeoutWasCalledWithTime = timeout;
       if (shouldCallTimeoutFunctionImmediately) {
         functionToPerform();
@@ -78,13 +78,13 @@ describe('Controller: PlayersCtrl', function () {
 
   }));
 
-  describe('players list attached to the scope', function() {
-    it('should be empty when promise is not fulfilled', function() {
+  describe('players list attached to the scope', function () {
+    it('should be empty when promise is not fulfilled', function () {
       expect(scope.players).not.toBe(undefined);
       expect(scope.players.length).toEqual(0);
     });
 
-    it('should be complete when promise if fulfilled', function() {
+    it('should be complete when promise if fulfilled', function () {
       scope.$digest();
 
       expect(scope.players.length).toEqual(3);
@@ -94,50 +94,63 @@ describe('Controller: PlayersCtrl', function () {
     });
   });
 
-  describe('team-to-players map attached to the scope: ', function() {
-    it('should be empty when promise is not fulfilled', function() {
+  describe('current path attached to the scope', function () {
+    it('should be empty when the entire team is visible', function () {
+      expect(scope.currentPath).not.toBe(undefined);
+      expect(scope.currentPath).toBe('');
+    });
+
+    it('should reflect subteam path when a subteam is selected', function () {
+      scope.goToTeam(subteamPath);
+      scope.$digest();
+      expect(scope.currentPath).toBe(subteamPath);
+    });
+  });
+
+  describe('team-to-players map attached to the scope: ', function () {
+    it('should be empty when promise is not fulfilled', function () {
       expect(scope.teamPlayersMap).not.toBe(undefined);
       expect(scope.teamPlayersMap.length).toEqual(0);
     });
 
-    it('should be complete when promise if fulfilled', function() {
+    it('should be complete when promise if fulfilled', function () {
       scope.$digest();
       expect(scope.teamPlayersMap).toEqual(teamToPlayersMapFromServer);
     });
   });
 
-  describe('the error object attached to the scope: ', function() {
-    it('should be undefined when the page is loaded', function() {
+  describe('the error object attached to the scope: ', function () {
+    it('should be undefined when the page is loaded', function () {
       expect(scope.error).toBe(undefined);
       scope.$digest();
       expect(scope.error).toBe(undefined);
     });
   });
 
-  describe('going to a subteam view', function() {
-    it('should only display desired subteam map', function() {
+  describe('going to a subteam view', function () {
+    it('should only display desired subteam map', function () {
       scope.goToTeam(subteamPath);
       scope.$digest();
       expect(scope.teamPlayersMap).toEqual(subteamPlayersMapFromServer);
     });
   });
 
-  describe('adding new player', function() {
+  describe('adding new player', function () {
     var newPlayer;
 
-    beforeEach(function() {
-      newPlayer = {name:'Draco',email:'malfoy@email'};
+    beforeEach(function () {
+      newPlayer = { name: 'Draco', email: 'malfoy@email' };
       scope.newPlayer = newPlayer;
     });
 
-    it('should add new player', function() {
+    it('should add new player', function () {
       scope.addPlayer();
       scope.$digest();
 
       expect(addedPlayer).toBe(newPlayer);
     });
 
-    it('should add new player to the empty list of players in scope when successful', function() {
+    it('should add new player to the empty list of players in scope when successful', function () {
       scope.$digest();
       scope.players = [];
 
@@ -148,7 +161,7 @@ describe('Controller: PlayersCtrl', function () {
       expect(scope.players[0]).toBe(newPlayer);
     });
 
-    it('should add new player to the list of existing players in scope when successful', function() {
+    it('should add new player to the list of existing players in scope when successful', function () {
       scope.addPlayer();
       scope.$digest();
 
@@ -156,7 +169,7 @@ describe('Controller: PlayersCtrl', function () {
       expect(_.last(scope.players)).toBe(newPlayer);
     });
 
-    it('should pass success message to scope when add is successful', function() {
+    it('should pass success message to scope when add is successful', function () {
       scope.newPlayer.error = true;
       scope.addPlayer();
       scope.$digest();
@@ -167,7 +180,7 @@ describe('Controller: PlayersCtrl', function () {
       expect(scope.newPlayer.error).toBe(false);
     });
 
-    it('should pass error message to scope when add is rejected', function() {
+    it('should pass error message to scope when add is rejected', function () {
       scope.newPlayer.error = false;
       rejectAddPlayer = true;
 
@@ -181,21 +194,21 @@ describe('Controller: PlayersCtrl', function () {
     });
   });
 
-  describe('updating existing player', function() {
+  describe('updating existing player', function () {
     var existingPlayer;
 
-    beforeEach(function() {
-      existingPlayer = {name: 'smitty', email: 'smith@email'};
+    beforeEach(function () {
+      existingPlayer = { name: 'smitty', email: 'smith@email' };
     });
 
-    it('should update player', function() {
+    it('should update player', function () {
       scope.update(existingPlayer);
       scope.$digest();
 
       expect(updatedPlayer).toBe(existingPlayer);
     });
 
-    it('should pass success message to scope when update is successful', function() {
+    it('should pass success message to scope when update is successful', function () {
       scope.update(existingPlayer);
       scope.$digest();
 
@@ -204,7 +217,7 @@ describe('Controller: PlayersCtrl', function () {
       expect(existingPlayer.error).toBe(false);
     });
 
-    it('should pass error message to scope when update is rejected', function() {
+    it('should pass error message to scope when update is rejected', function () {
       rejectUpdatePlayer = true;
 
       scope.update(existingPlayer);
@@ -217,16 +230,16 @@ describe('Controller: PlayersCtrl', function () {
 
   });
 
-  describe('when a player is dropped onto a team... ', function() {
+  describe('when a player is dropped onto a team', function () {
 
     var playerWithTeam;
     var playerWithNoTeam;
     var originalTeam;
     var targetTeam;
     var undefinedTeam;
-    var updateWasNeverCalled = {name: 'neverCalled'};
+    var updateWasNeverCalled = { name: 'neverCalled' };
 
-    beforeEach(function() {
+    beforeEach(function () {
       scope.update(updateWasNeverCalled);
       scope.$digest();
       playerWithTeam = scope.teamPlayersMap[0].players[0];
@@ -236,66 +249,66 @@ describe('Controller: PlayersCtrl', function () {
       undefinedTeam = scope.teamPlayersMap[1];
     });
 
-    it('the player is updated (using the httpService) with the new team, when moving from one team to another.', function() {
+    it('the player is updated (using the httpService) with the new team, when moving from one team to another.', function () {
       scope.playerDroppedIntoTeamCB(playerWithTeam, targetTeam);
       scope.$digest();
       expect(updatedPlayer.name).toBe(playerWithTeam.name);
       expect(updatedPlayer._team).toBe(targetTeam.path);
-    }); 
+    });
 
-    it('the player is updated (using the httpService) with the new team, when moving from no team (the undefined team) to a team.', function() {
+    it('the player is updated (using the httpService) with the new team, when moving from no team (the undefined team) to a team.', function () {
       scope.playerDroppedIntoTeamCB(playerWithNoTeam, targetTeam);
       scope.$digest();
       expect(updatedPlayer.name).toBe(playerWithNoTeam.name);
       expect(updatedPlayer._team).toBe(targetTeam.path);
-    }); 
+    });
 
-    it('the player is updated with an null team (not undefined), when moving from a team to no team (the undefined team).', function() {
+    it('the player is updated with an null team (not undefined), when moving from a team to no team (the undefined team).', function () {
       scope.playerDroppedIntoTeamCB(playerWithTeam, undefinedTeam);
       scope.$digest();
       expect(updatedPlayer.name).toBe(playerWithTeam.name);
       expect(updatedPlayer._team).toBe(null);
-    }); 
+    });
 
-    it('when moved to the same team, no update is made.', function() {
+    it('when moved to the same team, no update is made.', function () {
       scope.playerDroppedIntoTeamCB(playerWithTeam, originalTeam);
       scope.$digest();
       expect(updatedPlayer).toBe(updateWasNeverCalled);
-    }); 
+    });
 
-    it('when an update happens, a copy of the updated player is returned.', function() {
+    it('when an update happens, a copy of the updated player is returned.', function () {
       var returnedValue = scope.playerDroppedIntoTeamCB(playerWithTeam, targetTeam);
       scope.$digest();
       expect(returnedValue).toBe(updatedPlayer);
     });
 
-    it('when no update is needed (moved within the same team), the player is returned unchanged.', function() {
+    it('when no update is needed (moved within the same team), the player is returned unchanged.', function () {
       var returnedValue = scope.playerDroppedIntoTeamCB(playerWithTeam, originalTeam);
       scope.$digest();
       expect(returnedValue).toBe(playerWithTeam);
-    }); 
+    });
 
-    describe('when the update fails... ', function(){
+    describe('when the update fails', function () {
 
-      beforeEach(function() {
+      beforeEach(function () {
         rejectUpdatePlayer = true;
         scope.teamPlayersMap = [];
       });
 
-      it('the entire map is reloaded.', function() {
+      it('the entire map is reloaded.', function () {
         scope.playerDroppedIntoTeamCB(playerWithTeam, targetTeam);
         scope.$digest();
         expect(scope.teamPlayersMap).toEqual(teamToPlayersMapFromServer);
       });
 
-      it('the error object in scope is updated.', function() {
+      it('the error object in scope is updated.', function () {
         scope.playerDroppedIntoTeamCB(playerWithTeam, targetTeam);
         scope.$digest();
         expect(scope.error).not.toBe(undefined);
         expect(scope.error.message).not.toBe(undefined);
       });
 
-      it('the error object disappears after a 3 seconds.', function() {
+      it('the error object disappears after a 3 seconds.', function () {
         shouldCallTimeoutFunctionImmediately = true;
         scope.playerDroppedIntoTeamCB(playerWithTeam, targetTeam);
         scope.$digest();
