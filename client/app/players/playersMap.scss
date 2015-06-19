@@ -5,43 +5,60 @@ div.mapDisplayContainer {
   margin-left: 2%;
 }
 
+.player-name {
+  background-color: #c8e5bc;
+  display: inline-block;
+  margin-before: 6px;
+  margin-after: 6px;
+  border-radius: 15px;
+  padding: 3px;
+  font-size: large;
+  font-weight: bold;
+}
+
 ul.teams {
   padding-left: 2.5em;
   padding-right: 2.5em;
 }
 
 li.team {
+  display: inline-block;
   list-style-type: none;
   border-radius: 10px;
   padding-bottom: 15px;
   text-align: center;
-  min-height: 13em;
-  margin-top: 1em;
+  margin: 5px;
+}
+
+ul {
+  padding: 0;
+  margin: 0;
 }
 
 ul.players {
   position: relative;
-  min-height: 11em;
+  min-height: 140px;
 }
 
 ul.players > li {
   border-radius: 5px;
   float: left;
-  padding: 5px;
-  margin-right: 5px;
-  width: 7em;
-  min-height: 11em;
+  margin-right: 2px;
   list-style-type: none;
   position: relative;
+  width: 100px;
+  height: 140px;
 }
 
 ul.players > li.player {
-  border: 3px solid #56D7D7;
-  background-color: white;
-
+  border: 3px outset #56D7D7;
+  background-color: #006666;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.6);
+  padding-top: 5px;
   img {
     width: 5.75em;
-    margin: 8% auto;
+    border-radius: 15px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.6);
   }
 }
 
@@ -81,7 +98,7 @@ li.team:nth-child(4n+0) {
 }
 
 /**
- * DRAG AND DROP STYLES  
+ * DRAG AND DROP STYLES
  */
 .dndDragging {
   opacity: 0.7;
@@ -94,12 +111,13 @@ li.team:nth-child(4n+0) {
 ul.players > .dndPlaceholder {
     border: 3px solid #bbb;
     background-color: #bbb;
+
 }
 
 
 /**
  * http://nicolasgallagher.com/micro-clearfix-hack/
- * This makes elements expand their size to contain the child elements when the child elements have float:left 
+ * This makes elements expand their size to contain the child elements when the child elements have float:left
  */
 .cf:before,
 .cf:after {
