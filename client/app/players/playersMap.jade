@@ -1,9 +1,12 @@
 span(ng-show='error' class='errorMessage') {{error.message}}
 
 div
-  h1 Map
-
-p {{currentPath}}
+  div(class="map-title") Map
+  div
+    a(href="/players" class="button")
+      div(class="fa fa-users fa-2x")
+      div View Roster
+  p {{currentPath}}
 
 div(class='mapDisplayContainer')
   ul(ng-include="'teamMapTemplate'" class='teams cf')

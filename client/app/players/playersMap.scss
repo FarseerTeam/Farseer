@@ -9,6 +9,18 @@ div.mapDisplayContainer {
   margin-left: 2%;
 }
 
+.map-title {
+  display: inline-block;
+  margin-before: 6px;
+  margin-after: 6px;
+  border-radius: 15px;
+  padding: 6px;
+  font-size: xx-large;
+  font-weight: bold;
+  background: rgba(255, 255, 255, .2) url(../../assets/images/overlay.png) repeat-x;
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.6);
+}
+
 .team-name {
   display: inline-block;
   margin-before: 6px;
