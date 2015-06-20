@@ -5,60 +5,60 @@
 
 'use strict';
 
-var PlayersMapPage = function() {
+var PlayersMapPage = function () {
 
-	var page = this;
+  var page = this;
 
-	this.allTeams = element.all(by.css('li.team'));
+  this.allTeams = element.all(by.css('li.team'));
 
-	this.allPlayers = element.all(by.css('li.player'));
+  this.allPlayers = element.all(by.css('li.player'));
 
-	this.playerImages = element.all(by.css('li.player img')); 
-	
-	this.teamNameFor = function(team) {
-		return team.all(by.css('p')).get(0).getText();
-	};
+  this.playerImages = element.all(by.css('li.player img'));
 
-	this.team = function(teamName) {
-		return page.allTeams.filter(function(element, index) {
-			return page.teamNameFor(element).then(function(text) {
-				return text === teamName;
-			});
-		}).get(0);	
-	};
+  this.teamNameFor = function (team) {
+    return team.all(by.css('.team-name')).get(0).getText();
+  };
 
-	this.childTeamsOf = function(parentTeam) {
-		var parentNode = parentTeam
-		if (typeof parentTeam === 'string') {
-			parentNode = page.team(parentTeam)
-		}
-		return parentNode.all(by.css('li.team'));
-	};
+  this.team = function (teamName) {
+    return page.allTeams.filter(function (element) {
+      return page.teamNameFor(element).then(function (text) {
+        return text === teamName;
+      });
+    }).get(0);
+  };
 
-	this.imageSrc = function(image) {
-		return image.getAttribute('src');
-	};
+  this.playerOnTeam = function (team, playerName) {
+    return team.all(by.css('li.player')).filter(playersWithName(playerName)).first();
+  };
 
-	this.player = function(playerName) {
-		return page.allPlayers.filter(function(element, index){
-			return page.playerNameFor(element).then(function(text) {
-				return text === playerName;
-			});
-		}).get(0);
-	};
+  this.childTeamsOf = function (parentTeam) {
+    var parentNode = parentTeam;
+    if (typeof parentTeam === 'string') {
+      parentNode = page.team(parentTeam)
+    }
+    return parentNode.all(by.css('li.team'));
+  };
 
-	this.playerNameFor = function(player) {
-		return player.all(by.css('div')).first().getText();
-	}
+  this.imageSrc = function (image) {
+    return image.getAttribute('src');
+  };
 
-	this.teamNameForPlayer = function(player) {
-		var pathFromPlayerToTeamName = '../../p';
-		var playerNode = player;
-		if (typeof player === 'string') {
-			playerNode =  page.player(player);
-		}
-		return playerNode.all(by.xpath(pathFromPlayerToTeamName)).first().getText();
-	};
+  function playersWithName(playerName) {
+    return function (element) {
+      return page.playerNameFor(element).then(function (text) {
+        return text === playerName;
+      });
+    };
+  }
+
+  this.player = function (playerName) {
+    return page.allPlayers.filter(playersWithName(playerName)).get(0);
+  };
+
+  this.playerNameFor = function (player) {
+    return player.all(by.css('div')).first().getText();
+  };
+
 };
 
 module.exports = new PlayersMapPage();

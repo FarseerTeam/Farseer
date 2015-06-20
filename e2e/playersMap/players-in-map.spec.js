@@ -20,10 +20,11 @@ describe('The playersMap page has players on it, and... ', function() {
 
 		afterEach(function(done){
 			setup.purgeData().then(done);
-		})
+		});
 
 		it('the player is placed in a group titled "unassigned"', function() {
-			expect(page.teamNameForPlayer('newPlayer')).toEqual('unassigned');
+      var unassignedTeam = page.team('unassigned');
+      expect(page.playerOnTeam(unassignedTeam, 'newPlayer').isPresent()).toBe(true);
 		});
 	});
 
