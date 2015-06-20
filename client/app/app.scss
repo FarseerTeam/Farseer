@@ -2,9 +2,9 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
 
 @import 'font-awesome/scss/font-awesome';
 
-/**
- * App-wide Styles
- */
+body {
+  text-align: center;
+}
 
 .browsehappy {
   margin: 0.2em 0;
@@ -16,7 +16,7 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
 .button {
   display: inline-block;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  background: rgb(189, 51, 75) url(../assets/images/overlay.png) repeat-x;
+  background: url(../assets/images/overlay.png) repeat-x;
   font-size: 13px;
   padding: 8px 14px 9px;
   font-weight: bold;
@@ -36,9 +36,34 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
   transition: all ease-out 0.2s;
 }
 
+.pink {
+  background-color: rgb(189, 51, 75);
+}
+
+.green {
+  background-color: #33BD5F;
+}
+
 .button:hover {
-  background-color: darkcyan;
   transition: all ease-out 0.2s;
+  &.pink {
+    background-color: darkcyan;
+  }
+  &.green {
+    background-color: #1F733A;
+  }
+}
+
+.view-title {
+  display: inline-block;
+  margin-before: 6px;
+  margin-after: 6px;
+  border-radius: 15px;
+  padding: 6px;
+  font-size: xx-large;
+  font-weight: bold;
+  background: rgba(255, 255, 255, .2) url(../../assets/images/overlay.png) repeat-x;
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.6);
 }
 
 /* Responsive: Portrait tablets and up */
