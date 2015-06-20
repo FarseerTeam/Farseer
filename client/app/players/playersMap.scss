@@ -49,7 +49,9 @@ ul {
 
 ul.players {
   position: relative;
-  min-height: 1px;
+  min-height: 5px;
+  min-width: 100px;
+  display: inline-block;
 }
 
 ul.players > li {
