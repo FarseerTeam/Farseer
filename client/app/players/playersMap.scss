@@ -39,10 +39,11 @@ div.mapDisplayContainer {
 li.team {
   display: inline-block;
   list-style-type: none;
-  border-radius: 10px;
+  border-radius: 100px;
   padding: 8px;
   text-align: center;
   margin: 5px;
+  background: url(../../assets/images/overlay.png) repeat-x;
 }
 
 ul {
@@ -80,22 +81,18 @@ ul.players > li.player {
 
 li.team:nth-child(4n+1) {
   background-color: #5DA7FF;
-  border: 3px solid #1E5CA6;
 }
 
 li.team:nth-child(4n+2) {
   background-color: #8E62FF;
-  border: 3px solid #4520A6;
 }
 
 li.team:nth-child(4n+3) {
   background-color: #4FFF96;
-  border: 3px solid #1AA652;
 }
 
 li.team:nth-child(4n+0) {
   background-color: #FFBB4F;
-  border: 3px solid #A66F1A;
 }
 
 /**
