@@ -1,31 +1,38 @@
-h1 Players
-a(href='/playersMap', title='Map View') Map View
+div(class='players-table-view')
+  div(class='view-title') Players
 
-p(class='message', ng-class='{error: handler.error}') {{handler.message}}
+  div
+    a(href="/playersMap" class="green button" title="Map View")
+      div(class="fa fa-street-view fa-2x")
+      div(class="fa fa-street-view fa-2x")
+      div(class="fa fa-street-view fa-2x")
+      div Map View
 
-table(class='players')
-  thead
-    tr
-      th Name
-      th Email
-      th Team Path
-      th
-  tbody
-    tr
-      td
-        input(type='text', id='name', ng-model='newPlayer.name')
-      td
-        input(type='text', id='email', ng-model='newPlayer.email', ng-class='{error: newPlayer.error}')
-      td
-        input(type='text', id='team', ng-model='newPlayer._team')
-      td
-        button(type='button', ng-click='addPlayer()') Add Player
-    tr(ng-repeat='player in players', ng-class='{disabled: !active}', ng-init='active=false; edited=false')
-      td
-        input(type='text', ng-model='player.name', value='{{player.name}}', ng-focus='active=true', ng-blur='active=false', ng-change='edited=true', ng-readonly='!active')
-      td
-        input(type='text', ng-model='player.email', value='{{player.email}}', ng-class='{error: player.error}', ng-focus='active=true', ng-blur='active=false', ng-change='edited=true', ng-readonly='!active')
-      td
-        input(type='text', ng-model='player._team', ng-focus='active=true', ng-blur='active=false', ng-change='edited=true', ng-readonly='!active')
-      td
-        button(ng-click='update(player); active=false; edited=false', ng-show='edited') Save
+  p(class='message', ng-class='{error: handler.error}') {{handler.message}}
+
+  table(class='players')
+    thead
+      tr
+        th Name
+        th Email
+        th Team Path
+        th
+    tbody
+      tr
+        td
+          input(type='text', id='name', ng-model='newPlayer.name', ng-required)
+        td
+          input(type='text', id='email', ng-model='newPlayer.email', ng-class='{error: newPlayer.error}', ng-required)
+        td
+          input(type='text', id='team', ng-model='newPlayer._team' ng-required)
+        td
+          button(type='button', ng-click='addPlayer()') Add Player
+      tr(ng-repeat='player in players', ng-class='{disabled: !active}', ng-init='active=false; edited=false')
+        td
+          input(type='text', ng-model='player.name', value='{{player.name}}', ng-focus='active=true', ng-blur='active=false', ng-change='edited=true', ng-readonly='!active')
+        td
+          input(type='text', ng-model='player.email', value='{{player.email}}', ng-class='{error: player.error}', ng-focus='active=true', ng-blur='active=false', ng-change='edited=true', ng-readonly='!active')
+        td
+          input(type='text', ng-model='player._team', ng-focus='active=true', ng-blur='active=false', ng-change='edited=true', ng-readonly='!active')
+        td
+          button(ng-click='update(player); active=false; edited=false', ng-show='edited') Save

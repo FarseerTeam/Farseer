@@ -1,3 +1,10 @@
+.map-view {
+  background-color: rgb(95, 60, 66);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
 div.mapDisplayContainer {
   width: 92%;
   margin: 0 auto;
@@ -5,61 +12,87 @@ div.mapDisplayContainer {
   margin-left: 2%;
 }
 
-ul.teams {
-  padding-left: 2.5em;
-  padding-right: 2.5em;
+.team-name {
+  display: inline-block;
+  margin-before: 6px;
+  margin-after: 6px;
+  border-radius: 15px;
+  padding: 3px;
+  font-size: x-large;
+  font-weight: bold;
+  background: rgba(255, 255, 255, .2) url(../../assets/images/overlay.png) repeat-x;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.player-name {
+  display: inline-block;
+  margin-before: 6px;
+  margin-after: 6px;
+  border-radius: 15px;
+  padding: 3px;
+  font-size: large;
+  font-weight: bold;
+  background: #c8e5bc url(../../assets/images/overlay.png) repeat-x;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 
 li.team {
+  display: inline-block;
   list-style-type: none;
-  border-radius: 10px;
-  padding-bottom: 15px;
+  border-radius: 100px;
+  padding: 8px;
   text-align: center;
-  min-height: 13em;
-  margin-top: 1em;
+  margin: 5px;
+  background: url(../../assets/images/overlay.png) repeat-x;
+}
+
+ul {
+  padding: 0;
+  margin: 0;
 }
 
 ul.players {
   position: relative;
-  min-height: 11em;
+  min-height: 5px;
+  min-width: 100px;
+  display: inline-block;
 }
 
 ul.players > li {
   border-radius: 5px;
   float: left;
-  padding: 5px;
-  margin-right: 5px;
-  width: 7em;
-  min-height: 11em;
+  margin-right: 2px;
   list-style-type: none;
   position: relative;
+  width: 100px;
+  height: 140px;
 }
 
 ul.players > li.player {
-  border: 3px solid #56D7D7;
-  background-color: white;
-
+  border: 3px outset whitesmoke;
+  background-color: #006666;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  padding: 6px;
   img {
-    width: 5.75em;
-    margin: 8% auto;
+    border-radius: 15px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
   }
 }
 
 li.team:nth-child(4n+1) {
   background-color: #5DA7FF;
-  border: 3px solid #1E5CA6;
 }
+
 li.team:nth-child(4n+2) {
   background-color: #8E62FF;
-  border: 3px solid #4520A6;
 }
+
 li.team:nth-child(4n+3) {
   background-color: #4FFF96;
-  border: 3px solid #1AA652;
 }
+
 li.team:nth-child(4n+0) {
   background-color: #FFBB4F;
-  border: 3px solid #A66F1A;
 }
 
 /**
@@ -81,7 +114,7 @@ li.team:nth-child(4n+0) {
 }
 
 /**
- * DRAG AND DROP STYLES  
+ * DRAG AND DROP STYLES
  */
 .dndDragging {
   opacity: 0.7;
@@ -92,21 +125,20 @@ li.team:nth-child(4n+0) {
 }
 
 ul.players > .dndPlaceholder {
-    border: 3px solid #bbb;
-    background-color: #bbb;
+  border: 3px solid #bbb;
+  background-color: #bbb;
 }
-
 
 /**
  * http://nicolasgallagher.com/micro-clearfix-hack/
- * This makes elements expand their size to contain the child elements when the child elements have float:left 
+ * This makes elements expand their size to contain the child elements when the child elements have float:left
  */
 .cf:before,
 .cf:after {
-    content: " ";
-    display: table;
+  content: " ";
+  display: table;
 }
 
 .cf:after {
-    clear: both;
+  clear: both;
 }
