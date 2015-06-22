@@ -9,7 +9,7 @@ var dataService = require('../../components/dataService');
 
 dataService.connect();
 
-describe('/api/teams', function () {
+describe('/api/worlds/world/teams', function () {
   describe('GET ', function () {
     var ford;
 
@@ -27,7 +27,7 @@ describe('/api/teams', function () {
 
     it('should respond with JSON array', function (done) {
       request(app)
-        .get('/api/teams')
+        .get('/api/worlds/world/teams')
         .expect(200)
         .expect('Content-Type', /json/)
         .end(function (err, res) {
@@ -60,7 +60,7 @@ describe('/api/teams', function () {
     });
     it('should create teams', function (done) {
       request(app)
-        .post('/api/teams')
+        .post('/api/worlds/world/teams')
         .send({
           name: 'GFORCE'
         })
@@ -71,7 +71,7 @@ describe('/api/teams', function () {
     });
     it('should create a sub team if there is a valid parent reference', function (done) {
       request(app)
-        .post('/api/teams')
+        .post('/api/worlds/world/teams')
         .send({
           name: 'GFORCE',
           parentId: ford.id
@@ -87,7 +87,7 @@ describe('/api/teams', function () {
     });
     it('should display a message if it is not a valid parent reference', function (done) {
       request(app)
-        .post('/api/teams')
+        .post('/api/worlds/world/teams')
         .send({
           name: 'Invalid GFORCE',
           parentId: 587979877787
@@ -110,7 +110,7 @@ describe('/api/teams', function () {
   });
 });
 
-describe('/api/teams/:team_id', function () {
+describe('/api/worlds/world/teams/:team_id', function () {
 
   describe('GET ', function () {
     var cengage;
@@ -125,7 +125,7 @@ describe('/api/teams/:team_id', function () {
         });
     });
     it('will return a valid object if exists ', function (done) {
-      var url = '/api/teams/' + cengage.id;
+      var url = '/api/worlds/world/teams/' + cengage.id;
       request(app)
         .get(url)
         .expect(200)
@@ -138,7 +138,7 @@ describe('/api/teams/:team_id', function () {
     });
     it('will return an empty object with error information ', function (done) {
       var randomId = parseInt(Math.random() * 1000);
-      var url = '/api/teams/' + randomId;
+      var url = '/api/worlds/world/teams/' + randomId;
       request(app)
         .get(url)
         .expect(200)
@@ -170,7 +170,7 @@ describe('/api/teams/:team_id', function () {
         });
     });
     it('will update a valid object ', function (done) {
-      var url = '/api/teams/' + cengage.id;
+      var url = '/api/worlds/world/teams/' + cengage.id;
       request(app)
         .put(url)
         .send(cengageChanged)
@@ -204,7 +204,7 @@ describe('/api/teams/:team_id', function () {
         });
     });
     it('will remove an valid object ', function (done) {
-      var url = '/api/teams/' + cengage.id;
+      var url = '/api/worlds/world/teams/' + cengage.id;
       request(app)
         .delete(url)
         .expect(200)

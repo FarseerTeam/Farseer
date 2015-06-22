@@ -13,7 +13,7 @@ describe('Http Service', function () {
   }));
 
   it('should return players data', function() {
-    $httpBackend.expectGET('/api/players')
+    $httpBackend.expectGET('/api/worlds/world/players')
       .respond(['Harry Potter', 'Hermione Granger', 'Ron Weasley']);
 
     service.getPlayers().then(function(returnedPlayers) {
@@ -29,7 +29,7 @@ describe('Http Service', function () {
 
   it('should add new player', function() {
     var newPlayer = '{"name":"Draco","email":"malfoy@email"}';
-    $httpBackend.expectPOST('/api/players', newPlayer).respond(200);
+    $httpBackend.expectPOST('/api/worlds/world/players', newPlayer).respond(200);
 
     service.addPlayer(newPlayer).then(function(response) {
       expect(response.status).toBe(200);
@@ -40,7 +40,7 @@ describe('Http Service', function () {
   it('should update existing player', function() {
     var smitty = {name: 'Smith', email: 'smitty@email', _id: 'smitty123'};
 
-    $httpBackend.expectPUT('/api/players/' + smitty._id, smitty).respond(200);
+    $httpBackend.expectPUT('/api/worlds/world/players/' + smitty._id, smitty).respond(200);
 
     service.update(smitty).then(function(response) {
       expect(response.status).toBe(200);
@@ -51,7 +51,7 @@ describe('Http Service', function () {
 
   it('should return team-to-players map data', function() {
     var expectedResult = [{team: 'Gryffindor', players: [{name: 'Harry Potter'}]}];
-    $httpBackend.expectGET('/api/maps').respond(expectedResult);
+    $httpBackend.expectGET('/api/worlds/world/maps').respond(expectedResult);
 
     service.getTeamToPlayersMap().then(function(returnedMap) {
       expect(returnedMap).toEqual(expectedResult);
@@ -62,7 +62,7 @@ describe('Http Service', function () {
 
   it('should return team-to-players map data for a specified subteam', function() {
     var expectedResult = [{team: 'Ravenclaw', players: [{name: 'Luna Lovegood'}]}];
-    $httpBackend.expectGET('/api/maps/Hogwarts/Ravenclaw').respond(expectedResult);
+    $httpBackend.expectGET('/api/worlds/world/maps/Hogwarts/Ravenclaw').respond(expectedResult);
 
     service.getTeamToPlayersMap('/Hogwarts/Ravenclaw').then(function(returnedMap) {
       expect(returnedMap).toEqual(expectedResult);

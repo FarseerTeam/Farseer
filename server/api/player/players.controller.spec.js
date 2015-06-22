@@ -12,7 +12,7 @@ var mongoose = require('mongoose');
 
 dataService.connect();
 
-describe('/api/players', function () {
+describe('/api/worlds/world/players', function () {
   describe('GET ', function () {
     var smith;
 
@@ -28,7 +28,7 @@ describe('/api/players', function () {
 
     it('should respond with JSON array', function (done) {
       request(app)
-        .get('/api/players')
+        .get('/api/worlds/world/players')
         .expect(200)
         .expect('Content-Type', /json/)
         .end(function (err, res) {
@@ -46,12 +46,12 @@ describe('/api/players', function () {
     });
   });
 
-  //curl http://localhost:9000/api/players
-  //curl -H "Content-Type: application/json" -d '{"name":"pedro","email":"pedro@email"}' http://localhost:9000/api/players
+  //curl http://localhost:9000/api/worlds/world/players
+  //curl -H "Content-Type: application/json" -d '{"name":"pedro","email":"pedro@email"}' http://localhost:9000/api/worlds/world/players
   describe('POST ', function () {
     it('should create players', function (done) {
       request(app)
-        .post('/api/players')
+        .post('/api/worlds/world/players')
         .send({
         name: 'Manny',
         email: 'cat@email.com'
@@ -72,7 +72,7 @@ describe('/api/players', function () {
 
       it('should return a human error message', function (done) {
         request(app)
-          .post('/api/players')
+          .post('/api/worlds/world/players')
           .send({
           name: 'Smith',
           email: 'test@test.smith.com'
@@ -94,7 +94,7 @@ describe('/api/players', function () {
 
 });
 
-describe('/api/players/:player_id', function () {
+describe('/api/worlds/world/players/:player_id', function () {
 
   describe('GET ', function () {
     var smith;
@@ -111,7 +111,7 @@ describe('/api/players/:player_id', function () {
     });
 
     it('will return a valid object if exists ', function (done) {
-      var url = '/api/players/' + smith.id;
+      var url = '/api/worlds/world/players/' + smith.id;
       request(app)
         .get(url)
         .expect(200)
@@ -125,7 +125,7 @@ describe('/api/players/:player_id', function () {
     });
 
     it("will understand a player's email if passed as the player_id.", function (done) {
-      var url = '/api/players/' + smith.email;
+      var url = '/api/worlds/world/players/' + smith.email;
       request(app)
         .get(url)
         .expect(200)
@@ -140,7 +140,7 @@ describe('/api/players/:player_id', function () {
 
     it('will return an empty object with error information ', function (done) {
       var randomId = parseInt(Math.random() * 1000);
-      var url = '/api/players/' + randomId;
+      var url = '/api/worlds/world/players/' + randomId;
       request(app)
         .get(url)
         .expect(404)
@@ -177,7 +177,7 @@ describe('/api/players/:player_id', function () {
         });
     });
     it('will remove an valid object ', function (done) {
-      var url = '/api/players/' + smith.id;
+      var url = '/api/worlds/world/players/' + smith.id;
       request(app)
         .delete(url)
         .expect(200)
@@ -210,7 +210,7 @@ describe('/api/players/:player_id', function () {
     });
 
     it('will update a valid object ', function (done) {
-      var url = '/api/players/' + smith.id;
+      var url = '/api/worlds/world/players/' + smith.id;
       request(app)
         .put(url)
         .send(smithChanged)
@@ -247,7 +247,7 @@ describe('/api/players/:player_id', function () {
       it('should return a human error message', function (done) {
 
         request(app)
-          .put('/api/players/' + smith.id)
+          .put('/api/worlds/world/players/' + smith.id)
           .send({
           name: 'Smitty',
           email: anderson.email
@@ -448,7 +448,7 @@ describe('/api/players/:player_id', function () {
 
       var putPlayerTeamUpdateAndValidateResponse = function (playerEmail, teamIdentifier, expected, done) {
         request(app)
-          .put('/api/players/' + playerEmail)
+          .put('/api/worlds/world/players/' + playerEmail)
           .send({
           _team: teamIdentifier
         })
@@ -470,7 +470,7 @@ describe('/api/players/:player_id', function () {
 
       var performUpdateAndCheckForError = function (playerEmail, teamIdentifier, expectedError, responseCode, done) {
         request(app)
-          .put('/api/players/' + playerEmail)
+          .put('/api/worlds/world/players/' + playerEmail)
           .send({
           _team: teamIdentifier
         })

@@ -30,7 +30,7 @@ var clearAll = function () {
   });
 };
 
-describe('/api/maps', function () { //jshint ignore:line
+describe('/api/worlds/world/maps', function () { //jshint ignore:line
 
   describe("/avatar", function () {
     var player;
@@ -57,7 +57,7 @@ describe('/api/maps', function () { //jshint ignore:line
       };
 
       request(app)
-        .get('/api/maps')
+        .get('/api/worlds/world/maps')
         .expect(200)
         .expect('Content-Type', /json/)
         .end(function (err, response) {
@@ -92,7 +92,7 @@ describe('/api/maps', function () { //jshint ignore:line
         };
 
         request(app)
-          .get('/api/maps/avatar/sub/team')
+          .get('/api/worlds/world/maps/avatar/sub/team')
           .expect(200)
           .expect('Content-Type', /json/)
           .end(function (err, response) {
