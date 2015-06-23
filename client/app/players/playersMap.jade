@@ -12,10 +12,8 @@ div(class='map-view')
   div(class='mapDisplayContainer')
     ul(ng-include="'teamMapTemplate'" class='teams cf')
 
-
   script(type='text/ng-template' id='teamMapTemplate')
     li(ng-repeat='team in teamPlayersMap' ng-include="'teamTemplate'" class='team')
-
 
   script(type='text/ng-template' id='teamTemplate')
     div

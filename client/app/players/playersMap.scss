@@ -7,9 +7,7 @@
 
 div.mapDisplayContainer {
   width: 92%;
-  margin: 0 auto;
-  margin-right: 6%;
-  margin-left: 2%;
+  margin: 0 6% 0 2%;
 }
 
 .team-name {
@@ -80,19 +78,19 @@ ul.players > li.player {
 }
 
 li.team:nth-child(4n+1) {
-  background-color: #5DA7FF;
+  background-color: #1F70D0;
 }
 
 li.team:nth-child(4n+2) {
-  background-color: #8E62FF;
+  background-color: #553b9a;
 }
 
 li.team:nth-child(4n+3) {
-  background-color: #4FFF96;
+  background-color: #297a43;
 }
 
 li.team:nth-child(4n+0) {
-  background-color: #FFBB4F;
+  background-color: #956932;
 }
 
 /**
@@ -126,7 +124,9 @@ li.team:nth-child(4n+0) {
 
 ul.players > .dndPlaceholder {
   border: 3px solid #bbb;
-  background-color: #bbb;
+  background-color: rgba(0, 0, 0, 0.8);
+  width: 112px;
+  height: 152px;
 }
 
 /**
