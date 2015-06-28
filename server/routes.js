@@ -9,7 +9,7 @@ var authentication = require('./authentication/google-authentication');
 
 module.exports = function (app) {
 
-  app.use(authentication.authenticate);
+  app.use(authentication);
 
   app.use('/api/worlds', require('./api/world'));
 
