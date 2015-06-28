@@ -5,8 +5,11 @@
 'use strict';
 
 var errors = require('./components/errors');
+var authentication = require('./authentication/google-authentication');
 
 module.exports = function (app) {
+
+  app.use(authentication.authenticate);
 
   app.use('/api/worlds', require('./api/world'));
 
