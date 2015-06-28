@@ -2,20 +2,39 @@
 
 describe('Controller: WorldsCtrl', function () {
 
-  // load the controller's module
   beforeEach(module('farseerApp'));
 
-  var WorldsCtrl, scope;
+  var WorldsCtrl, scope, mockService;
 
-  // Initialize the controller and a mock scope
-  beforeEach(inject(function ($controller, $rootScope) {
+
+  beforeEach(inject(function ($controller, $rootScope, $q) {
+    mockService = {
+      getWorlds: function () {
+        var deferred = $q.defer();
+        deferred.resolve(['Hogwarts School of Witchcraft and Wizardry', 'Beauxbatons Academy of Magic', 'Durmstrang Institute']);
+        return deferred.promise;
+      }
+    };
+    
     scope = $rootScope.$new();
     WorldsCtrl = $controller('WorldsCtrl', {
-      $scope: scope
+      $scope: scope,
+      httpService: mockService
     });
   }));
 
-  it('should ...', function () {
-    expect(1).toEqual(1);
+  describe('worlds list in the scope', function () {
+
+    it('should be empty when promise is not fulfilled', function () {
+      expect(scope.worlds).not.toBe(undefined);
+      expect(scope.worlds.length).toEqual(0);
+    });
+
+    it('should be complete when promise is fulfilled', function () {
+      scope.$digest();
+
+      expect(scope.worlds.length).toEqual(3);
+    });
+
   });
 });

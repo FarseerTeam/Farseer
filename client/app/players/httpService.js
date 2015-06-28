@@ -9,6 +9,12 @@ angular.module('farseerApp')
       });
     };
 
+    this.getWorlds = function(){
+      return $http.get('/api/worlds').then(function(response) {
+        return response.data;
+      });
+    };
+
     this.addPlayer = function(newPlayer) {
       return $http.post('/api/worlds/world/players', newPlayer).then(function(response) {
         return response;
