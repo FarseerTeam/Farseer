@@ -51,22 +51,62 @@ describe('/api/worlds/world/players', function () {
   describe('POST ', function () {
     it('should create players', function (done) {
       request(app)
-        .post('/api/worlds/world/players')
+        .post('/api/worlds/hogwarts/players')
         .send({
-        name: 'Manny',
-        email: 'cat@email.com'
+        name: 'Neville',
+        email: 'longbottom@email.com'
       })
         .set('Accept', 'application/json')
         .expect(200)
         .expect('Content-Type', /json/)
-        .end(done);
+        .end(function (error, response) {
+        if (error) done(error);
+        expect(response.body.name).to.equal('Neville');
+        expect(response.body.email).to.equal('longbottom@email.com');
+        players.Player.find({ email: 'longbottom@email.com' }, function (err, doc) {
+          if (error) done(error);
+          expect(doc[0].name).to.equal('Neville');
+          expect(doc[0].world).to.equal('hogwarts');
+          done();
+        });
+      });
+    });
+
+    it('should allow creating players with a shared email in different worlds', function (done) {
+      players.Player.create({
+        name: "Mr. Smith ",
+        email: "test@test.smith.com",
+        world: "matrix"
+      }, function () {
+          request(app)
+            .post('/api/worlds/michigan/players')
+            .send({
+            name: 'Rob',
+            email: 'test@test.smith.com'
+          })
+            .set('Accept', 'application/json')
+            .expect(200)
+            .expect('Content-Type', /json/)
+            .end(function (error, response) {
+            if (error) done(error);
+            expect(response.body.name).to.equal('Rob');
+            expect(response.body.email).to.equal('test@test.smith.com');
+            players.Player.find({ email: 'test@test.smith.com', world: 'michigan' }, function (err, doc) {
+              if (error) done(error);
+              expect(doc[0].name).to.equal('Rob');
+              expect(doc[0].world).to.equal('michigan');
+              done();
+            });
+          });
+        });
     });
 
     describe('when adding duplicate player', function () {
       beforeEach(function (done) {
         players.Player.create({
           name: "Smith ",
-          email: "test@test.smith.com"
+          email: "test@test.smith.com",
+          world: "world"
         }, done);
       });
 
@@ -379,7 +419,7 @@ describe('/api/worlds/world/players/:player_id', function () {
         });
 
         it('still allows the update because teams do not require a db entry', function (done) {
-          
+
           var expectedPlayer = {
             name: 'Harry Potter',
             email: 'Harry@gmail.com',
