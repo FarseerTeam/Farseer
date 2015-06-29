@@ -14,6 +14,9 @@ var cookieParser = require('cookie-parser');
 var errorHandler = require('errorhandler');
 var path = require('path');
 var config = require('./environment');
+var passport = require('passport');
+var testAuth = require('../authentication/auth-strategy-test');
+var prodAuth = require('../authentication/auth-strategy-prod');
 
 module.exports = function(app) {
   var env = app.get('env');
@@ -26,11 +29,15 @@ module.exports = function(app) {
   app.use(methodOverride());
   app.use(cookieParser());
 
+  // passport.serializeUser(userDataService.serializeUser);
+  // passport.deserializeUser(userDataService.deserializeUser);
+
   if ('production' === env) {
     app.use(favicon(path.join(config.root, 'public', 'favicon.ico')));
     app.use(express.static(path.join(config.root, 'public')));
     app.set('appPath', config.root + '/public');
     app.use(morgan('dev'));
+    passport.use(prodAuth.strategy);
   }
 
   if ('development' === env || 'test' === env) {
@@ -39,6 +46,7 @@ module.exports = function(app) {
     app.use(express.static(path.join(config.root, 'client')));
     app.set('appPath', 'client');
     app.use(morgan('dev'));
+    passport.use(testAuth.strategy);
     app.use(errorHandler()); // Error handler - has to be last
   }
 };
