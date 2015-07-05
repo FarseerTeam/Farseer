@@ -11,7 +11,9 @@ describe('The playersMap page has teams on it, and... ', function() {
 		describe('and there are no players... ', function() {
 
 			beforeEach(function(done){
-				browser.get('playersMap')
+				setup.purgeData()
+					.then(browser.get('/test-login?username=hi&password=there'))
+					.then(browser.get('playersMap'))
 					.then(done);
 			});
 

@@ -14,6 +14,7 @@ describe('The playersMap page has players on it, and... ', function() {
 
 		beforeEach(function(done) {
 			setup.addPlayer('newPlayer', 'some@gmail.com')
+				.then(browser.get('/test-login?username=hi&password=there'))
 				.then(browser.get('playersMap'))
 				.then(done);
 		});
