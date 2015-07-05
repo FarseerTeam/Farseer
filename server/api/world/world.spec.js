@@ -2,12 +2,13 @@
 
 var expect = require('chai').expect;
 require('chai').use(require('dirty-chai'));
-var app = require('../../app');
-var request = require('supertest');
 var worlds = require("../../components/worlds");
 var _ = require('lodash');
+var authenticatedRequest = require('../../authentication/authentication-test-helper');
 
 describe('/api/worlds', function () {
+
+  authenticatedRequest.init();
 
   describe('GET', function () {
     var worldList = [];
@@ -34,7 +35,7 @@ describe('/api/worlds', function () {
     });
 
     it('should return a list of worlds', function (done) {
-      request(app)
+      authenticatedRequest
         .get('/api/worlds')
         .expect(200)
         .expect('Content-Type', /json/)
@@ -58,7 +59,7 @@ describe('/api/worlds', function () {
     it('should add a world to the list', function (done) {
       var newWorld = { name: 'Lost World' };
 
-      request(app)
+      authenticatedRequest
         .post('/api/worlds')
         .send(newWorld)
         .expect(200)
@@ -72,7 +73,7 @@ describe('/api/worlds', function () {
 
     it('will reject request to create world with a preexisting id', function (done) {
       worlds.World.create({ name: 'Lost World' }).then(function (world) {
-        request(app)
+        authenticatedRequest
           .post('/api/worlds')
           .send(world)
           .expect(409)

@@ -2,8 +2,7 @@
 
 var nextIfError = require("callback-wrappers").nextIfError;
 var expect = require('chai').expect;
-var app = require('../../app');
-var request = require('supertest');
+var authenticatedRequest = require('../../authentication/authentication-test-helper');
 var players = require("../../components/players");
 var teams = require("../../components/teams");
 var dataService = require('../../components/dataService');
@@ -13,6 +12,9 @@ var mongoose = require('mongoose');
 dataService.connect();
 
 describe('/api/worlds/world/players', function () {
+
+  authenticatedRequest.init();
+
   describe('GET ', function () {
     var smith;
 
@@ -27,7 +29,7 @@ describe('/api/worlds/world/players', function () {
     });
 
     it('should respond with JSON array', function (done) {
-      request(app)
+      authenticatedRequest
         .get('/api/worlds/world/players')
         .expect(200)
         .expect('Content-Type', /json/)
@@ -50,7 +52,7 @@ describe('/api/worlds/world/players', function () {
   //curl -H "Content-Type: application/json" -d '{"name":"pedro","email":"pedro@email"}' http://localhost:9000/api/worlds/world/players
   describe('POST ', function () {
     it('should create players', function (done) {
-      request(app)
+      authenticatedRequest
         .post('/api/worlds/hogwarts/players')
         .send({
         name: 'Neville',
@@ -78,7 +80,7 @@ describe('/api/worlds/world/players', function () {
         email: "test@test.smith.com",
         world: "matrix"
       }, function () {
-          request(app)
+          authenticatedRequest
             .post('/api/worlds/michigan/players')
             .send({
             name: 'Rob',
@@ -111,7 +113,7 @@ describe('/api/worlds/world/players', function () {
       });
 
       it('should return a human error message', function (done) {
-        request(app)
+        authenticatedRequest
           .post('/api/worlds/world/players')
           .send({
           name: 'Smith',
@@ -152,7 +154,7 @@ describe('/api/worlds/world/players/:player_id', function () {
 
     it('will return a valid object if exists ', function (done) {
       var url = '/api/worlds/world/players/' + smith.id;
-      request(app)
+      authenticatedRequest
         .get(url)
         .expect(200)
         .expect('Content-Type', /json/)
@@ -166,7 +168,7 @@ describe('/api/worlds/world/players/:player_id', function () {
 
     it("will understand a player's email if passed as the player_id.", function (done) {
       var url = '/api/worlds/world/players/' + smith.email;
-      request(app)
+      authenticatedRequest
         .get(url)
         .expect(200)
         .expect('Content-Type', /json/)
@@ -181,7 +183,7 @@ describe('/api/worlds/world/players/:player_id', function () {
     it('will return an empty object with error information ', function (done) {
       var randomId = parseInt(Math.random() * 1000);
       var url = '/api/worlds/world/players/' + randomId;
-      request(app)
+      authenticatedRequest
         .get(url)
         .expect(404)
         .expect('Content-Type', /json/)
@@ -218,7 +220,7 @@ describe('/api/worlds/world/players/:player_id', function () {
     });
     it('will remove an valid object ', function (done) {
       var url = '/api/worlds/world/players/' + smith.id;
-      request(app)
+      authenticatedRequest
         .delete(url)
         .expect(200)
         .end(done);
@@ -251,7 +253,7 @@ describe('/api/worlds/world/players/:player_id', function () {
 
     it('will update a valid object ', function (done) {
       var url = '/api/worlds/world/players/' + smith.id;
-      request(app)
+      authenticatedRequest
         .put(url)
         .send(smithChanged)
         .set('Accept', 'application/json')
@@ -286,7 +288,7 @@ describe('/api/worlds/world/players/:player_id', function () {
 
       it('should return a human error message', function (done) {
 
-        request(app)
+        authenticatedRequest
           .put('/api/worlds/world/players/' + smith.id)
           .send({
           name: 'Smitty',
@@ -487,7 +489,7 @@ describe('/api/worlds/world/players/:player_id', function () {
 
 
       var putPlayerTeamUpdateAndValidateResponse = function (playerEmail, teamIdentifier, expected, done) {
-        request(app)
+        authenticatedRequest
           .put('/api/worlds/world/players/' + playerEmail)
           .send({
           _team: teamIdentifier
@@ -509,7 +511,7 @@ describe('/api/worlds/world/players/:player_id', function () {
       };
 
       var performUpdateAndCheckForError = function (playerEmail, teamIdentifier, expectedError, responseCode, done) {
-        request(app)
+        authenticatedRequest
           .put('/api/worlds/world/players/' + playerEmail)
           .send({
           _team: teamIdentifier

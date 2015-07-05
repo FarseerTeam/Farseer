@@ -2,8 +2,7 @@
 'use strict';
 
 var expect = require('chai').expect;
-var app = require('../../app');
-var request = require('supertest');
+var authenticatedRequest = require('../../authentication/authentication-test-helper');
 var teams = require("../../components/teams");
 var players = require("../../components/players");
 var dataService = require('../../components/dataService');
@@ -32,6 +31,8 @@ var clearAll = function () {
 
 describe('/api/worlds/world/maps', function () { //jshint ignore:line
 
+  authenticatedRequest.init();
+
   describe("/avatar", function () {
     var player;
 
@@ -56,7 +57,7 @@ describe('/api/worlds/world/maps', function () { //jshint ignore:line
         subTeams: []
       };
 
-      request(app)
+      authenticatedRequest
         .get('/api/worlds/world/maps')
         .expect(200)
         .expect('Content-Type', /json/)
@@ -91,7 +92,7 @@ describe('/api/worlds/world/maps', function () { //jshint ignore:line
           subTeams: []
         };
 
-        request(app)
+        authenticatedRequest
           .get('/api/worlds/world/maps/avatar/sub/team')
           .expect(200)
           .expect('Content-Type', /json/)
