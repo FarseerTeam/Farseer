@@ -14,6 +14,7 @@ exports.index = function (req, res) {
 
 exports.create = function (req, res) {
   var player = new players.Player(req.body);
+  player.world = req.params.worldId;
   player.save(function (err) {
     if (err) {
       return res.status(409).json({

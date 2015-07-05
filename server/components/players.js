@@ -8,13 +8,15 @@ module.exports = (function() {
     email: {
       type: String,
       index: {
-        unique: true,
         required: true
       }
     },
     name: String,
+    world: String,
     _team : String
   });
+  _playerSchema.index({ email: 1, world: 1 }, { unique: true });
+   
   var _model = mongoose.model('Player', _playerSchema);
 
   var _findByEmail = function(email, success, fail) {
