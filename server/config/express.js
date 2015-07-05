@@ -14,6 +14,7 @@ var cookieParser = require('cookie-parser');
 var errorHandler = require('errorhandler');
 var path = require('path');
 var config = require('./environment');
+var session = require('express-session');
 var passport = require('passport');
 var testAuth = require('../authentication/auth-strategy-test');
 var prodAuth = require('../authentication/auth-strategy-prod');
@@ -29,8 +30,20 @@ module.exports = function(app) {
   app.use(methodOverride());
   app.use(cookieParser());
 
+  app.use(session({secret: config.secrets.session}));
+  app.use(passport.initialize());
+  app.use(passport.session());
+
   // passport.serializeUser(userDataService.serializeUser);
   // passport.deserializeUser(userDataService.deserializeUser);
+
+  passport.serializeUser(function(user, done) {
+    done(null, user);
+  });
+
+  passport.deserializeUser(function(user, done) {
+    done(null, user);
+  });
 
   if ('production' === env) {
     app.use(favicon(path.join(config.root, 'public', 'favicon.ico')));
