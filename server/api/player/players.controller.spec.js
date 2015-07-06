@@ -9,32 +9,40 @@ var teams = require("../../components/teams");
 var dataService = require('../../components/dataService');
 var format = require('string-format');
 var mongoose = require('mongoose');
+var _ = require('lodash');
 
 dataService.connect();
 
 describe('/api/worlds/world/players', function () {
-  describe('GET ', function () {
-    var smith;
+  describe('GET', function () {
+    var smith, neo;
 
     beforeEach(function (done) {
-      players.Player.create({
+      players.Player.create([{
         name: "Smith ",
-        email: "test@test.smith.com"
-      }, function (err, doc) {
-          smith = doc;
+        email: "test@test.smith.com",
+        world: "matrix"
+      }, {
+        name: "Mr. Anderson",
+        email: "neo@email",
+        world: "newyork"
+      }], function (err, docs) {
+          smith = docs[0];
+          neo = docs[1];
           done();
         });
     });
 
-    it('should respond with JSON array', function (done) {
+    it('should return players from the right world', function (done) {
       request(app)
-        .get('/api/worlds/world/players')
+        .get('/api/worlds/matrix/players')
         .expect(200)
         .expect('Content-Type', /json/)
         .end(function (err, res) {
         if (err) return done(err);
         expect(res.body).to.be.instanceof(Array);
-        expect(smith.id).to.be.equal(res.body[0]._id);
+        var ids = _.pluck(res.body, '_id');
+        expect(ids).to.be.eql([smith._id.toString()]);
         done();
       });
     });
