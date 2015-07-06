@@ -16,7 +16,7 @@ var path = require('path');
 var config = require('./environment');
 var session = require('express-session');
 var passport = require('passport');
-var testAuth = require('../authentication/auth-strategy-test');
+var devAuth = require('../authentication/auth-strategy-dev');
 var prodAuth = require('../authentication/auth-strategy-prod');
 
 module.exports = function(app) {
@@ -59,7 +59,7 @@ module.exports = function(app) {
     app.use(express.static(path.join(config.root, 'client')));
     app.set('appPath', 'client');
     app.use(morgan('dev'));
-    passport.use(testAuth.strategy);
+    passport.use(devAuth.strategy);
     app.use(errorHandler()); // Error handler - has to be last
   }
 };

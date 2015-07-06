@@ -52,7 +52,7 @@ exports.config = {
   //
   // See the full list at https://github.com/juliemr/minijasminenode
   jasmineNodeOpts: {
-    defaultTimeoutInterval: 5000
+    defaultTimeoutInterval: 8000
   },
 
   onPrepare: function () {

@@ -5,21 +5,26 @@ var request = require('supertest');
 
 function AuthTestHelper() {
   var Cookies;
+  var username = 'hi';
+  var password = 'there';
 
   this.init = function() {
     beforeEach(function(done) {
-      request(app).get('/test-login?username=hi&password=there').end(function(err, res){
+      request(app).get('/test-login?username=' + username + '&password=' + password).end(function(err, res){
         if (err) {
-          console.log('error logging in');
+          console.log('error logging in' + err);
           done(err);
         }
-        console.log('returning from get for login');
-        console.log('res' + JSON.stringify(res, null, ' '));
         Cookies = res.headers['set-cookie'].pop().split(';')[0];
-        console.log('new cookie: ' + Cookies);
         done();
       });
     });
+  }
+
+  this.login = function(uname, pword) {
+    this.username = uname ? uname : 'hi';
+    this.password = pword ? pword : 'there';
+    return this;
   }
 
   this.get = function(url) {
@@ -46,8 +51,6 @@ function AuthTestHelper() {
     httpRequest.cookies = Cookies;
     return httpRequest;
   }
-
-
 }
 
 module.exports =  new AuthTestHelper();
