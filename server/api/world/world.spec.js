@@ -4,7 +4,7 @@ var expect = require('chai').expect;
 require('chai').use(require('dirty-chai'));
 var worlds = require("../../components/worlds");
 var _ = require('lodash');
-var authenticatedRequest = require('../../authentication/authentication-test-helper');
+var authenticatedRequest = require('../../authentication/authentication-helper.spec');
 var VALID_USER = authenticatedRequest.VALID_USER;
 
 describe('/api/worlds', function () {

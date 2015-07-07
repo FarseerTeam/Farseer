@@ -14,21 +14,21 @@ var _environmentRouter = function(env) {
     //return ('production' === env) ?  _buildProdRouter() : _buildTestRouter();
 }
 
-var _buildProdRouter = function() {
+function _buildProdRouter() {
     router.get('/auth/google', _prodAuthenticate);
     router.get('/auth/google/callback', _prodAuthCallback);
     router.use(_prodAuthenticate);
     return router;
 }
 
-var _buildTestRouter = function() {
+function _buildTestRouter() {
     router.all('/test-login', _testAuthenticate);
     router.all('/api/*', _authenticateApiRequest);
     router.all('/*', _authenticatePageRequest);
     return router;
 }
 
-var _authenticateApiRequest = function (request, response, next) {
+function _authenticateApiRequest(request, response, next) {
     if (!request.isAuthenticated()) {
         response.sendStatus(401);
     } else {
@@ -36,7 +36,7 @@ var _authenticateApiRequest = function (request, response, next) {
     }
 }
 
-var _authenticatePageRequest = function(req, res, next) {
+function _authenticatePageRequest(req, res, next) {
 	if ('/login' === req.url) {
 		next();
 	} else {
@@ -44,7 +44,7 @@ var _authenticatePageRequest = function(req, res, next) {
 	}
 }
 
-var _authenticateRequestWithRedirect = function (request, response, next) {
+function _authenticateRequestWithRedirect(request, response, next) {
     if (!request.isAuthenticated()) {
         response.redirect('/login');
     } else {

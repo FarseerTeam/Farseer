@@ -1,6 +1,6 @@
 'use strict';
 
-var authenticatedRequest = require('./authentication-test-helper');
+var authenticatedRequest = require('./authentication-helper.spec');
 var INVALID = authenticatedRequest.INVALID;
 var VALID_USER = authenticatedRequest.VALID_USER;
 var players = require("../components/players");

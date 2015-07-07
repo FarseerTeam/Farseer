@@ -2,7 +2,7 @@
 'use strict';
 
 var expect = require('chai').expect;
-var authenticatedRequest = require('../../authentication/authentication-test-helper');
+var authenticatedRequest = require('../../authentication/authentication-helper.spec');
 var VALID_USER = authenticatedRequest.VALID_USER;
 var teams = require("../../components/teams");
 var players = require("../../components/players");

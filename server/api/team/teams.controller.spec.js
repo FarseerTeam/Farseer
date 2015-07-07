@@ -2,7 +2,7 @@
 'use strict';
 
 var should = require('should');
-var authenticatedRequest = require('../../authentication/authentication-test-helper');
+var authenticatedRequest = require('../../authentication/authentication-helper.spec');
 var VALID_USER = authenticatedRequest.VALID_USER;
 var teams = require("../../components/teams");
 var dataService = require('../../components/dataService');
