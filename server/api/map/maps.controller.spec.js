@@ -3,6 +3,7 @@
 
 var expect = require('chai').expect;
 var authenticatedRequest = require('../../authentication/authentication-test-helper');
+var VALID_USER = authenticatedRequest.VALID_USER;
 var teams = require("../../components/teams");
 var players = require("../../components/players");
 var dataService = require('../../components/dataService');
@@ -31,7 +32,7 @@ var clearAll = function () {
 
 describe('/api/worlds/world/maps', function () { //jshint ignore:line
 
-  authenticatedRequest.init();
+  authenticatedRequest.useAuth(VALID_USER);
 
   describe("/avatar", function () {
     var player;

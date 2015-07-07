@@ -32,7 +32,6 @@ var _authenticateApiRequest = function (request, response, next) {
     if (!request.isAuthenticated()) {
         response.sendStatus(401);
     } else {
-        console.log('authenticated user: ' + JSON.stringify(request.user, null, ' '));
         next();
     }
 }
@@ -49,7 +48,6 @@ var _authenticateRequestWithRedirect = function (request, response, next) {
     if (!request.isAuthenticated()) {
         response.redirect('/login');
     } else {
-        console.log('authenticated user: ' + JSON.stringify(request.user, null, ' '));
         next();
     }
 }

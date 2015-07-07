@@ -3,6 +3,7 @@
 
 var should = require('should');
 var authenticatedRequest = require('../../authentication/authentication-test-helper');
+var VALID_USER = authenticatedRequest.VALID_USER;
 var teams = require("../../components/teams");
 var dataService = require('../../components/dataService');
 
@@ -10,7 +11,7 @@ dataService.connect();
 
 describe('/api/worlds/world/teams', function () {
 
-  authenticatedRequest.init();
+  authenticatedRequest.useAuth(VALID_USER);
 
   describe('GET ', function () {
     var ford;
@@ -114,7 +115,7 @@ describe('/api/worlds/world/teams', function () {
 
 describe('/api/worlds/world/teams/:team_id', function () {
 
-  authenticatedRequest.init();
+  authenticatedRequest.useAuth(VALID_USER);
 
   describe('GET ', function () {
     var cengage;

@@ -5,10 +5,11 @@ require('chai').use(require('dirty-chai'));
 var worlds = require("../../components/worlds");
 var _ = require('lodash');
 var authenticatedRequest = require('../../authentication/authentication-test-helper');
+var VALID_USER = authenticatedRequest.VALID_USER;
 
 describe('/api/worlds', function () {
 
-  authenticatedRequest.init();
+  authenticatedRequest.useAuth(VALID_USER);
 
   describe('GET', function () {
     var worldList = [];

@@ -10,6 +10,9 @@ var _verifyCB = function(username, password, done) {
 	console.log('inside verfify for local auth strategy\nusername: ' + username + '\npassword: ' + password);
 	console.log('*********************************************************************');
 	
+	if (username === 'badUser') {
+		return done('USER IS NOT AUTHENTICATED');
+	}
 	return done(null, {id: username});
 }
 

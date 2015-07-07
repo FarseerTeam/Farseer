@@ -3,6 +3,7 @@
 var nextIfError = require("callback-wrappers").nextIfError;
 var expect = require('chai').expect;
 var authenticatedRequest = require('../../authentication/authentication-test-helper');
+var VALID_USER = authenticatedRequest.VALID_USER;
 var players = require("../../components/players");
 var teams = require("../../components/teams");
 var dataService = require('../../components/dataService');
@@ -13,7 +14,7 @@ dataService.connect();
 
 describe('/api/worlds/world/players', function () {
 
-  authenticatedRequest.init();
+  authenticatedRequest.useAuth(VALID_USER);
 
   describe('GET ', function () {
     var smith;
@@ -137,6 +138,8 @@ describe('/api/worlds/world/players', function () {
 });
 
 describe('/api/worlds/world/players/:player_id', function () {
+
+  authenticatedRequest.useAuth(VALID_USER);
 
   describe('GET ', function () {
     var smith;
