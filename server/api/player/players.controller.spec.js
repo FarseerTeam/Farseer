@@ -138,19 +138,18 @@ describe('/api/worlds/world/players', function () {
       });
     });
   });
-
-
 });
 
 describe('/api/worlds/world/players/:player_id', function () {
 
-  describe('GET ', function () {
+  describe('GET', function () {
     var smith;
 
     beforeEach(function (done) {
       players.Player.create({
         name: "Smith ",
-        email: "test@test.smith.com"
+        email: "test@test.smith.com",
+        world: "world"
       },
         function (err, doc) {
           smith = doc;
@@ -158,7 +157,7 @@ describe('/api/worlds/world/players/:player_id', function () {
         });
     });
 
-    it('will return a valid object if exists ', function (done) {
+    it('should return a valid object if exists', function (done) {
       var url = '/api/worlds/world/players/' + smith.id;
       request(app)
         .get(url)
@@ -168,6 +167,19 @@ describe('/api/worlds/world/players/:player_id', function () {
         if (err) return done(err);
         expect(smith.name).to.be.equal(res.body.name);
         expect(smith.email).to.be.equal(res.body.email);
+        done();
+      });
+    });
+
+    it('should not return a player if it is not of this world', function (done) {
+      var url = '/api/worlds/newyork/players/' + smith.id;
+      request(app)
+        .get(url)
+        .expect(404)
+        .expect('Content-Type', /json/)
+        .end(function (err, res) {
+        if (err) return done(err);
+        expect(res.body.message).to.be.equal(format("PLAYER with identifier '{}' does not exist.", smith.id));
         done();
       });
     });
@@ -217,20 +229,23 @@ describe('/api/worlds/world/players/:player_id', function () {
     beforeEach(function (done) {
       players.Player.create({
         name: "Smith ",
-        email: "test@test.smith.com"
+        email: "test@test.smith.com",
+        world: "world"
       },
         function (err, doc) {
           smith = doc;
           done();
         });
     });
-    it('will remove an valid object ', function (done) {
+    
+    it('will remove a valid object', function (done) {
       var url = '/api/worlds/world/players/' + smith.id;
       request(app)
         .delete(url)
         .expect(200)
         .end(done);
     });
+    
     afterEach(function (done) {
       players.Player.remove({}, function () {
         done();
@@ -249,7 +264,8 @@ describe('/api/worlds/world/players/:player_id', function () {
     beforeEach(function (done) {
       players.Player.create({
         name: "Smith ",
-        email: "test@test.smith.com"
+        email: "test@test.smith.com",
+        world: "world"
       },
         function (err, doc) {
           smith = doc;
@@ -257,7 +273,7 @@ describe('/api/worlds/world/players/:player_id', function () {
         });
     });
 
-    it('will update a valid object ', function (done) {
+    it('will update a valid object', function (done) {
       var url = '/api/worlds/world/players/' + smith.id;
       request(app)
         .put(url)
@@ -284,7 +300,8 @@ describe('/api/worlds/world/players/:player_id', function () {
       beforeEach(function (done) {
         players.Player.create({
           name: "Anderson",
-          email: "neo@matrix.com"
+          email: "neo@matrix.com",
+          world: "world"
         },
           function (err, doc) {
             anderson = doc;
@@ -317,15 +334,16 @@ describe('/api/worlds/world/players/:player_id', function () {
       });
     });
 
-    describe('when updating the team as part of the update ', function () {
+    describe('when updating the team as part of the update', function () {
 
       var expectedPlayer = {
         name: 'Harry Potter',
-        email: 'Harry@gmail.com'
+        email: 'Harry@gmail.com',
+        world: 'world'
       };
 
 
-      describe('Given the _team field in the request body ', function () {
+      describe('Given the _team field in the request body', function () {
 
         var team;
         beforeEach(function (done) {
@@ -333,7 +351,7 @@ describe('/api/worlds/world/players/:player_id', function () {
             .then(function (createdTeam) {
             expectedPlayer._team = createdTeam.path;
             team = createdTeam;
-            createPlayer(undefined, 'Harry Potter', function () {
+            createPlayer('world', undefined, 'Harry Potter', function () {
               done();
             });
           }, done);
@@ -343,7 +361,7 @@ describe('/api/worlds/world/players/:player_id', function () {
           clearAll(done);
         });
 
-        it('it is ok to pass the TEAM PATH as the value.', function (done) {
+        it('it is ok to pass the TEAM PATH as the value', function (done) {
           putPlayerTeamUpdateAndValidateResponse(expectedPlayer.email, team.path, expectedPlayer, done);
         });
 
@@ -355,7 +373,7 @@ describe('/api/worlds/world/players/:player_id', function () {
           createTeam('Gryffindor', '/gryffindor')
             .then(function (createdTeam) {
             expectedPlayer._team = createdTeam.path;
-            createPlayer(undefined, 'Harry Potter', function () {
+            createPlayer('world', undefined, 'Harry Potter', function () {
               done();
             });
           });
@@ -376,7 +394,7 @@ describe('/api/worlds/world/players/:player_id', function () {
         beforeEach(function (done) {
           createTeam('Gryffindor', '/gryffindor')
             .then(function () {
-            createPlayer('/muggle', 'Harry Potter', done.bind(null, null));
+            createPlayer('world', '/muggle', 'Harry Potter', done.bind(null, null));
           });
         });
 
@@ -395,7 +413,7 @@ describe('/api/worlds/world/players/:player_id', function () {
         beforeEach(function (done) {
           createTeam('Gryffindor', '/gryffindor').then(function (createdTeam) {
             expectedPlayer._team = createdTeam.path;
-            createPlayer(createdTeam, 'Harry Potter', function () {
+            createPlayer('world', createdTeam, 'Harry Potter', function () {
               done();
             });
           });
@@ -415,7 +433,7 @@ describe('/api/worlds/world/players/:player_id', function () {
 
         beforeEach(function (done) {
           createTeam('Gryffindor', '/gryffindor').then(function (createdTeam) {
-            createPlayer(createdTeam, 'Harry Potter', function () {
+            createPlayer('world', createdTeam, 'Harry Potter', function () {
               done();
             });
           });
@@ -443,7 +461,7 @@ describe('/api/worlds/world/players/:player_id', function () {
 
         beforeEach(function (done) {
           createTeam('Gryffindor', '/gryffindor').then(function (createdTeam) {
-            createPlayer(createdTeam, 'Harry Potter', function () {
+            createPlayer('world', createdTeam, 'Harry Potter', function () {
               done();
             });
           });
@@ -540,10 +558,11 @@ describe('/api/worlds/world/players/:player_id', function () {
         });
       };
 
-      var createPlayer = function (team, playerName, callback) {
+      var createPlayer = function (worldId, team, playerName, callback) {
         var player = {
           name: playerName,
-          email: (playerName.split(' ')[0] + '@gmail.com')
+          email: (playerName.split(' ')[0] + '@gmail.com'),
+          world: worldId
         };
         if (team) {
           player._team = team;

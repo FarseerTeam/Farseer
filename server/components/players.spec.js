@@ -3,6 +3,8 @@ var mongoose = require("mongoose");
 var players = require("./players");
 var teams = require("./teams");
 var should = require('should');
+var expect = require('chai').expect;
+require('chai').use(require('dirty-chai'));
 var config = require('../config/environment/test');
 var rsvp = require('rsvp');
 
@@ -12,57 +14,17 @@ dataService.connect();
 
 
 describe("In the components/players module,", function() {
-    describe("In the findByEmail function", function(){
 
-        //holds a players to use in the each test
-        var currentCustomer = null;
 
-        beforeEach(function(done) {
-
-            //add some test data
-            players.Player.create({
-                name: "John",
-                email: "test@test.com"
-            }).then(function(doc) {
-                currentCustomer = doc;
-                done();
-            }, function(err) {
-                done(err)
-            });
-        });
-
-        it("Players can be found by email", function(done) {
-            players.findByEmail(currentCustomer.email, function(doc) {
-                doc.email.should.equal(currentCustomer.email);
-                done();
-            }, function(e) {});
-        });
-
-        it("'null' is returned (with no error) if no player matches the email.", function(done) {
-            players.findByEmail('bad-email@noplace.com', function(doc) {
-                should.not.exist(doc);
-                done();
-            }, function(e) {
-                should.fail();
-            });
-        });
-
-        afterEach(function(done) {
-            players.Player.remove({}, function() {
-                done();
-            });
-        });
-
-    });
-
-    describe("In the findByAnyUniqueIdentifier function... ", function(){
+    describe("finding by unique identifier", function(){
 
         var savedPlayer = null;
 
         beforeEach(function(done) {
             players.Player.create({
                 name: "John",
-                email: "test@tst.com"
+                email: "test@tst.com",
+                world: "michigan"
             }).then(function(doc) {
                 savedPlayer = doc;
                 done();
@@ -71,25 +33,38 @@ describe("In the components/players module,", function() {
             });
         });
 
-        it("Players can be found by email", function(done) {
-            players.findByAnyUniqueIdentifier(savedPlayer.email, function(doc) {
+        it("should find player by email and world", function(done) {
+            players.findByAnyUniqueIdentifier(savedPlayer.world, savedPlayer.email, function(doc) {
                 validatePlayer(doc, done);
             }, function(e) {
-                console.log(e);
                 should.fail();
             });
         });
 
-        it("Players can be found by id", function(done) {
-            players.findByAnyUniqueIdentifier(savedPlayer._id, function(doc) {
+        it("should find player by id and world", function(done) {
+            players.findByAnyUniqueIdentifier(savedPlayer.world, savedPlayer._id, function(doc) {
                 validatePlayer(doc, done);
             }, function(e) {
                 should.fail();
             });
+        });
+        
+        it("should NOT find player out of this world by email", function(done){
+            players.findByAnyUniqueIdentifier('Nebraska', savedPlayer.email, function(doc) {
+                expect(doc).to.not.exist();
+                done();
+            }, done);
+        });
+        
+        it("should NOT find player out of this world by id", function(done){
+            players.findByAnyUniqueIdentifier('Nebraska', savedPlayer._id, function(doc) {
+                expect(doc).to.not.exist();
+                done();
+            }, done);
         });
 
         it("'null' is returned (with no error) if no player matches the passed value.", function(done) {
-            players.findByAnyUniqueIdentifier('bad-value', function(doc) {
+            players.findByAnyUniqueIdentifier(savedPlayer.world,'bad-value', function(doc) {
                 should.not.exist(doc);
                 done();
             }, function(e) {
@@ -111,12 +86,11 @@ describe("In the components/players module,", function() {
             });
         });
 
-        describe("if there is a database error... ", function() {
+        describe("if there is a database error", function() {
 
             var actualDatabaseFindOneFunction;
             var actualDatabaseFindByIdFunction;
-            var expectedEmailError = 'findByEmailError';
-            var expectedIdError = 'findByIdError';
+            var expectedError = 'IAmError';
             var validId = '552058b0469006560cad7c58';
             var email = "hi@there.com";
 
@@ -135,10 +109,7 @@ describe("In the components/players module,", function() {
                 actualDatabaseFindByIdFunction = mongoose.Model.findById;
 
                 mongoose.Model.findOne = function(modelObject, callback) {
-                    callback(expectedEmailError, undefined);
-                };
-                mongoose.Model.findById = function(id, callback) {
-                    callback(expectedIdError, undefined);
+                    callback(expectedError, undefined);
                 };
             };
 
@@ -147,26 +118,14 @@ describe("In the components/players module,", function() {
                 mongoose.Model.findById = actualDatabaseFindByIdFunction;
             }
 
-            it("the error function is called with the error returned from the database when finding by email.", function(done) {
-                players.findByAnyUniqueIdentifier(email, function(doc) {
+            it("the error function is called with the error returned from the database when finding", function(done) {
+                players.findByAnyUniqueIdentifier('world', email, function(doc) {
                     should.fail();
                 }, function(error) {
-                    expectedEmailError.should.be.equal(error);
+                    expectedError.should.be.equal(error);
                     done();
                 });
             });
-
-            it("the error function is called with the error returned from the database when finding by id.", function(done) {
-                players.findByAnyUniqueIdentifier(validId, function(doc) {
-                    should.fail();
-                }, function(error) {
-                    expectedIdError.should.be.equal(error);
-                    done();
-                });
-            });
-
         });
-
     });
-
 });
