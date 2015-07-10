@@ -184,7 +184,7 @@ describe('/api/worlds/world/players/:player_id', function () {
       });
     });
 
-    it("will understand a player's email if passed as the player_id.", function (done) {
+    it("will understand a player's email if passed as the player_id", function (done) {
       var url = '/api/worlds/world/players/' + smith.email;
       request(app)
         .get(url)
@@ -238,12 +238,24 @@ describe('/api/worlds/world/players/:player_id', function () {
         });
     });
     
-    it('will remove a valid object', function (done) {
+    it('will remove a player given the correct world', function (done) {
       var url = '/api/worlds/world/players/' + smith.id;
       request(app)
         .delete(url)
         .expect(200)
         .end(done);
+    });
+    
+    it('will NOT remove a player given the wrong world', function (done) {
+      var url = '/api/worlds/notworld/players/' + smith.id;
+      request(app)
+        .delete(url)
+        .expect(404)
+        .end(function(err, res) {
+          if(err) done(err);
+          expect(res.body.message).to.be.equal(format("PLAYER with identifier '{}' does not exist.", smith.id));
+          done();
+        });
     });
     
     afterEach(function (done) {
@@ -367,7 +379,7 @@ describe('/api/worlds/world/players/:player_id', function () {
 
       });
 
-      describe('When the player does not already have a team ', function () {
+      describe('When the player does not already have a team', function () {
 
         beforeEach(function (done) {
           createTeam('Gryffindor', '/gryffindor')
@@ -383,7 +395,7 @@ describe('/api/worlds/world/players/:player_id', function () {
           clearAll(done);
         });
 
-        it('updating the player with an existing team assigns the player to the team.', function (done) {
+        it('updating the player with an existing team assigns the player to the team', function (done) {
           putPlayerTeamUpdateAndValidateResponse(expectedPlayer.email, expectedPlayer._team, expectedPlayer, done);
         });
       });
@@ -402,7 +414,7 @@ describe('/api/worlds/world/players/:player_id', function () {
           clearAll(done);
         });
 
-        it('updating with a new team removes the player from the old team and puts the player on the new team.', function (done) {
+        it('updating with a new team removes the player from the old team and puts the player on the new team', function (done) {
           putPlayerTeamUpdateAndValidateResponse(expectedPlayer.email, expectedPlayer._team, expectedPlayer, done);
         });
       });
@@ -423,13 +435,13 @@ describe('/api/worlds/world/players/:player_id', function () {
           clearAll(done);
         });
 
-        it('updating with the same team returns an unchanged player.', function (done) {
+        it('updating with the same team returns an unchanged player', function (done) {
           putPlayerTeamUpdateAndValidateResponse(expectedPlayer.email, expectedPlayer._team, expectedPlayer, done);
         });
       });
 
 
-      describe('When a team that does not exist is used to update ', function () {
+      describe('When a team that does not exist is used to update', function () {
 
         beforeEach(function (done) {
           createTeam('Gryffindor', '/gryffindor').then(function (createdTeam) {
@@ -457,7 +469,7 @@ describe('/api/worlds/world/players/:player_id', function () {
       });
 
 
-      describe('Given an email with no associated player ', function () {
+      describe('Given an email with no associated player', function () {
 
         beforeEach(function (done) {
           createTeam('Gryffindor', '/gryffindor').then(function (createdTeam) {
@@ -479,7 +491,7 @@ describe('/api/worlds/world/players/:player_id', function () {
       });
 
 
-      describe('Given an unexpected application error ', function () {
+      describe('Given an unexpected application error', function () {
 
         var actualFindOneFunction;
 
