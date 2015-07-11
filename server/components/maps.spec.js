@@ -28,10 +28,11 @@ describe('The maps module', function () {
     };
   }
 
-  var createPlayer = function (path, playerName) {
+  var createPlayer = function (worldId, path, playerName) {
     return players.Player.create({
       name: playerName,
       email: format("{}@test.smith.com", playerName),
+      world: worldId,
       _team: path
     }).then(function (playerMongoose) {
       return playerMongoose.toObject();
@@ -53,26 +54,41 @@ describe('The maps module', function () {
   describe("buildTeamPlayersMap", function () {
     it('should respond with an empty map when there are no records in database.', function (done) {
       var expected = [];
-      maps.buildTeamPlayersMap().then(checkMapMatches(expected)).then(done, done);
+      maps.buildTeamPlayersMap('world').then(checkMapMatches(expected)).then(done, done);
     });
 
     it("should handle single player on a team", function (done) {
-      createPlayer('/avatar', "Aang")
+      createPlayer('world', '/avatar', "Aang")
         .then(function (aang) {
+          var expectedMap = {
+            team: 'avatar',
+            path: '/avatar',
+            players: [aang],
+            subTeams: []
+          };
+          return maps.buildTeamPlayersMap('world').then(checkMapMatches([expectedMap]));
+        }).then(done, done);
+    });
+
+    it("should only return player from the requested world", function (done) {
+      RSVP.hash({
+        aang: createPlayer('world', '/avatar', "Aang"),
+        yung: createPlayer('anotherWorld', '/avatar', "Yung")
+      }).then(function (players) {
         var expectedMap = {
           team: 'avatar',
           path: '/avatar',
-          players: [aang],
+          players: [players.aang],
           subTeams: []
         };
-        return maps.buildTeamPlayersMap().then(checkMapMatches([expectedMap]));
+        return maps.buildTeamPlayersMap('world').then(checkMapMatches([expectedMap]));
       }).then(done, done);
     });
 
     it("should handle two players on the same team", function (done) {
       RSVP.hash({
-        aang: createPlayer('/avatar', "Aang"),
-        yung: createPlayer('/avatar', "Yung")
+        aang: createPlayer('world', '/avatar', "Aang"),
+        yung: createPlayer('world', '/avatar', "Yung")
       }).then(function (players) {
         var expectedMap = {
           team: 'avatar',
@@ -80,14 +96,14 @@ describe('The maps module', function () {
           players: [players.aang, players.yung],
           subTeams: []
         };
-        return maps.buildTeamPlayersMap().then(checkMapMatches([expectedMap]));
+        return maps.buildTeamPlayersMap('world').then(checkMapMatches([expectedMap]));
       }).then(done, done);
     });
 
     it("should handle two players on two separate teams", function (done) {
       RSVP.hash({
-        aang: createPlayer('/avatar', "Aang"),
-        yung: createPlayer('/fireNation', "Yung")
+        aang: createPlayer('world', '/avatar', "Aang"),
+        yung: createPlayer('world', '/fireNation', "Yung")
       }).then(function (players) {
         var expectedMap = [{
           team: 'avatar',
@@ -100,58 +116,58 @@ describe('The maps module', function () {
             players: [players.yung],
             subTeams: []
           }];
-        return maps.buildTeamPlayersMap().then(checkMapMatches(expectedMap));
+        return maps.buildTeamPlayersMap('world').then(checkMapMatches(expectedMap));
       }).then(done, done);
     });
 
     it("should handle single player on a subteam", function (done) {
-      createPlayer('/fireNation/avatar', "Aang")
+      createPlayer('world', '/fireNation/avatar', "Aang")
         .then(function (aang) {
-        var expectedMap = [{
-          team: 'fireNation',
-          path: '/fireNation',
-          players: [],
-          subTeams: [{
+          var expectedMap = [{
+            team: 'fireNation',
+            path: '/fireNation',
+            players: [],
+            subTeams: [{
+              team: 'avatar',
+              path: '/fireNation/avatar',
+              players: [aang],
+              subTeams: []
+            }]
+          }];
+          return maps.buildTeamPlayersMap('world').then(checkMapMatches(expectedMap));
+        }).then(done, done);
+    });
+
+    it("should return only players on a specified subteam", function (done) {
+      createPlayer('world', '/fireNation/avatar', "Aang")
+        .then(function (aang) {
+          var expectedMap = [{
             team: 'avatar',
             path: '/fireNation/avatar',
             players: [aang],
             subTeams: []
-          }]
-        }];
-        return maps.buildTeamPlayersMap().then(checkMapMatches(expectedMap));
-      }).then(done, done);
+          }];
+          return maps.buildTeamPlayersMap('world', "/fireNation/avatar").then(checkMapMatches(expectedMap));
+        }).then(done, done);
     });
-    
-    it("should return only players on a specified subteam", function (done) {
-      createPlayer('/fireNation/avatar', "Aang")
-        .then(function (aang) {
-        var expectedMap = [{
-          team: 'avatar',
-          path: '/fireNation/avatar',
-          players: [aang],
-          subTeams: []
-        }];
-        return maps.buildTeamPlayersMap("/fireNation/avatar").then(checkMapMatches(expectedMap));
-      }).then(done, done);
-    });
-    
+
     it("should return only players on a specified double nested subteam", function (done) {
-      createPlayer('/fireNation/avatar/airbender', "Aang")
+      createPlayer('world', '/fireNation/avatar/airbender', "Aang")
         .then(function (aang) {
-        var expectedMap = [{
-          team: 'airbender',
-          path: '/fireNation/avatar/airbender',
-          players: [aang],
-          subTeams: []
-        }];
-        return maps.buildTeamPlayersMap("/fireNation/avatar/airbender").then(checkMapMatches(expectedMap));
-      }).then(done, done);
+          var expectedMap = [{
+            team: 'airbender',
+            path: '/fireNation/avatar/airbender',
+            players: [aang],
+            subTeams: []
+          }];
+          return maps.buildTeamPlayersMap('world', "/fireNation/avatar/airbender").then(checkMapMatches(expectedMap));
+        }).then(done, done);
     });
-    
+
     it("should return the entire map when requested path is not valid", function (done) {
       RSVP.hash({
-        aang: createPlayer('/firenation/avatar', "Aang"),
-        yung: createPlayer('/firenation', "Yung")
+        aang: createPlayer('world', '/firenation/avatar', "Aang"),
+        yung: createPlayer('world', '/firenation', "Yung")
       }).then(function (players) {
         var expectedMap = [{
           team: 'firenation',
@@ -164,17 +180,17 @@ describe('The maps module', function () {
             subTeams: []
           }]
         }];
-        return maps.buildTeamPlayersMap('/firenation/airbender').then(checkMapMatches(expectedMap));
+        return maps.buildTeamPlayersMap('world', '/firenation/airbender').then(checkMapMatches(expectedMap));
       }).then(done, done);
-    });    
-    
+    });
+
     it("should handle multiple players and multiple subteams",
       function (done) {
         RSVP.hash({
-          aang: createPlayer('/avatar', "Aang"),
-          katara: createPlayer('/avatar', "Katara"),
-          zuko: createPlayer('/fireNation/royalty', "Zuko"),
-          iroh: createPlayer('/fireNation/royalty', "Iroh")
+          aang: createPlayer('world', '/avatar', "Aang"),
+          katara: createPlayer('world', '/avatar', "Katara"),
+          zuko: createPlayer('world', '/fireNation/royalty', "Zuko"),
+          iroh: createPlayer('world', '/fireNation/royalty', "Iroh")
         }).then(function (players) {
           var expectedMap = [{
             team: 'avatar',
@@ -192,13 +208,13 @@ describe('The maps module', function () {
                 subTeams: []
               }]
             }];
-          return maps.buildTeamPlayersMap().then(checkMapMatches(expectedMap));
+          return maps.buildTeamPlayersMap('world').then(checkMapMatches(expectedMap));
         }).then(done, done);
       });
 
     it('should handle triple team nesting', function (done) {
       RSVP.hash({
-        aang: createPlayer('/humans/airNation/avatar', "Aang")
+        aang: createPlayer('world', '/humans/airNation/avatar', "Aang")
       }).then(function (players) {
         var expectedMap = [{
           team: 'humans',
@@ -216,14 +232,14 @@ describe('The maps module', function () {
             }]
           }]
         }];
-        return maps.buildTeamPlayersMap().then(checkMapMatches(expectedMap));
+        return maps.buildTeamPlayersMap('world').then(checkMapMatches(expectedMap));
       }).then(done, done);
     });
 
     it('should handle quintuple team nesting', function (done) {
       RSVP.hash({
-        aang: createPlayer('/humans/airNation/avatar', "Aang"),
-        zuko: createPlayer('/humans/fireNation/avatar/royalty/scarfaces')
+        aang: createPlayer('world', '/humans/airNation/avatar', "Aang"),
+        zuko: createPlayer('world', '/humans/fireNation/avatar/royalty/scarfaces')
       }).then(function (players) {
         var expectedMap = [{
           team: 'humans',
@@ -261,16 +277,16 @@ describe('The maps module', function () {
               }]
             }]
         }];
-        return maps.buildTeamPlayersMap().then(checkMapMatches(expectedMap));
+        return maps.buildTeamPlayersMap('world').then(checkMapMatches(expectedMap));
       }).then(done, done);
     });
 
     it("should handle players with no team assignment",
       function (done) {
         RSVP.hash({
-          aang: createPlayer('/avatar', "Aang"),
-          tui: createPlayer(undefined, 'Tui'),
-          wan: createPlayer(undefined, 'Wan Shi Ton')
+          aang: createPlayer('world', '/avatar', "Aang"),
+          tui: createPlayer('world', undefined, 'Tui'),
+          wan: createPlayer('world', undefined, 'Wan Shi Ton')
         }).then(function (players) {
           var expectedMap = [{
             team: 'avatar',
@@ -283,7 +299,7 @@ describe('The maps module', function () {
               players: [players.tui, players.wan],
               subTeams: []
             }];
-          return maps.buildTeamPlayersMap().then(checkMapMatches(expectedMap));
+          return maps.buildTeamPlayersMap('world').then(checkMapMatches(expectedMap));
         }).then(done, done);
       });
 
@@ -294,7 +310,7 @@ describe('The maps module', function () {
           name: 'Avatar',
           image: 'avatar.jpg'
         }),
-        aang: createPlayer('/avatar', "Aang")
+        aang: createPlayer('world', '/avatar', "Aang")
       }).then(function (prereqs) {
         var expectedMap = [{
           team: 'avatar',
@@ -304,7 +320,7 @@ describe('The maps module', function () {
           players: [prereqs.aang],
           subTeams: []
         }];
-        return maps.buildTeamPlayersMap().then(checkMapMatches(expectedMap));
+        return maps.buildTeamPlayersMap('world').then(checkMapMatches(expectedMap));
       }).then(done, done);
     });
 
@@ -312,8 +328,8 @@ describe('The maps module', function () {
       RSVP.hash({
         teamAvatar: createTeam('/avatar'),
         teamChild: createTeam('/avatar/children'),
-        aangsKid: createPlayer('/avatar/children', "AangsKid"),
-        aang: createPlayer('/avatar', "Aang")
+        aangsKid: createPlayer('world', '/avatar/children', "AangsKid"),
+        aang: createPlayer('world', '/avatar', "Aang")
       }).then(function (prereqs) {
         var expectedMap = [{
           team: 'avatar',
@@ -330,7 +346,7 @@ describe('The maps module', function () {
             }
           ]
         }];
-        return maps.buildTeamPlayersMap().then(checkMapMatches(expectedMap));
+        return maps.buildTeamPlayersMap('world').then(checkMapMatches(expectedMap));
       }).then(done, done);
     });
   });

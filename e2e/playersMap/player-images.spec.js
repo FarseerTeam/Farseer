@@ -33,9 +33,9 @@ describe('The playersMap page has images for each player on it, and... ', functi
 	beforeEach(function(done) {
 		setup.addTeam('team1', '/team1')
 			.then(setup.addTeam('team2', '/team1/team2'))
-			.then(setup.addPlayer('p0', 'p0@somewhere.com'))
-			.then(setup.addPlayer('p1', 'p1@somewhere.com', '/team1'))
-			.then(setup.addPlayer('p2', 'p2@somewhere.com', '/team1/team2'))
+			.then(setup.addPlayer('p0', 'p0@somewhere.com', undefined, 'world'))
+			.then(setup.addPlayer('p1', 'p1@somewhere.com', '/team1', 'world'))
+			.then(setup.addPlayer('p2', 'p2@somewhere.com', '/team1/team2', 'world'))
 			.then(browser.get('playersMap'))
 			.then(browser.wait(imageTagsExist, 1000))
 			.then(browser.wait(allImagesAreLoaded, 1000))

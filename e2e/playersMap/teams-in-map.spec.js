@@ -23,7 +23,7 @@ describe('The playersMap page has teams on it, and... ', function() {
 		describe('and there is at least one player... ', function(){
 
 			beforeEach(function(done) {
-				setup.addPlayer('harry', 'potter@gmail.com')
+				setup.addPlayer('harry', 'potter@gmail.com', undefined, 'world')
 					.then(browser.get('playersMap'))
 					.then(done);
 			});
@@ -64,8 +64,8 @@ describe('The playersMap page has teams on it, and... ', function() {
 		beforeEach(function(done) {
 			setup.addTeam('team1', '/team1')
 				.then(setup.addTeam('team2', '/team2'))
-				.then(setup.addPlayer('a', 'amail', '/team1'))
-				.then(setup.addPlayer('b', 'bmail', '/team2'))
+				.then(setup.addPlayer('a', 'amail', '/team1', 'world'))
+				.then(setup.addPlayer('b', 'bmail', '/team2', 'world'))
 				.then(browser.get('playersMap'))
 				.then(done);
 		});
@@ -94,8 +94,8 @@ describe('The playersMap page has teams on it, and... ', function() {
 		beforeEach(function(done) {
 			setup.addTeam('outerTeam', '/outerTeam')
 				.then(setup.addTeam('innerTeam', '/outerTeam/innerTeam'))
-				.then(setup.addPlayer('a', 'amail', '/outerTeam'))
-				.then(setup.addPlayer('b', 'bmail', '/outerTeam/innerTeam'))
+				.then(setup.addPlayer('a', 'amail', '/outerTeam', 'world'))
+				.then(setup.addPlayer('b', 'bmail', '/outerTeam/innerTeam', 'world'))
 				.then(browser.get('playersMap'))
 				.then(done);
 		});
@@ -121,7 +121,7 @@ describe('The playersMap page has teams on it, and... ', function() {
 			setup.addTeam('outerTeam', '/outerTeam')
 				.then(setup.addTeam('middleTeam', '/outerTeam/middleTeam'))
 				.then(setup.addTeam('innerTeam', '/outerTeam/middleTeam/innerTeam'))
-				.then(setup.addPlayer('a', 'amail', '/outerTeam/middleTeam/innerTeam'))
+				.then(setup.addPlayer('a', 'amail', '/outerTeam/middleTeam/innerTeam', 'world'))
 				.then(browser.get('playersMap'))
 				.then(done);
 		});

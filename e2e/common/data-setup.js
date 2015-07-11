@@ -10,8 +10,8 @@ module.exports = (function() {
 
 	dataService.connect();
 
-	var _addPlayer = function(playerName, playerEmail, playerTeam) {
-		var player = new players.Player({name: playerName, email: playerEmail, _team: playerTeam});
+	var _addPlayer = function(playerName, playerEmail, playerTeam, playerWorld) {
+		var player = new players.Player({name: playerName, email: playerEmail, _team: playerTeam, world: playerWorld});
 		return player.save().then(function(){return;}); 
 	}
 

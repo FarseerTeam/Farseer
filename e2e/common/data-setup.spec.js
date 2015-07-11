@@ -33,8 +33,8 @@ describe('The data-setup module... ', function() {
 	describe('the purgeData function... ', function() {
 
 		beforeEach(function(done) {
-			setup.addPlayer('Harry Potter', 'harry@potter.com', '/Gryffindor')
-				.then(setup.addPlayer('Hermione Granger', 'hermione@granger.com', '/Gryffindor'))
+			setup.addPlayer('Harry Potter', 'harry@potter.com', '/Gryffindor', 'hogwarts')
+				.then(setup.addPlayer('Hermione Granger', 'hermione@granger.com', '/Gryffindor', 'hogwarts'))
 				.then(setup.addTeam('Gryffindor', '/Gryffindor'))
 				.then(setup.addTeam('Slytherin', '/Slytherin'))
 				.then(done);
@@ -73,17 +73,18 @@ describe('The data-setup module... ', function() {
 			setup.purgeData().then(done);
 		});
 
-		var validatePlayerFields = function(name, email, team){
+		var validatePlayerFields = function(name, email, team, world){
 			return function(players) {
 				var player = players[0];
 				expect(player.name).toEqual(name);
 				expect(player.email).toEqual(email);
+				expect(player.world).toEqual(world);
 				expect(player._team).toEqual(team);
 			}
 		};
 
 		it('can insert a single player using promises.', function(done) {
-			setup.addPlayer('Harry Potter','harry@potter.com','/Gryffindor')
+			setup.addPlayer('Harry Potter','harry@potter.com','/Gryffindor', 'hogwarts')
 				.then(findAllPlayers)
 				.then(validateCountOf(1))
 				.then(done)
@@ -91,8 +92,8 @@ describe('The data-setup module... ', function() {
 		});
 
 		it('can insert two players using promises.', function(done) {
-			setup.addPlayer('Harry Potter','harry@potter.com','/Gryffindor')
-				.then(setup.addPlayer('Hermione Granger','hermione@granger.com','/Gryffindor'))
+			setup.addPlayer('Harry Potter','harry@potter.com','/Gryffindor', 'hogwarts')
+				.then(setup.addPlayer('Hermione Granger','hermione@granger.com','/Gryffindor', 'hogwarts'))
 				.then(findAllPlayers)
 				.then(validateCountOf(2))
 				.then(done)
@@ -100,14 +101,14 @@ describe('The data-setup module... ', function() {
 		});
 
 		it('inserts the correct fields into the new player', function(done) {
-			setup.addPlayer('Harry Potter','harry@potter.com','/Gryffindor')
+			setup.addPlayer('Harry Potter','harry@potter.com','/Gryffindor', 'hogwarts')
 				.then(findAllPlayers)
-				.then(validatePlayerFields('Harry Potter','harry@potter.com','/Gryffindor'))
+				.then(validatePlayerFields('Harry Potter','harry@potter.com','/Gryffindor', 'hogwarts'))
 				.then(done);
 		});
 
 		it('returns no value - so that calling done like this will work: setup.addPlayer(player).then(done);', function() {
-			setup.addPlayer('Harry Potter','harry@potter.com','/Gryffindor')
+			setup.addPlayer('Harry Potter','harry@potter.com','/Gryffindor', 'hogwarts')
 				.then(function(arg){
 					expect(arg).not.toBeDefined();
 					done();

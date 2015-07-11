@@ -13,7 +13,7 @@ describe('The playersMap page has players on it, and... ', function() {
 	describe('when there is a player with no team assigned... ', function() {
 
 		beforeEach(function(done) {
-			setup.addPlayer('newPlayer', 'some@gmail.com')
+			setup.addPlayer('newPlayer', 'some@gmail.com', undefined, 'world')
 				.then(browser.get('playersMap'))
 				.then(done);
 		});
