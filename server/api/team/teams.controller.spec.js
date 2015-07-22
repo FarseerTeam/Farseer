@@ -11,21 +11,40 @@ dataService.connect();
 
 describe('/api/worlds/world/teams', function () {
   describe('GET ', function () {
-    var ford;
+    var ford, toyota;
 
     beforeEach(function (done) {
       teams.Team.remove({}, function () {
-        teams.Team.create({
-          name: "Ford"
-        }, function (err, doc) {
-          ford = doc;
+        teams.Team.create([{
+          name: 'Ford',
+          world: 'us'
+        }, {
+          name: 'Toyota',
+          world: 'japan'
+        }], function (err, docs) {
+          if (err) return done(err);
+          ford = docs[0];
+          toyota = docs[1];
           done();
         });
 
       });
     });
 
-    it('should respond with JSON array', function (done) {
+    it('should return teams from this world', function (done) {
+      request(app)
+        .get('/api/worlds/us/teams')
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .end(function (err, res) {
+          if (err) return done(err);
+          res.body.should.be.instanceof(Array);
+          ford.id.should.be.equal(res.body[0]._id);
+          done();
+        });
+    });
+    
+    it('should not return teams from another world', function (done) {
       request(app)
         .get('/api/worlds/world/teams')
         .expect(200)
@@ -37,6 +56,7 @@ describe('/api/worlds/world/teams', function () {
           done();
         });
     });
+        
     afterEach(function (done) {
       teams.Team.remove({}, function () {
         done();
