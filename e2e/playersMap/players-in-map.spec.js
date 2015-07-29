@@ -3,29 +3,31 @@
 var page = require('./players-map.po');
 var setup = require('../common/data-setup');
 
-describe('The playersMap page has players on it, and... ', function() {
+describe('The players map', function () {
 
-	describe('when there are multiple players belonging to several teams... ', function() {
+  beforeEach(function () {
+    setup.addPlayer('newPlayer', 'some@gmail.com', undefined, 'world');
+    setup.addTeam('Single Quotes', 'quotes');
+    setup.addPlayer('Q', 'cutie@gmail.com', '/quotes', 'world');
+    browser.get('playersMap');
+  });
 
-		//more cases pending
-	});
+  afterEach(function (done) {
+    //setup.purgeData().then(done);
+  });
 
-	describe('when there is a player with no team assigned... ', function() {
+  it('shows unassigned players in a group titled "unassigned"', function () {
+    var unassignedTeam = page.team('unassigned');
+    expect(page.playerOnTeam(unassignedTeam, 'newPlayer').isPresent()).toBe(true);
+  });
 
-		beforeEach(function(done) {
-			setup.addPlayer('newPlayer', 'some@gmail.com', undefined, 'world')
-				.then(browser.get('playersMap'))
-				.then(done);
-		});
+  fit('displays the team name', function () {
+    var quoteTeam = element(by.id('/quotes'));
+    var teamName = quoteTeam.element(by.className('team-name'));
+    expect(teamName.getText()).toBe('Single Quotes');
+  });
 
-		afterEach(function(done){
-			setup.purgeData().then(done);
-		});
+  it('displays the team path element when no team name exists', function () {
 
-		it('the player is placed in a group titled "unassigned"', function() {
-      var unassignedTeam = page.team('unassigned');
-      expect(page.playerOnTeam(unassignedTeam, 'newPlayer').isPresent()).toBe(true);
-		});
-	});
-
+  });
 });

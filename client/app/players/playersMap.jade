@@ -13,11 +13,11 @@ div(class='map-view')
     ul(ng-include="'teamMapTemplate'" class='teams cf')
 
   script(type='text/ng-template' id='teamMapTemplate')
-    li(ng-repeat='team in teamPlayersMap' ng-include="'teamTemplate'" class='team')
+    li(ng-repeat='team in teamPlayersMap' ng-include="'teamTemplate'" class='team' id='/{{team.team}}')
 
   script(type='text/ng-template' id='teamTemplate')
     div
-      div(class='team-name' ng-click='goToTeam(team.path)') {{team.team}}
+      div(class='team-name' ng-click='goToTeam(team.path)') {{team.name}}
     ul(class='players cf' dnd-list='team.players' dnd-allowed-types="['playerType']" dnd-horizontal-list='true' dnd-drop="playerDroppedIntoTeamCB(item, team, index, event);")
       li(ng-repeat='player in team.players' class='player' dnd-draggable='player' dnd-type="'playerType'" dnd-moved="team.players.splice($index, 1);" dnd-effect-allowed='move')
         img(gravatar-src-once='player.email' gravatar-size="100" alt='Profile Icon')

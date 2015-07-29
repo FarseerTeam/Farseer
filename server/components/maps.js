@@ -62,23 +62,23 @@ function getPathElements(player) {
   }
 }
 
-function getTeamNode(teamPath, teamName, teamPlayersMap, teams) {
+function getTeamNode(teamPath, teamPathElement, teamPlayersMap, teams) {
   for (var index = 0; index < teamPlayersMap.length; index++) {
     var teamSection = teamPlayersMap[index];
-    if (teamSection.team === teamName) {
+    if (teamSection.team === teamPathElement) {
       return teamSection;
     }
   }
 
   var team = _.findWhere(teams, { path: teamPath });
-  var teamNode = createTeamNode(teamName, team, teamPath);
+  var teamNode = createTeamNode(teamPathElement, team, teamPath);
   teamPlayersMap.push(teamNode);
   return teamNode;
 }
 
-function createTeamNode(teamName, team, teamPath) {
+function createTeamNode(teamPathElement, team, teamPath) {
   var teamNode = {
-    team: teamName,
+    team: teamPathElement,
     path: teamPath,
     players: [],
     subTeams: []
