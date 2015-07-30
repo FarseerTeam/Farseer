@@ -61,7 +61,7 @@ describe('The maps module', function () {
       createPlayer('world', '/avatar', "Aang")
         .then(function (aang) {
           var expectedMap = {
-            team: 'avatar',
+            pathElement: 'avatar',
             path: '/avatar',
             players: [aang],
             subTeams: []
@@ -76,7 +76,7 @@ describe('The maps module', function () {
         yung: createPlayer('anotherWorld', '/avatar', "Yung")
       }).then(function (players) {
         var expectedMap = {
-          team: 'avatar',
+          pathElement: 'avatar',
           path: '/avatar',
           players: [players.aang],
           subTeams: []
@@ -91,7 +91,7 @@ describe('The maps module', function () {
         yung: createPlayer('world', '/avatar', "Yung")
       }).then(function (players) {
         var expectedMap = {
-          team: 'avatar',
+          pathElement: 'avatar',
           path: '/avatar',
           players: [players.aang, players.yung],
           subTeams: []
@@ -106,12 +106,12 @@ describe('The maps module', function () {
         yung: createPlayer('world', '/fireNation', "Yung")
       }).then(function (players) {
         var expectedMap = [{
-          team: 'avatar',
+          pathElement: 'avatar',
           path: '/avatar',
           players: [players.aang],
           subTeams: []
         }, {
-            team: 'fireNation',
+            pathElement: 'fireNation',
             path: '/fireNation',
             players: [players.yung],
             subTeams: []
@@ -124,11 +124,11 @@ describe('The maps module', function () {
       createPlayer('world', '/fireNation/avatar', "Aang")
         .then(function (aang) {
           var expectedMap = [{
-            team: 'fireNation',
+            pathElement: 'fireNation',
             path: '/fireNation',
             players: [],
             subTeams: [{
-              team: 'avatar',
+              pathElement: 'avatar',
               path: '/fireNation/avatar',
               players: [aang],
               subTeams: []
@@ -142,7 +142,7 @@ describe('The maps module', function () {
       createPlayer('world', '/fireNation/avatar', "Aang")
         .then(function (aang) {
           var expectedMap = [{
-            team: 'avatar',
+            pathElement: 'avatar',
             path: '/fireNation/avatar',
             players: [aang],
             subTeams: []
@@ -155,7 +155,7 @@ describe('The maps module', function () {
       createPlayer('world', '/fireNation/avatar/airbender', "Aang")
         .then(function (aang) {
           var expectedMap = [{
-            team: 'airbender',
+            pathElement: 'airbender',
             path: '/fireNation/avatar/airbender',
             players: [aang],
             subTeams: []
@@ -170,11 +170,11 @@ describe('The maps module', function () {
         yung: createPlayer('world', '/firenation', "Yung")
       }).then(function (players) {
         var expectedMap = [{
-          team: 'firenation',
+          pathElement: 'firenation',
           path: '/firenation',
           players: [players.yung],
           subTeams: [{
-            team: 'avatar',
+            pathElement: 'avatar',
             path: '/firenation/avatar',
             players: [players.aang],
             subTeams: []
@@ -193,16 +193,16 @@ describe('The maps module', function () {
           iroh: createPlayer('world', '/fireNation/royalty', "Iroh")
         }).then(function (players) {
           var expectedMap = [{
-            team: 'avatar',
+            pathElement: 'avatar',
             path: '/avatar',
             players: [players.aang, players.katara],
             subTeams: []
           }, {
-              team: 'fireNation',
+              pathElement: 'fireNation',
               path: '/fireNation',
               players: [],
               subTeams: [{
-                team: 'royalty',
+                pathElement: 'royalty',
                 path: '/fireNation/royalty',
                 players: [players.zuko, players.iroh],
                 subTeams: []
@@ -217,15 +217,15 @@ describe('The maps module', function () {
         aang: createPlayer('world', '/humans/airNation/avatar', "Aang")
       }).then(function (players) {
         var expectedMap = [{
-          team: 'humans',
+          pathElement: 'humans',
           path: '/humans',
           players: [],
           subTeams: [{
-            team: 'airNation',
+            pathElement: 'airNation',
             path: '/humans/airNation',
             players: [],
             subTeams: [{
-              team: 'avatar',
+              pathElement: 'avatar',
               path: '/humans/airNation/avatar',
               players: [players.aang],
               subTeams: []
@@ -242,33 +242,33 @@ describe('The maps module', function () {
         zuko: createPlayer('world', '/humans/fireNation/avatar/royalty/scarfaces')
       }).then(function (players) {
         var expectedMap = [{
-          team: 'humans',
+          pathElement: 'humans',
           path: '/humans',
           players: [],
           subTeams: [{
-            team: 'airNation',
+            pathElement: 'airNation',
             path: '/humans/airNation',
             players: [],
             subTeams: [{
-              team: 'avatar',
+              pathElement: 'avatar',
               path: '/humans/airNation/avatar',
               players: [players.aang],
               subTeams: []
             }]
           }, {
-              team: 'fireNation',
+              pathElement: 'fireNation',
               path: '/humans/fireNation',
               players: [],
               subTeams: [{
-                team: 'avatar',
+                pathElement: 'avatar',
                 path: '/humans/fireNation/avatar',
                 players: [],
                 subTeams: [{
-                  team: 'royalty',
+                  pathElement: 'royalty',
                   path: '/humans/fireNation/avatar/royalty',
                   players: [],
                   subTeams: [{
-                    team: 'scarfaces',
+                    pathElement: 'scarfaces',
                     path: '/humans/fireNation/avatar/royalty/scarfaces',
                     players: [players.zuko],
                     subTeams: []
@@ -289,12 +289,12 @@ describe('The maps module', function () {
           wan: createPlayer('world', undefined, 'Wan Shi Ton')
         }).then(function (players) {
           var expectedMap = [{
-            team: 'avatar',
+            pathElement: 'avatar',
             path: '/avatar',
             players: [players.aang],
             subTeams: []
           }, {
-              team: 'unassigned',
+              pathElement: 'unassigned',
               path: '/unassigned',
               players: [players.tui, players.wan],
               subTeams: []
@@ -313,7 +313,7 @@ describe('The maps module', function () {
         aang: createPlayer('world', '/avatar', "Aang")
       }).then(function (prereqs) {
         var expectedMap = [{
-          team: 'avatar',
+          pathElement: 'avatar',
           path: '/avatar',
           name: 'Avatar',
           image: 'avatar.jpg',
@@ -332,13 +332,13 @@ describe('The maps module', function () {
         aang: createPlayer('world', '/avatar', "Aang")
       }).then(function (prereqs) {
         var expectedMap = [{
-          team: 'avatar',
+          pathElement: 'avatar',
           path: '/avatar',
           name: 'avatar',
           players: [prereqs.aang],
           subTeams: [
             {
-              team: 'children',
+              pathElement: 'children',
               path: '/avatar/children',
               name: 'children',
               players: [prereqs.aangsKid],

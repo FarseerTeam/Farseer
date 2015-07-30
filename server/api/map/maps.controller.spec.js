@@ -54,7 +54,7 @@ describe('/api/worlds/world/maps', function () { //jshint ignore:line
 
     it("should return player on the team from correct world", function (done) {
       var expected = {
-        team: 'avatar',
+        pathElement: 'avatar',
         path: '/avatar',
         players: [flattenId(aang.toObject())],
         subTeams: []
@@ -85,7 +85,7 @@ describe('/api/worlds/world/maps', function () { //jshint ignore:line
 
       it('should only return players in the sub team', function (done) {
         var expected = {
-          team: 'team',
+          pathElement: 'team',
           path: '/avatar/sub/team',
           players: [flattenId(subTeamPlayer.toObject())],
           subTeams: []

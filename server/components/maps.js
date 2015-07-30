@@ -65,7 +65,7 @@ function getPathElements(player) {
 function getTeamNode(teamPath, teamPathElement, teamPlayersMap, teams) {
   for (var index = 0; index < teamPlayersMap.length; index++) {
     var teamSection = teamPlayersMap[index];
-    if (teamSection.team === teamPathElement) {
+    if (teamSection.pathElement === teamPathElement) {
       return teamSection;
     }
   }
@@ -78,7 +78,7 @@ function getTeamNode(teamPath, teamPathElement, teamPlayersMap, teams) {
 
 function createTeamNode(teamPathElement, team, teamPath) {
   var teamNode = {
-    team: teamPathElement,
+    pathElement: teamPathElement,
     path: teamPath,
     players: [],
     subTeams: []
