@@ -22,14 +22,6 @@ describe('The playersMap page has images for each player on it, and... ', functi
         }); 
 	};
 
-	beforeEach(function() {
-		this.addMatchers({
-	        toHaveHeightOfAtLeast: function (expectedSize) {
-	        	return this.actual.height >= expectedSize;
-	        }
-	    });
-	});
-
 	beforeEach(function(done) {
 		setup.addTeam('team1', '/team1')
 			.then(setup.addTeam('team2', '/team1/team2'))
@@ -50,9 +42,11 @@ describe('The playersMap page has images for each player on it, and... ', functi
 		expect(page.playerImages.count()).toBe(3);
 		for (var i = 0; i < 3; i++) {
 			expect(page.imageSrc(page.playerImages.get(i))).toContain('gravatar.com/avatar');
+			
+			page.playerImages.get(i).getSize().then(function(size) {
+				expect(size.height).toBeGreaterThan(50);  
+			});
 
-			//check that the link is not broken - broken links should have lower height - would like a better solution for this
-			expect(page.playerImages.get(i).getSize()).toHaveHeightOfAtLeast(50);  
 		}
 	});
 });

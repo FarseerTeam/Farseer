@@ -17,7 +17,7 @@ div(class='map-view')
 
   script(type='text/ng-template' id='teamTemplate')
     div
-      div(class='team-name' ng-click='goToTeam(team.path)') {{team.name}}
+      div(class='team-name' ng-click='goToTeam(team.path)') {{team.name || team.team}}
     ul(class='players cf' dnd-list='team.players' dnd-allowed-types="['playerType']" dnd-horizontal-list='true' dnd-drop="playerDroppedIntoTeamCB(item, team, index, event);")
       li(ng-repeat='player in team.players' class='player' dnd-draggable='player' dnd-type="'playerType'" dnd-moved="team.players.splice($index, 1);" dnd-effect-allowed='move')
         img(gravatar-src-once='player.email' gravatar-size="100" alt='Profile Icon')

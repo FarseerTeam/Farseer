@@ -57,11 +57,11 @@ exports.config = {
 
   onPrepare: function () {
 
-    var ScreenShotReporter = require('protractor-screenshot-reporter');
+    var ScreenShotReporter = require('protractor-jasmine2-screenshot-reporter');
 
     jasmine.getEnv().addReporter(new ScreenShotReporter({
-      baseDirectory: '/tmp/screenshots',
-      takeScreenShotsOnlyForFailedSpecs: true
+      dest: '/tmp/screenshots',
+      captureOnlyFailedSpecs: true
     }));
 
   }
