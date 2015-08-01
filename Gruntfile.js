@@ -5,7 +5,7 @@ module.exports = function (grunt) {
   var localConfig;
   try {
     localConfig = require('./server/config/local.env');
-  } catch(e) {
+  } catch (e) {
     localConfig = {};
   }
 
@@ -43,6 +43,12 @@ module.exports = function (grunt) {
           debug: true
         }
       },
+      devTest: {
+        options: {
+          script: 'server/app.js',
+          port: 9001
+        }
+      },
       prod: {
         options: {
           script: 'dist/server/app.js'
@@ -71,16 +77,20 @@ module.exports = function (grunt) {
       },
       mochaTest: {
         files: ['server/**/*.spec.js',
-                'server/{app,api,components}/**/*.js',
+          'server/{app,api,components}/**/*.js'
         ],
         tasks: ['env:test', 'mochaTest']
       },
-      jsTest: {
+      clientTest: {
         files: [
           '<%= yeoman.client %>/{app,components}/**/*.spec.js',
           '<%= yeoman.client %>/{app,components}/**/*.mock.js'
         ],
         tasks: ['newer:jshint:all', 'karma']
+      },
+      e2eTest: {
+        files: ['e2e/**/*.spec.js'],
+        tasks: ['env:test', 'express:devTest', 'protractor:chrome']
       },
       injectSass: {
         files: [
@@ -231,7 +241,7 @@ module.exports = function (grunt) {
       target: {
         src: '<%= yeoman.client %>/index.html',
         ignorePath: '<%= yeoman.client %>/',
-        exclude: [/bootstrap-sass-official/, /bootstrap.js/, '/json3/', '/es5-shim/', /bootstrap.css/, /font-awesome.css/ ]
+        exclude: [/bootstrap-sass-official/, /bootstrap.js/, '/json3/', '/es5-shim/', /bootstrap.css/, /font-awesome.css/]
       }
     },
 
@@ -413,11 +423,11 @@ module.exports = function (grunt) {
     concurrent: {
       server: [
         'jade',
-        'sass',
+        'sass'
       ],
       test: [
         'jade',
-        'sass',
+        'sass'
       ],
       debug: {
         tasks: [
@@ -456,8 +466,8 @@ module.exports = function (grunt) {
         configFile: 'protractor.conf.js',
         keepAlive: false,
         args: {
-            seleniumAddress: 'http://localhost:4444/wd/hub'
-          }
+          seleniumAddress: 'http://localhost:4444/wd/hub'
+        }
       },
       chrome: {
         options: {
@@ -517,19 +527,17 @@ module.exports = function (grunt) {
           compass: false
         },
         files: {
-          '.tmp/app/app.css' : '<%= yeoman.client %>/app/app.scss'
+          '.tmp/app/app.css': '<%= yeoman.client %>/app/app.scss'
         }
       }
     },
 
     injector: {
-      options: {
-
-      },
+      options: {},
       // Inject application script files into index.html (doesn't include bower)
       scripts: {
         options: {
-          transform: function(filePath) {
+          transform: function (filePath) {
             filePath = filePath.replace('/client/', '');
             filePath = filePath.replace('/.tmp/', '');
             return '<script src="' + filePath + '"></script>';
@@ -539,18 +547,18 @@ module.exports = function (grunt) {
         },
         files: {
           '<%= yeoman.client %>/index.html': [
-              ['{.tmp,<%= yeoman.client %>}/{app,api,components}/**/*.js',
-               '!{.tmp,<%= yeoman.client %>}/app/app.js',
-               '!{.tmp,<%= yeoman.client %>}/{app,api,components}/**/*.spec.js',
-               '!{.tmp,<%= yeoman.client %>}/{app,api,components}/**/*.mock.js']
-            ]
+            ['{.tmp,<%= yeoman.client %>}/{app,api,components}/**/*.js',
+              '!{.tmp,<%= yeoman.client %>}/app/app.js',
+              '!{.tmp,<%= yeoman.client %>}/{app,api,components}/**/*.spec.js',
+              '!{.tmp,<%= yeoman.client %>}/{app,api,components}/**/*.mock.js']
+          ]
         }
       },
 
       // Inject component scss into app.scss
       sass: {
         options: {
-          transform: function(filePath) {
+          transform: function (filePath) {
             filePath = filePath.replace('/client/app/', '');
             filePath = filePath.replace('/client/components/', '');
             return '@import \'' + filePath + '\';';
@@ -569,7 +577,7 @@ module.exports = function (grunt) {
       // Inject component css into index.html
       css: {
         options: {
-          transform: function(filePath) {
+          transform: function (filePath) {
             filePath = filePath.replace('/client/', '');
             filePath = filePath.replace('/.tmp/', '');
             return '<link rel="stylesheet" href="' + filePath + '">';
@@ -583,7 +591,7 @@ module.exports = function (grunt) {
           ]
         }
       }
-    },
+    }
   });
 
   // Used for delaying livereload until after server has restarted
@@ -598,7 +606,7 @@ module.exports = function (grunt) {
     }, 1500);
   });
 
-  grunt.registerTask('express-keepalive', 'Keep grunt running', function() {
+  grunt.registerTask('express-keepalive', 'Keep grunt running', function () {
     this.async();
   });
 
@@ -635,12 +643,7 @@ module.exports = function (grunt) {
     ]);
   });
 
-  grunt.registerTask('server', function () {
-    grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
-    grunt.task.run(['serve']);
-  });
-
-  grunt.registerTask('test', function(target) {
+  grunt.registerTask('test', function (target) {
     if (target === 'server') {
       return grunt.task.run([
         'env:all',
@@ -671,17 +674,17 @@ module.exports = function (grunt) {
         'injector',
         'wiredep',
         'autoprefixer',
-        'express:dev',
+        'express:devTest',
         'protractor:chrome',
         'protractor:firefox'
       ]);
     }
 
     else grunt.task.run([
-      'test:server',
-      'test:client',
-      'test:e2e'
-    ]);
+        'test:server',
+        'test:client',
+        'test:e2e'
+      ]);
   });
 
   grunt.registerTask('e2e', ['test:e2e']);
