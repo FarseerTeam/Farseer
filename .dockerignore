@@ -1,0 +1,13 @@
+test-output/*
+version.json
+.idea/workspace.xml
+Coupling.iws
+.DS_Store
+public/stylesheets/*.css
+node_modules/*
+client/bower_components
+Dockerfile
+docker-compose.yml
+.sass-cache
+.tmp
+dist

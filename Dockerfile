@@ -1,17 +1,24 @@
 FROM node:0.12
 
+RUN npm install -g grunt-cli karma-cli phantomjs bower protractor --unsafe-perm
+
+RUN apt-get update \
+  && apt-get install -y ruby-full \
+  && gem install sass
+
 WORKDIR /usr/src/app
 
-RUN npm install -g grunt-cli karma-cli phantomjs
-COPY ["package.json", "npm-shrinkwrap.json", "/usr/src/app/"]
-RUN npm install
+COPY ["package.json", "npm-shrinkwrap.json", "bower.json", "/usr/src/app/"]
+RUN npm install --unsafe-perm \
+  && bower install --allow-root
+
 COPY . /usr/src/app
 ENV \
   PUBLIC_HOST=web \
-  MONGOHQ_URL=mongodb://mongo/Coupling \
-  MONGO_CONNECTION=mongodb://mongo \
+  MONGO_URI=mongodb://mongo/FarseerDev \
   PHANTOMJS_BIN=/usr/local/lib/node_modules/phantomjs/lib/phantom/bin/phantomjs
 
-CMD [ "grunt", "dockerserve" ]
+CMD [ "grunt", "serve" ]
 
-EXPOSE 3000
+EXPOSE 9000
+EXPOSE 9001

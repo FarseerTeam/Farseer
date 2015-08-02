@@ -464,10 +464,7 @@ module.exports = function (grunt) {
     protractor: {
       options: {
         configFile: 'protractor.conf.js',
-        keepAlive: false,
-        args: {
-          seleniumAddress: 'http://localhost:4444/wd/hub'
-        }
+        keepAlive: false
       },
       chrome: {
         options: {
@@ -638,7 +635,6 @@ module.exports = function (grunt) {
       'autoprefixer',
       'express:dev',
       'wait',
-      'open',
       'watch'
     ]);
   });
