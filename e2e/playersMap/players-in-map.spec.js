@@ -9,10 +9,11 @@ describe('The players map', function () {
     setup.addPlayer('newPlayer', 'some@gmail.com', undefined, 'world');
     setup.addPlayer('Q', 'cutie@gmail.com', '/quotes', 'world');
     setup.addPlayer('R', 'random@gmail.com', '/noquotes', 'world');
-    
-    setup.addTeam('Single Quotes', '/quotes');
+
+    setup.addTeam('Double Quotes', '/quotes', 'anotherWorld');
+    setup.addTeam('Single Quotes', '/quotes', 'world');
     setup.addTeam(undefined, '/noquotes');
-    
+
     browser.get('playersMap');
   });
 
@@ -29,6 +30,12 @@ describe('The players map', function () {
     var quoteTeam = element(by.id('/quotes'));
     var teamName = quoteTeam.element(by.className('team-name'));
     expect(teamName.getText()).toBe('Single Quotes');
+  });
+
+  it('displays only teams for the selected world', function(){
+    var quoteTeam = element(by.id('/quotes'));
+    var players = quoteTeam.all(by.className('player'));
+    expect(players.count()).toBe(1);
   });
 
   it('displays the team path element when no team name exists', function () {

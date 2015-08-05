@@ -39,11 +39,12 @@ describe('The maps module', function () {
     });
   };
 
-  var createTeam = function (teamPath) {
-    var pathElements = teamPath.split('/')
+  var createTeam = function (teamPath, worldId) {
+    var pathElements = teamPath.split('/');
     return teams.Team.create({
       name: pathElements[pathElements.length - 1],
-      path: teamPath
+      path: teamPath,
+      world: worldId
     }).then(function (teamMongoose) {
       return teamMongoose.toObject();
     });
@@ -303,12 +304,13 @@ describe('The maps module', function () {
         }).then(done, done);
       });
 
-    it("Teams that have additional attributes have those attributes in the map.", function (done) {
+    it("Teams that have additional attributes have those attributes in the map", function (done) {
       RSVP.hash({
         teamAvatar: teams.Team.create({
           path: '/avatar',
           name: 'Avatar',
-          image: 'avatar.jpg'
+          image: 'avatar.jpg',
+          world: 'world'
         }),
         aang: createPlayer('world', '/avatar', "Aang")
       }).then(function (prereqs) {
@@ -324,10 +326,30 @@ describe('The maps module', function () {
       }).then(done, done);
     });
 
+    it("teams attributes from the wrong world are excluded", function (done) {
+      RSVP.hash({
+        teamAvatar: teams.Team.create({
+          path: '/avatar',
+          name: 'Avatar',
+          image: 'avatar.jpg',
+          world: 'nowhere'
+        }),
+        aang: createPlayer('world', '/avatar', "Aang")
+      }).then(function (prereqs) {
+        var expectedMap = [{
+          pathElement: 'avatar',
+          path: '/avatar',
+          players: [prereqs.aang],
+          subTeams: []
+        }];
+        return maps.buildTeamPlayersMap('world').then(checkMapMatches(expectedMap));
+      }).then(done, done);
+    });
+
     it("Teams from the database include correct paths when nested. This problem only occurs when child team player is created before the parent team player.", function (done) {
       RSVP.hash({
-        teamAvatar: createTeam('/avatar'),
-        teamChild: createTeam('/avatar/children'),
+        teamAvatar: createTeam('/avatar', 'world'),
+        teamChild: createTeam('/avatar/children', 'world'),
         aangsKid: createPlayer('world', '/avatar/children', "AangsKid"),
         aang: createPlayer('world', '/avatar', "Aang")
       }).then(function (prereqs) {

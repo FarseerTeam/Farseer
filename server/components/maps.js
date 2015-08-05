@@ -5,8 +5,8 @@ var teams = require("./teams");
 
 exports.buildTeamPlayersMap = function (worldId, path) {
   return RSVP.hash({
-    players: players.Player.find({ world: worldId }).exec(),
-    teams: teams.Team.find({}).exec()
+    players: players.Player.find({world: worldId}).exec(),
+    teams: teams.Team.find({world: worldId}).exec()
   }).then(function (data) {
     var teamPlayersMap = [];
 
@@ -43,7 +43,7 @@ function findTeamWithPath(path, teamMap) {
 
 function populateMapWithTeamsForPlayer(player, teamPlayersMap, teamsList) {
   var pathElements = getPathElements(player);
-  var parentTeam = { subTeams: teamPlayersMap };
+  var parentTeam = {subTeams: teamPlayersMap};
   var teamPath = '';
 
   for (var index = 1; index < pathElements.length; index++) {
@@ -70,7 +70,7 @@ function getTeamNode(teamPath, teamPathElement, teamPlayersMap, teams) {
     }
   }
 
-  var team = _.findWhere(teams, { path: teamPath });
+  var team = _.findWhere(teams, {path: teamPath});
   var teamNode = createTeamNode(teamPathElement, team, teamPath);
   teamPlayersMap.push(teamNode);
   return teamNode;
@@ -86,9 +86,10 @@ function createTeamNode(teamPathElement, team, teamPath) {
 
   if (team) {
     _.extend(teamNode, team.toObject());
+    delete teamNode.world;
+    delete teamNode._id;
+    delete teamNode.__v;
   }
 
-  delete teamNode._id;
-  delete teamNode.__v;
   return teamNode;
 }
