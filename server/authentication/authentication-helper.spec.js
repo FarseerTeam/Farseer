@@ -26,7 +26,7 @@ function AuthTestHelper() {
     afterEach(function(){
       Cookies = null;
     });
-  }
+  };
 
   this.get = function(url) {
     validateLoggedIn();
