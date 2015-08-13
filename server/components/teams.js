@@ -9,15 +9,16 @@ module.exports = (function () {
     path: {
       type: String,
       index: {
-        unique: true,
         required: true
       }
     },
     name: {type: String},
+    world: {type: String},
     image: {type: String}
   });
+  TeamSchema.index({ path: 1, world: 1 }, { unique: true });
   var _model = mongoose.model('Team', TeamSchema);
-
+  
   var _findByPath = function (teamPath, successCB, errorCB) {
     _model.findOne(
       {

@@ -3,7 +3,7 @@
 var express = require('express');
 var controller = require('./maps.controller');
 
-var router = express.Router();
+var router = express.Router({ mergeParams: true });
 
 router.route('/*')
 	.all(function (req, res, next) {

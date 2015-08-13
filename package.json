@@ -78,7 +78,7 @@
     "karma-requirejs": "~0.2.2",
     "karma-script-launcher": "~0.1.0",
     "open": "~0.0.5",
-    "protractor-screenshot-reporter": "0.0.5",
+    "protractor-jasmine2-screenshot-reporter": "^0.1.7",
     "requirejs": "~2.1.17",
     "should": "^6.0.1",
     "supertest": "~0.15.0",

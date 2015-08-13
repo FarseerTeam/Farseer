@@ -2,34 +2,50 @@
 'use strict';
 
 var should = require('should');
-var authenticatedRequest = require('../../authentication/authentication-helper.spec');
-var VALID_USER = authenticatedRequest.VALID_USER;
+var app = require('../../app');
+var request = require('supertest');
 var teams = require("../../components/teams");
 var dataService = require('../../components/dataService');
 
 dataService.connect();
 
 describe('/api/worlds/world/teams', function () {
-
-  authenticatedRequest.useAuth(VALID_USER);
-
   describe('GET ', function () {
-    var ford;
+    var ford, toyota;
 
     beforeEach(function (done) {
       teams.Team.remove({}, function () {
-        teams.Team.create({
-          name: "Ford"
-        }, function (err, doc) {
-          ford = doc;
+        teams.Team.create([{
+          name: 'Ford',
+          world: 'us'
+        }, {
+          name: 'Toyota',
+          world: 'japan'
+        }], function (err, docs) {
+          if (err) return done(err);
+          ford = docs[0];
+          toyota = docs[1];
           done();
         });
 
       });
     });
 
-    it('should respond with JSON array', function (done) {
-      authenticatedRequest
+    it('should return teams from this world', function (done) {
+      request(app)
+        .get('/api/worlds/us/teams')
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .end(function (err, res) {
+          if (err) return done(err);
+          res.body.should.be.instanceof(Array);
+          ford.id.should.be.equal(res.body[0]._id);
+          done();
+        });
+    });
+    
+    it('should not return teams from another world', function (done) {
+      request(app)
         .get('/api/worlds/world/teams')
         .expect(200)
         .expect('Content-Type', /json/)
@@ -40,6 +56,7 @@ describe('/api/worlds/world/teams', function () {
           done();
         });
     });
+        
     afterEach(function (done) {
       teams.Team.remove({}, function () {
         done();
@@ -62,7 +79,7 @@ describe('/api/worlds/world/teams', function () {
       });
     });
     it('should create teams', function (done) {
-      authenticatedRequest
+      request(app)
         .post('/api/worlds/world/teams')
         .send({
           name: 'GFORCE'
@@ -73,7 +90,7 @@ describe('/api/worlds/world/teams', function () {
         .end(done);
     });
     it('should create a sub team if there is a valid parent reference', function (done) {
-      authenticatedRequest
+      request(app)
         .post('/api/worlds/world/teams')
         .send({
           name: 'GFORCE',
@@ -89,7 +106,7 @@ describe('/api/worlds/world/teams', function () {
         });
     });
     it('should display a message if it is not a valid parent reference', function (done) {
-      authenticatedRequest
+      request(app)
         .post('/api/worlds/world/teams')
         .send({
           name: 'Invalid GFORCE',
@@ -115,8 +132,6 @@ describe('/api/worlds/world/teams', function () {
 
 describe('/api/worlds/world/teams/:team_id', function () {
 
-  authenticatedRequest.useAuth(VALID_USER);
-
   describe('GET ', function () {
     var cengage;
 
@@ -131,7 +146,7 @@ describe('/api/worlds/world/teams/:team_id', function () {
     });
     it('will return a valid object if exists ', function (done) {
       var url = '/api/worlds/world/teams/' + cengage.id;
-      authenticatedRequest
+      request(app)
         .get(url)
         .expect(200)
         .expect('Content-Type', /json/)
@@ -144,7 +159,7 @@ describe('/api/worlds/world/teams/:team_id', function () {
     it('will return an empty object with error information ', function (done) {
       var randomId = parseInt(Math.random() * 1000);
       var url = '/api/worlds/world/teams/' + randomId;
-      authenticatedRequest
+      request(app)
         .get(url)
         .expect(200)
         .expect('Content-Type', /json/)
@@ -176,7 +191,7 @@ describe('/api/worlds/world/teams/:team_id', function () {
     });
     it('will update a valid object ', function (done) {
       var url = '/api/worlds/world/teams/' + cengage.id;
-      authenticatedRequest
+      request(app)
         .put(url)
         .send(cengageChanged)
         .set('Accept', 'application/json')
@@ -210,7 +225,7 @@ describe('/api/worlds/world/teams/:team_id', function () {
     });
     it('will remove an valid object ', function (done) {
       var url = '/api/worlds/world/teams/' + cengage.id;
-      authenticatedRequest
+      request(app)
         .delete(url)
         .expect(200)
         .end(done);

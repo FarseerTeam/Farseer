@@ -3,14 +3,12 @@
 var players = require("../components/players");
 var teams = require("../components/teams");
 
-exports.idInterceptor = function(modelReference, model) {
-	return function(req, res, next, id) {
-
-		modelReference.findById(id, function(err, doc) {
-
+exports.idInterceptor = function (modelReference, model) {
+	return function (req, res, next, id) {
+		modelReference.findById(id, function (err, doc) {
 			if (err) {
 				res.json({
-					errorMessage:  model.toUpperCase() + " with id " + id + " does not exist.",
+					errorMessage: model.toUpperCase() + " with id " + id + " does not exist.",
 					err: err
 				});
 				res.end();
@@ -18,22 +16,22 @@ exports.idInterceptor = function(modelReference, model) {
 				req[model] = doc;
 				next();
 			}
-
 		});
 	};
 };
 
-exports.playerUniqueIdentifierInterceptor = function(paramName) {
+exports.playerUniqueIdentifierInterceptor = function (paramName) {
 
-	var handler = function(req, res, next, id) {	
-		players.findByAnyUniqueIdentifier(id, function(player) {
+	var handler = function (req, res, next, id) {
+		var worldId = req.params.worldId;
+		players.findByAnyUniqueIdentifier(worldId, id, function (player) {
 			storePlayerAsParam(player, req, res, next, id);
 		}, databaseCallFailure(res));
 	};
 
-	var storePlayerAsParam = function(player, req, res, next, id) {
+	var storePlayerAsParam = function (player, req, res, next, id) {
         if (!player) {
-        	playerNotFound(id, res)();
+			playerNotFound(id, res)();
         } else {
 			req[paramName] = player;
 			next();
@@ -44,14 +42,14 @@ exports.playerUniqueIdentifierInterceptor = function(paramName) {
 };
 
 function playerNotFound(id, res) {
-	return function() {
-		res.status(404).json({message: "PLAYER with identifier '" + id + "' does not exist."});
+	return function () {
+		res.status(404).json({ message: "PLAYER with identifier '" + id + "' does not exist." });
 	};
 }
 
 function databaseCallFailure(res) {
-	return function(err) {
-    	res.status(500).json(buildApplicationErrorBody(err));
+	return function (err) {
+		res.status(500).json(buildApplicationErrorBody(err));
 	}
 }
 

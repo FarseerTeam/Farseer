@@ -7,7 +7,7 @@ var players = require("../../components/players");
 var teams = require("../../components/teams");
 
 exports.index = function (req, res) {
-  players.Player.find({}, function (err, doc) {
+  players.Player.find({ world: req.params.worldId }, function (err, doc) {
     res.json(doc);
   });
 };

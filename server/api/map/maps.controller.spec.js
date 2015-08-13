@@ -2,13 +2,15 @@
 'use strict';
 
 var expect = require('chai').expect;
-var authenticatedRequest = require('../../authentication/authentication-helper.spec');
-var VALID_USER = authenticatedRequest.VALID_USER;
+var app = require('../../app');
+var request = require('supertest');
 var teams = require("../../components/teams");
 var players = require("../../components/players");
 var dataService = require('../../components/dataService');
 var _ = require('lodash');
 var format = require("string-format");
+var RSVP = require('rsvp');
+
 dataService.connect();
 
 var flattenId = function (object) {
@@ -16,10 +18,11 @@ var flattenId = function (object) {
   return object;
 };
 
-var createPlayer = function (path, playerName) {
+var createPlayer = function (worldId, path, playerName) {
   return players.Player.create({
     name: playerName,
     email: format("{}@test.smith.com", playerName),
+    world: worldId,
     _team: path
   });
 };
@@ -32,81 +35,76 @@ var clearAll = function () {
 
 describe('/api/worlds/world/maps', function () { //jshint ignore:line
 
-  authenticatedRequest.useAuth(VALID_USER);
-
   describe("/avatar", function () {
-    var player;
+    var aang, neo;
 
     beforeEach(function (done) {
       clearAll()
-        .then(function () {
-        return createPlayer("/avatar", "Aang");
-      })
-        .then(function (newPlayer) {
-        player = newPlayer;
-        return null;
-      })
-        .then(done, done);
+      .then(function() {
+        RSVP.hash({
+          aang: createPlayer('someworld', '/avatar', 'Aang'),
+          neo: createPlayer('otherworld', '/avatar', 'Neo')
+        })
+        .then(function(players) {
+          aang = players.aang;
+          neo = players.neo;
+        }).then(done, done);
+      });        
     });
 
-    it("should return player on the team", function (done) {
-
+    it("should return player on the team from correct world", function (done) {
       var expected = {
-        team: 'avatar',
+        pathElement: 'avatar',
         path: '/avatar',
-        players: [flattenId(player.toObject())],
+        players: [flattenId(aang.toObject())],
         subTeams: []
       };
 
-      authenticatedRequest
-        .get('/api/worlds/world/maps')
+      request(app)
+        .get('/api/worlds/someworld/maps')
         .expect(200)
         .expect('Content-Type', /json/)
         .end(function (err, response) {
-        if (err) {
-          console.log(err);
-          done(err);
-          return;
-        }
-        expect(response.body).to.instanceof(Array);
-        expect(response.body).to.eql([expected]);
-        done();
-      });
+          if (err) done(err);
+          expect(response.body).to.instanceof(Array);
+          expect(response.body).to.eql([expected]);
+          done();
+        });
     });
 
     describe('/sub/team', function () {
       var subTeamPlayer;
 
       beforeEach(function (done) {
-        createPlayer("/avatar/sub/team", "Namoor")
+        createPlayer('world', "/avatar/sub/team", "Namoor")
           .then(function (newPlayer) {
-          subTeamPlayer = newPlayer;
-          done();
-        });
+            subTeamPlayer = newPlayer;
+            done();
+          });
       });
 
       it('should only return players in the sub team', function (done) {
         var expected = {
-          team: 'team',
+          pathElement: 'team',
           path: '/avatar/sub/team',
           players: [flattenId(subTeamPlayer.toObject())],
           subTeams: []
         };
 
-        authenticatedRequest
+        request(app)
           .get('/api/worlds/world/maps/avatar/sub/team')
           .expect(200)
           .expect('Content-Type', /json/)
           .end(function (err, response) {
-          if (err) {
-            console.log(err);
-            done(err);
-            return;
-          }
-          expect(response.body).to.instanceof(Array);
-          expect(response.body).to.eql([expected]);
-          done();
-        });
+            if (err) {
+              console.log(err);
+              done(err);
+              return;
+            }
+            expect(response.body).to.instanceof(Array);
+            expect(response.body).to.eql([expected]);
+            done();
+          });
 
       });
     });

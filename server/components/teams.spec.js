@@ -18,7 +18,8 @@ describe("A team", function () {
   beforeEach(function (done) {
     teams.Team.create({
       path: "/ford",
-      name: "Ford"
+      name: "Ford",
+      world: 'teamWorld'
     }).then(function (doc) {
       theTeam = doc;
       done();
@@ -40,9 +41,30 @@ describe("A team", function () {
     });
   });
 
-  it("is unique based on path", function (done) {
+  it("has a world", function (done) {
+    expect(theTeam).to.be.ok();
+    theTeam.save(function (err, doc) {
+      expect(err).to.be.null();
+      doc.world.should.eql(theTeam.world);
+      done();
+    });
+  });
+
+  it('allows saving teams with same path as long as worlds are different', function (done) {
+    var teamWithDuplicatePath = new teams.Team();
+    teamWithDuplicatePath.path = theTeam.path;
+    teamWithDuplicatePath.world = 'NorthKorea';
+    teamWithDuplicatePath.save(function (err, doc) {
+      expect(err).to.be.null();
+      doc.world.should.eql('NorthKorea');
+      done();
+    });
+  });
+
+  it("will not allow saving a team with the same path and world as an existing team", function (done) {
     var attemptedDuplicateTeam = new teams.Team();
     attemptedDuplicateTeam.path = theTeam.path;
+    attemptedDuplicateTeam.world = theTeam.world;
     attemptedDuplicateTeam.save(function (err) {
       expect(err).not.to.be.null();
       (11000).should.eql(err.code);

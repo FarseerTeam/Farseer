@@ -3,10 +3,10 @@ var RSVP = require('rsvp');
 var players = require("./players");
 var teams = require("./teams");
 
-exports.buildTeamPlayersMap = function (path) {
+exports.buildTeamPlayersMap = function (worldId, path) {
   return RSVP.hash({
-    players: players.Player.find({}).exec(),
-    teams: teams.Team.find({}).exec()
+    players: players.Player.find({world: worldId}).exec(),
+    teams: teams.Team.find({world: worldId}).exec()
   }).then(function (data) {
     var teamPlayersMap = [];
 
@@ -15,13 +15,13 @@ exports.buildTeamPlayersMap = function (path) {
       var destinationTeam = populateMapWithTeamsForPlayer(player, teamPlayersMap, data.teams);
       destinationTeam.players.push(player.toJSON());
     }
-    
+
     var result = findTeamWithPath(path, teamPlayersMap);
-    
-    if(result) {
+
+    if (result) {
       return [result];
     }
-    
+
     return teamPlayersMap;
   });
 };
@@ -29,8 +29,8 @@ exports.buildTeamPlayersMap = function (path) {
 function findTeamWithPath(path, teamMap) {
   for (var index = 0; index < teamMap.length; index++) {
     var team = teamMap[index];
-    
-    if(team.path === path) {
+
+    if (team.path === path) {
       return team;
     } else {
       var result = findTeamWithPath(path, team.subTeams);
@@ -62,23 +62,23 @@ function getPathElements(player) {
   }
 }
 
-function getTeamNode(teamPath, teamName, teamPlayersMap, teams) {
+function getTeamNode(teamPath, teamPathElement, teamPlayersMap, teams) {
   for (var index = 0; index < teamPlayersMap.length; index++) {
     var teamSection = teamPlayersMap[index];
-    if (teamSection.team === teamName) {
+    if (teamSection.pathElement === teamPathElement) {
       return teamSection;
     }
   }
 
   var team = _.findWhere(teams, {path: teamPath});
-  var teamNode = createTeamNode(teamName, team, teamPath);
+  var teamNode = createTeamNode(teamPathElement, team, teamPath);
   teamPlayersMap.push(teamNode);
   return teamNode;
 }
 
-function createTeamNode(teamName, team, teamPath) {
+function createTeamNode(teamPathElement, team, teamPath) {
   var teamNode = {
-    team: teamName,
+    pathElement: teamPathElement,
     path: teamPath,
     players: [],
     subTeams: []
@@ -86,9 +86,10 @@ function createTeamNode(teamName, team, teamPath) {
 
   if (team) {
     _.extend(teamNode, team.toObject());
+    delete teamNode.world;
+    delete teamNode._id;
+    delete teamNode.__v;
   }
 
-  delete teamNode._id;
-  delete teamNode.__v;
   return teamNode;
 }

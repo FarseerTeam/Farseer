@@ -1,0 +1,23 @@
+web:
+  build: .
+  ports:
+    - "9000:9000"
+    - "9001:9001"
+  environment:
+    - TEST_HOST
+    - SELENIUM_ADDRESS
+  links:
+    - "mongo:mongo"
+  volumes:
+    - client:/usr/src/app/client
+    - server:/usr/src/app/server
+    - e2e:/usr/src/app/e2e
+    - package.json:/usr/src/app/package.json
+    - bower.json:/usr/src/app/bower.json
+    - karma.conf.js:/usr/src/app/karma.conf.js
+    - Gruntfile.js:/usr/src/app/Gruntfile.js
+    - screenshots/:/usr/src/app/screenshots/
+mongo:
+  image: mongo
+  environment:
+    - AUTH=no

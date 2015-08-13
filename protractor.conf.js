@@ -3,6 +3,7 @@
 
 'use strict';
 
+var ScreenShotReporter = require('protractor-jasmine2-screenshot-reporter');
 
 exports.config = {
   // The timeout for each script run on the browser. This should be longer
@@ -11,7 +12,8 @@ exports.config = {
 
   // A base URL for your application under test. Calls to protractor.get()
   // with relative paths will be prepended with this.
-  baseUrl: 'http://localhost:' + (process.env.PORT || '9000'),
+  seleniumAddress: process.env.SELENIUM_ADDRESS,
+  baseUrl: 'http://' + (process.env.TEST_HOST || 'localhost') +':' + (process.env.PORT || '9001'),
 
   // **DEPRECATED**
   // If true, only ChromeDriver will be started, not a Selenium Server.
@@ -38,7 +40,7 @@ exports.config = {
   // and
   // https://code.google.com/p/selenium/source/browse/javascript/webdriver/capabilities.js
   capabilities: {
-    
+
   },
 
   // ----- The test framework -----
@@ -46,7 +48,7 @@ exports.config = {
   // Jasmine and Cucumber are fully supported as a test and assertion framework.
   // Mocha has limited beta support. You will need to include your own
   // assertion framework if working with mocha.
-  framework: 'jasmine',
+  framework: 'jasmine2',
 
   // ----- Options to be passed to minijasminenode -----
   //
@@ -56,12 +58,9 @@ exports.config = {
   },
 
   onPrepare: function () {
-
-    var ScreenShotReporter = require('protractor-screenshot-reporter');
-
     jasmine.getEnv().addReporter(new ScreenShotReporter({
-      baseDirectory: '/tmp/screenshots',
-      takeScreenShotsOnlyForFailedSpecs: true
+      dest: './screenshots',
+      captureOnlyFailedSpecs: true
     }));
 
   }
