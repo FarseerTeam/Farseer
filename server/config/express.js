@@ -16,8 +16,8 @@ var path = require('path');
 var config = require('./environment');
 var session = require('express-session');
 var passport = require('passport');
-var devAuth = require('../authentication/auth-strategy-dev');
-var prodAuth = require('../authentication/auth-strategy-prod');
+var localAuth = require('../authentication/auth-strategy-dev');
+var googleAuthentication = require('../authentication/google-auth');
 
 module.exports = function(app) {
   var env = app.get('env');
@@ -50,8 +50,9 @@ module.exports = function(app) {
     app.use(express.static(path.join(config.root, 'public')));
     app.set('appPath', config.root + '/public');
     app.use(morgan('dev'));
-    passport.use(prodAuth.strategy);
   }
+
+  passport.use(googleAuthentication.strategy);
 
   if ('development' === env || 'test' === env) {
     app.use(require('connect-livereload')());
@@ -59,7 +60,7 @@ module.exports = function(app) {
     app.use(express.static(path.join(config.root, 'client')));
     app.set('appPath', 'client');
     app.use(morgan('dev'));
-    passport.use(devAuth.strategy);
+    passport.use(localAuth.strategy);
     app.use(errorHandler()); // Error handler - has to be last
   }
 };

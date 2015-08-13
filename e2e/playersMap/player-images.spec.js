@@ -19,7 +19,7 @@ describe('The playersMap page has images for each player on it, and... ', functi
             }).then(function(results) {
             	return results.one.height > 0 && results.two.height > 0 && results.three.height > 0;
             });
-        }); 
+        });
 	};
 
 	beforeEach(function() {
@@ -36,7 +36,6 @@ describe('The playersMap page has images for each player on it, and... ', functi
 			.then(setup.addPlayer('p0', 'p0@somewhere.com'))
 			.then(setup.addPlayer('p1', 'p1@somewhere.com', '/team1'))
 			.then(setup.addPlayer('p2', 'p2@somewhere.com', '/team1/team2'))
-			.then(browser.get('/test-login?username=hi&password=there'))
 			.then(browser.get('playersMap'))
 			.then(browser.wait(imageTagsExist, 1000))
 			.then(browser.wait(allImagesAreLoaded, 1000))
@@ -53,7 +52,7 @@ describe('The playersMap page has images for each player on it, and... ', functi
 			expect(page.imageSrc(page.playerImages.get(i))).toContain('gravatar.com/avatar');
 
 			//check that the link is not broken - broken links should have lower height - would like a better solution for this
-			expect(page.playerImages.get(i).getSize()).toHaveHeightOfAtLeast(50);  
+			expect(page.playerImages.get(i).getSize()).toHaveHeightOfAtLeast(50);
 		}
 	});
 });

@@ -4,7 +4,7 @@ describe('The Home Page... ', function() {
   var myElement;
 
   beforeEach(function() {
-    browser.get('/test-login?username=hi&password=there');
+    browser.get('/');
   });
 
   it('is playersMap', function(done) {

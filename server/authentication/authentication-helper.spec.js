@@ -8,12 +8,12 @@ function AuthTestHelper() {
 
   this.VALID_USER = 'validUser';
   this.INVALID = 'badUser';
-  
+
   var Cookies = null;
 
   this.useAuth = function(username) {
     beforeEach(function(done) {
-      request(app).get('/test-login?username=' + username + '&password=hi').end(function(err, res){
+      request(app).get('/thisDoesNotCurrentlyDoAnythingButWeWillWantItToLater').end(function(err, res){
         if (err) {
           console.log('error logging in' + err);
           done(err);

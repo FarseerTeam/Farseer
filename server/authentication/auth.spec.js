@@ -8,7 +8,7 @@ var teams = require("../components/teams");
 var worlds = require("../components/worlds");
 
 
-describe('When a user IS NOT successfully authenticated... ', function() {
+xdescribe('When a user IS NOT successfully authenticated... ', function() {
 
 	authenticatedRequest.useAuth(INVALID);
 
@@ -58,15 +58,15 @@ describe('When a user IS NOT successfully authenticated... ', function() {
 		it('they cannot access GET', function(done){
 			verifyAccessDeniedForGET('/api/worlds/world/players', done);
 		});
-		
+
 		it('they cannot access POST', function(done){
 			verifyAccessDeniedForPOST('/api/worlds/world/players', {name: 'Smith',email: 'test@test.smith.com'}, done);
 		});
-		
+
 		it('they cannot access PUT', function(done){
 			verifyAccessDeniedForPUT('/api/worlds/world/players/1234', {name: 'Smith',email: 'test@test.smith.com'}, done);
 		});
-		
+
 		it('they cannot access DELETE', function(done){
 			verifyAccessDeniedForDELETE('/api/worlds/world/players/1234', done);
 		});
@@ -76,15 +76,15 @@ describe('When a user IS NOT successfully authenticated... ', function() {
 		it('they cannot access GET', function(done){
 			verifyAccessDeniedForGET('/api/worlds/world/teams', done);
 		});
-		
+
 		it('they cannot access POST', function(done){
 			verifyAccessDeniedForPOST('/api/worlds/world/teams', {name: "Pillar", path: '/Pillar'}, done);
 		});
-		
+
 		it('they cannot access PUT', function(done){
 			verifyAccessDeniedForPUT('/api/worlds/world/teams/1234', {name: "Pillar", path: '/Pillar'}, done);
 		});
-		
+
 		it('they cannot access DELETE', function(done){
 			verifyAccessDeniedForDELETE('/api/worlds/world/teams/1234', done);
 		});
@@ -94,15 +94,15 @@ describe('When a user IS NOT successfully authenticated... ', function() {
 		it('they cannot access GET', function(done){
 			verifyAccessDeniedForGET('/api/worlds/world/teams', done);
 		});
-		
+
 		it('they cannot access POST', function(done){
 			verifyAccessDeniedForPOST('/api/worlds/world/teams', {name: "Pillar", path: '/Pillar'}, done);
 		});
-		
+
 		it('they cannot access PUT', function(done){
 			verifyAccessDeniedForPUT('/api/worlds/world/teams/1234', {name: "Pillar", path: '/Pillar'}, done);
 		});
-		
+
 		it('they cannot access DELETE', function(done){
 			verifyAccessDeniedForDELETE('/api/worlds/world/teams/1234', done);
 		});
@@ -118,14 +118,14 @@ describe('When a user IS NOT successfully authenticated... ', function() {
 		it('they cannot access GET', function(done){
 			verifyAccessDeniedForGET('/api/worlds', done);
 		});
-		
+
 		it('they cannot access POST', function(done){
 			verifyAccessDeniedForPOST('/api/worlds', {name: 'Mars'}, done);
 		});
 	});
 });
 
-describe('When a user IS successfully authenticated... ', function() {
+xdescribe('When a user IS successfully authenticated... ', function() {
 
 	authenticatedRequest.useAuth(VALID_USER);
 
@@ -190,15 +190,15 @@ describe('When a user IS successfully authenticated... ', function() {
 		it('they can access GET', function(done){
 			verifyAccessGrantedForGET('/api/worlds/world/players', done);
 		});
-		
+
 		it('they can access POST', function(done){
 			verifyAccessGrantedForPOST('/api/worlds/world/players', {name: 'Smith',email: 'test@test.smith.com'}, done);
 		});
-		
+
 		it('they can access PUT', function(done){
 			verifyAccessGrantedForPUT('/api/worlds/world/players/' + playerId, {name: 'Smith',email: 'test@test.smith.com'}, done);
 		});
-		
+
 		it('they can access DELETE', function(done){
 			verifyAccessGrantedForDELETE('/api/worlds/world/players/' + playerId, done);
 		});
@@ -224,15 +224,15 @@ describe('When a user IS successfully authenticated... ', function() {
 		it('they can access GET', function(done){
 			verifyAccessGrantedForGET('/api/worlds/world/teams', done);
 		});
-		
+
 		it('they can access POST', function(done){
 			verifyAccessGrantedForPOST('/api/worlds/world/teams', {name: "Pillar", path: '/Pillar'}, done);
 		});
-		
+
 		it('they can access PUT', function(done){
 			verifyAccessGrantedForPUT('/api/worlds/world/teams' + teamPath, {name: "Pillar", path: '/Pillar'}, done);
 		});
-		
+
 		it('they can access DELETE', function(done){
 			verifyAccessGrantedForDELETE('/api/worlds/world/teams' + teamPath, done);
 		});
@@ -256,7 +256,7 @@ describe('When a user IS successfully authenticated... ', function() {
 		it('they can access GET', function(done){
 			verifyAccessGrantedForGET('/api/worlds', done);
 		});
-		
+
 		it('they can access POST', function(done){
 			verifyAccessGrantedForPOST('/api/worlds', {name: 'Jupiter'}, done);
 		});

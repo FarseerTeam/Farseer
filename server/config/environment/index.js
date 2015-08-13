@@ -42,9 +42,9 @@ var all = {
   },
 
   //authentication using passport and google oauth
-  googleClientId: 'hi',
-  googleClientSecret: 'hi',
-  googleAuthCallbackURL: '/'
+  googleClientId: '24452716216-8qiqb39ni5m7joc0ne880r4nn2kcmnjh.apps.googleusercontent.com',
+  googleClientSecret: 'q60nokiV8zD19cuh_qdcePYx',
+  googleAuthCallbackURL: '/auth/google/callback'
 
 };
 

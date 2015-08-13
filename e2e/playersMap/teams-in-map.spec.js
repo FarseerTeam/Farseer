@@ -12,7 +12,6 @@ describe('The playersMap page has teams on it, and... ', function() {
 
 			beforeEach(function(done){
 				setup.purgeData()
-					.then(browser.get('/test-login?username=hi&password=there'))
 					.then(browser.get('playersMap'))
 					.then(done);
 			});
@@ -45,7 +44,7 @@ describe('The playersMap page has teams on it, and... ', function() {
 	});
 
 	describe('there is a team with no players... ', function(){
-		
+
 		beforeEach(function(done) {
 			setup.addTeam('team1', '/team1')
 				.then(browser.get('playersMap'))
@@ -59,7 +58,7 @@ describe('The playersMap page has teams on it, and... ', function() {
 		it('the team is not shown on screen', function() {
 			expect(page.allTeams.count()).toBe(0);
 		});
-	}); 
+	});
 
 	describe('when there are N teams defined with no parent teams (but with players)... ', function() {
 
@@ -92,7 +91,7 @@ describe('The playersMap page has teams on it, and... ', function() {
 	});
 
 	describe('when there is a team defined that has a parent team... ', function() {
-		
+
 		beforeEach(function(done) {
 			setup.addTeam('outerTeam', '/outerTeam')
 				.then(setup.addTeam('innerTeam', '/outerTeam/innerTeam'))
