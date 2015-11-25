@@ -12,6 +12,8 @@ angular.module('farseerApp')
         controller: 'PlayersCtrl'
       }).
       when('/auth/google', {
-        redirectTo: '/auth/google'
+        redirectTo: function () {
+          window.location = '/auth/google';
+        }
       });
   });
