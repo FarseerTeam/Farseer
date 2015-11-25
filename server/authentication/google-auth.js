@@ -1,13 +1,16 @@
 'use strict';
 
 var config = require('../config/environment');
+var users = require('../components/users');
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 var _verifyCB = function (accessToken, refreshToken, profile, done) {
-  // User.findOrCreate({ googleId: profile.id }, function (err, user) {
-  //   return done(err, user);
-  // });
-  return done(null, {id: profile.id});
+  users.User.findOneAndUpdate({ email: profile.emails[0].value }, { email: profile.emails[0].value }, { upsert: true }, function (err, user) {
+    if (err) {
+      console.log(err);
+    }
+    return done(err, user);
+  });
 };
 
 var _strategy = new GoogleStrategy({

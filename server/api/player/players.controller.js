@@ -8,6 +8,10 @@ var teams = require("../../components/teams");
 
 exports.index = function (req, res) {
   players.Player.find({ world: req.params.worldId }, function (err, doc) {
+    if(req.isAuthenticated()) {
+      console.log('OH yea, you are authenticated, my friend! ');
+      console.log(req.user);
+    }
     res.json(doc);
   });
 };

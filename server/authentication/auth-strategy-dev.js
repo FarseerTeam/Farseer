@@ -7,7 +7,7 @@ var _verifyCB = function(username, password, done) {
 	//     done(null, user);
 	// });
 	console.log('*********************************************************************');
-	console.log('inside verfify for local auth strategy\nusername: ' + username + '\npassword: ' + password);
+	console.log('inside verify for local auth strategy\nusername: ' + username + '\npassword: ' + password);
 	console.log('*********************************************************************');
 	
 	if (username === 'badUser') {
