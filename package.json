@@ -98,6 +98,7 @@
     "jshint": "grunt newer:jshint",
     "grunt-test": "grunt test",
     "protractor": "grunt e2e",
+    "pretest": "npm run update-webdriver",
     "test": "npm run jshint; npm run grunt-test",
     "preprotractor": "npm run update-webdriver",
     "update-webdriver": "node node_modules/grunt-protractor-runner/node_modules/protractor/bin/webdriver-manager update"
