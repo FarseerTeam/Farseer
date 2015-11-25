@@ -10,5 +10,8 @@ angular.module('farseerApp')
       when('/playersMap', {
         templateUrl: 'app/players/playersMap.html',
         controller: 'PlayersCtrl'
+      }).
+      when('/auth/google', {
+        redirectTo: '/auth/google'
       });
   });

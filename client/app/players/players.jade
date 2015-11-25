@@ -7,7 +7,8 @@ div(class='players-table-view')
       div(class="fa fa-street-view fa-2x")
       div(class="fa fa-street-view fa-2x")
       div Map View
-
+      
+  a(id='google-sign-in' href='/auth/google') Sign In
   p(class='message', ng-class='{error: handler.error}') {{handler.message}}
 
   table(class='players')

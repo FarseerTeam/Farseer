@@ -30,7 +30,7 @@ describe('The playersMap page has images for each player on it, and... ', functi
       .then(setup.addPlayer('p2', 'p2@somewhere.com', '/team1/team2', 'world'))
       .then(browser.get('playersMap'))
       .then(browser.wait(imageTagsExist, 1000))
-      .then(browser.wait(allImagesAreLoaded, 1000))
+      .then(browser.wait(allImagesAreLoaded, 10000))
       .then(done);
   });
 
