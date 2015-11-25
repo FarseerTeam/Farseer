@@ -96,8 +96,9 @@
   "scripts": {
     "start": "node server/app.js",
     "jshint": "grunt newer:jshint",
-    "test": "grunt test:server && grunt test:client",
+    "grunt-test": "grunt test",
     "protractor": "grunt e2e",
+    "test": "npm run jshint; npm run grunt-test",
     "preprotractor": "npm run update-webdriver",
     "update-webdriver": "node node_modules/grunt-protractor-runner/node_modules/protractor/bin/webdriver-manager update"
   },
