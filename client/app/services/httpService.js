@@ -2,7 +2,6 @@
 
 angular.module('farseerApp')
   .service('httpService', function ($http) {
-
     this.getWorlds = function () {
       return $http.get('/api/worlds').then(function (response) {
         return response.data;
