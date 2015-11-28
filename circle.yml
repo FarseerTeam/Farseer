@@ -1,3 +1,6 @@
+machine:
+  node:
+    version: 5.1.0
 dependencies:
   pre:
     - google-chrome --version
@@ -9,11 +12,6 @@ dependencies:
     - npm install -g grunt-cli
     - npm install
     - bower install
-test:
-  override:
-    - npm run jshint
-    - npm run test
-    - npm run protractor
   post:
     - "if [ -d /tmp/screenshots ]; then mv /tmp/screenshots $CIRCLE_ARTIFACTS/screenshots; fi;"
 deployment:
