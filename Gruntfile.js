@@ -83,6 +83,7 @@ module.exports = function (grunt) {
       },
       clientTest: {
         files: [
+          '<%= yeoman.client %>/{app,components}/**/*.js',
           '<%= yeoman.client %>/{app,components}/**/*.spec.js',
           '<%= yeoman.client %>/{app,components}/**/*.mock.js'
         ],
@@ -376,18 +377,18 @@ module.exports = function (grunt) {
             'index.html'
           ]
         }, {
-          expand: true,
-          cwd: '.tmp/images',
-          dest: '<%= yeoman.dist %>/public/assets/images',
-          src: ['generated/*']
-        }, {
-          expand: true,
-          dest: '<%= yeoman.dist %>',
-          src: [
-            'package.json',
-            'server/**/*'
-          ]
-        }]
+            expand: true,
+            cwd: '.tmp/images',
+            dest: '<%= yeoman.dist %>/public/assets/images',
+            src: ['generated/*']
+          }, {
+            expand: true,
+            dest: '<%= yeoman.dist %>',
+            src: [
+              'package.json',
+              'server/**/*'
+            ]
+          }]
       },
       styles: {
         expand: true,
@@ -677,10 +678,10 @@ module.exports = function (grunt) {
     }
 
     else grunt.task.run([
-        'test:server',
-        'test:client',
-        'test:e2e'
-      ]);
+      'test:server',
+      'test:client',
+      'test:e2e'
+    ]);
   });
 
   grunt.registerTask('e2e', ['test:e2e']);

@@ -1,1 +1,6 @@
-div(ng-repeat='world in worlds', class='world') {{world.name}}
+p(class='white') Create New World
+label(for='name', class='white') Name:
+input(type='text', id='name', ng-model='newWorld.name', ng-required)
+button(type='button', ng-click='addWorld()') Go
+
+div(ng-repeat='world in worlds', class='white') {{world.name}}

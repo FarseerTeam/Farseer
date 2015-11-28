@@ -84,4 +84,15 @@ describe('Http Service', function () {
 
     $httpBackend.flush();
   });
+
+  it('should add new world', function () {
+    var newWorld = '{"name":"Starcraft"}';
+    $httpBackend.expectPOST('/api/worlds', newWorld).respond(200);
+    
+    service.addWorld(newWorld).then(function (response) {
+      expect(response.status).toBe(200);
+    });
+    $httpBackend.flush();
+  });
+
 });

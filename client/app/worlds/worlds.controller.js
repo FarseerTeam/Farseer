@@ -2,15 +2,25 @@
 
 angular.module('farseerApp')
   .controller('WorldsCtrl', function ($scope, httpService) {
-  $scope.worlds = [];
+    $scope.worlds = [];
 
-  (function initializeController() {
-    loadWorlds();
-  })();
+    (function initializeController() {
+      loadWorlds();
+    })();
 
-  function loadWorlds() {
-    httpService.getWorlds().then(function (worlds) {
-      $scope.worlds = worlds;
-    });
-  }
-});
+    function loadWorlds() {
+      httpService.getWorlds().then(function (worlds) {
+        $scope.worlds = worlds;
+      });
+    }
+
+    $scope.addWorld = function () {
+      httpService.addWorld($scope.newWorld).then(function (response) {
+        addNewWorldToScope(response.data);
+      });
+    };
+
+    function addNewWorldToScope(newWorld) {
+      $scope.worlds.push(newWorld);
+    }
+  });
