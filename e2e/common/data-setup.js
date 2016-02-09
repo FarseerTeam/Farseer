@@ -7,6 +7,7 @@ module.exports = (function () {
   var dataService = require('../../server/components/dataService');
   var players = require('../../server/components/players');
   var teams = require('../../server/components/teams');
+  var worlds = require('../../server/components/worlds');
 
   dataService.connect();
 
@@ -23,10 +24,18 @@ module.exports = (function () {
         return undefined;
       });
     },
+    addWorld: function (worldName, worldPath) {
+      var world = worlds.World({name: worldName, path: worldPath});
+
+      return world.save().then(function () {
+        return undefined;
+      });
+    },
     purgeData: function () {
       return RSVP.all([
         players.Player.remove({}),
-        teams.Team.remove({})])
+        teams.Team.remove({}),
+        worlds.World.remove({})])
         .then(function () {
           return undefined;
         });

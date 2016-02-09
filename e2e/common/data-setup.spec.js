@@ -1,6 +1,7 @@
 'use strict'
 var players = require('../../server/components/players');
 var teams = require('../../server/components/teams');
+var worlds = require('../../server/components/worlds');
 var setup = require('./data-setup');
 var dataService = require('../../server/components/dataService');
 
@@ -10,18 +11,22 @@ describe('The data-setup module... ', function() {
 
 	var findAllPlayers = function() {
 		return players.Player.find().exec();
-	}
+	};
 
 	var findAllTeams = function() {
 		return teams.Team.find().exec();
-	}
+	};
+
+  var findAllWorlds = function() {
+    return worlds.World.find().exec();
+  }
 
 	var validateCountOf = function(expectedCount) {
 		return function(queryResults) {
 			// console.log('found results: ' + queryResults);
 			expect(queryResults.length).toEqual(expectedCount);	
 		}
-	}
+	};
 
 	var handleError = function(done) {
 		return function(err) {
@@ -167,4 +172,59 @@ describe('The data-setup module... ', function() {
 				}); 
 		});
 	});
+
+
+  describe('the addWorld function... ', function() {
+
+    beforeEach(function(done) {
+      setup.purgeData().then(done);
+    });
+
+    afterEach(function(done) {
+      setup.purgeData().then(done);
+    });
+
+    it('can insert a single world using promises.', function(done) {
+      setup.addWorld('Pandora', '/pandora')
+        .then(findAllWorlds)
+        .then(validateCountOf(1))
+        .then(done)
+        .then(null, handleError(done));
+    });
+
+    it('can insert two worlds using promises.', function(done) {
+      setup.addWorld('Pandora', '/pandora')
+        .then(setup.addWorld('Neptune', '/neptune'))
+        .then(findAllWorlds)
+        .then(validateCountOf(2))
+        .then(done)
+        .then(null, handleError(done));
+    });
+
+    it('inserts the correct fields into the new world', function(done) {
+      setup.addWorld('Pandora', '/pandora')
+        .then(findAllWorlds)
+        .then(validateWorldFields('Pandora', '/pandora'))
+        .then(done);
+    });
+
+    it('returns no value - so that calling done like this will work: setup.addWorld(world).then(done);', function() {
+      setup.addWorld('Pandora', '/pandora')
+        .then(function(arg){
+          expect(arg).not.toBeDefined();
+          done();
+        });
+    });
+
+    var validateWorldFields = function(name, path){
+      return function(world) {
+        var world = world[0];
+        expect(world.name).toEqual(name);
+        expect(world.path).toEqual(path);
+      }
+    };
+
+  });
+
+
 });
