@@ -12,11 +12,14 @@ describe('Http Service', function () {
     $httpBackend = _$httpBackend_;
   }));
 
+  var defaultWorldName = 'pandora';
+
   it('should return players data', function () {
-    $httpBackend.expectGET('/api/worlds/world/players')
+
+    $httpBackend.expectGET('/api/worlds/' + defaultWorldName + '/players')
       .respond(['Harry Potter', 'Hermione Granger', 'Ron Weasley']);
 
-    service.getPlayers().then(function (returnedPlayers) {
+    service.getPlayers(defaultWorldName).then(function (returnedPlayers) {
       expect(returnedPlayers.length).toEqual(3);
       expect(returnedPlayers[0]).toBe('Harry Potter');
       expect(returnedPlayers[1]).toBe('Hermione Granger');
@@ -29,18 +32,18 @@ describe('Http Service', function () {
 
   it('should add new player', function () {
     var newPlayer = '{"name":"Draco","email":"malfoy@email"}';
-    $httpBackend.expectPOST('/api/worlds/world/players', newPlayer).respond(200);
+    $httpBackend.expectPOST('/api/worlds/' + defaultWorldName + '/players', newPlayer).respond(200);
 
-    service.addPlayer(newPlayer).then(function (response) {
+    service.addPlayer(newPlayer, defaultWorldName).then(function (response) {
       expect(response.status).toBe(200);
     });
     $httpBackend.flush();
   });
 
   it('should update existing player', function () {
-    var smitty = { name: 'Smith', email: 'smitty@email', _id: 'smitty123' };
+    var smitty = { name: 'Smith', email: 'smitty@email', _id: 'smitty123', world: defaultWorldName };
 
-    $httpBackend.expectPUT('/api/worlds/world/players/' + smitty._id, smitty).respond(200);
+    $httpBackend.expectPUT('/api/worlds/' + smitty.world + '/players/' + smitty._id, smitty).respond(200);
 
     service.update(smitty).then(function (response) {
       expect(response.status).toBe(200);
@@ -51,9 +54,9 @@ describe('Http Service', function () {
 
   it('should return team-to-players map data', function () {
     var expectedResult = [{ team: 'Gryffindor', players: [{ name: 'Harry Potter' }] }];
-    $httpBackend.expectGET('/api/worlds/world/maps').respond(expectedResult);
+    $httpBackend.expectGET('/api/worlds/' + defaultWorldName +'/maps').respond(expectedResult);
 
-    service.getTeamToPlayersMap().then(function (returnedMap) {
+    service.getTeamToPlayersMap(null, defaultWorldName).then(function (returnedMap) {
       expect(returnedMap).toEqual(expectedResult);
     });
 
@@ -62,9 +65,9 @@ describe('Http Service', function () {
 
   it('should return team-to-players map data for a specified subteam', function () {
     var expectedResult = [{ team: 'Ravenclaw', players: [{ name: 'Luna Lovegood' }] }];
-    $httpBackend.expectGET('/api/worlds/world/maps/Hogwarts/Ravenclaw').respond(expectedResult);
+    $httpBackend.expectGET('/api/worlds/' + defaultWorldName + '/maps/Hogwarts/Ravenclaw').respond(expectedResult);
 
-    service.getTeamToPlayersMap('/Hogwarts/Ravenclaw').then(function (returnedMap) {
+    service.getTeamToPlayersMap('/Hogwarts/Ravenclaw', defaultWorldName).then(function (returnedMap) {
       expect(returnedMap).toEqual(expectedResult);
     });
 
