@@ -1,15 +1,18 @@
 'use strict';
 
 angular.module('farseerApp')
-  .controller('PlayersCtrl', function ($scope, $timeout, httpService) {
+  .controller('PlayersCtrl', function ($scope, $timeout, httpService, $routeParams) {
     $scope.players = [];
     $scope.teamPlayersMap = [];
     $scope.error = undefined;
     $scope.currentPath = '';
 
+    var worldName = $routeParams.worldName;
+
+    //TODO: need to load teams and players for the selected world
     (function initializeController() {
-      loadTeamToPlayersMap();
-      loadPlayers();
+      loadTeamToPlayersMap(worldName);
+      loadPlayers(worldName);
     })();
 
     $scope.update = function(player) {

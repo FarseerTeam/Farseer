@@ -73,7 +73,8 @@ describe('Controller: PlayersCtrl', function () {
     PlayersCtrl = $controller('PlayersCtrl', {
       $scope: scope,
       $timeout: mockTimeout,
-      httpService: mockService
+      httpService: mockService,
+      $routeParams: {worldName: 'pandora'}
     });
 
   }));

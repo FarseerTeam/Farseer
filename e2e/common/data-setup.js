@@ -24,7 +24,9 @@ module.exports = (function () {
         return undefined;
       });
     },
-    addWorld: function (worldName, worldPath) {
+    addWorld: function (worldName) {
+      var worldPath = worldName.toLowerCase().replace(/\s+/, '');
+
       var world = worlds.World({name: worldName, path: worldPath});
 
       return world.save().then(function () {

@@ -19,7 +19,7 @@ describe('The data-setup module... ', function() {
 
   var findAllWorlds = function() {
     return worlds.World.find().exec();
-  }
+  };
 
 	var validateCountOf = function(expectedCount) {
 		return function(queryResults) {
@@ -33,7 +33,7 @@ describe('The data-setup module... ', function() {
 			console.log('Error!! - ' + error);
 			done(err);
 		}
-	}
+	};
 
 	describe('the purgeData function... ', function() {
 
@@ -185,7 +185,7 @@ describe('The data-setup module... ', function() {
     });
 
     it('can insert a single world using promises.', function(done) {
-      setup.addWorld('Pandora', '/pandora')
+      setup.addWorld('Pandora')
         .then(findAllWorlds)
         .then(validateCountOf(1))
         .then(done)
@@ -193,23 +193,30 @@ describe('The data-setup module... ', function() {
     });
 
     it('can insert two worlds using promises.', function(done) {
-      setup.addWorld('Pandora', '/pandora')
-        .then(setup.addWorld('Neptune', '/neptune'))
+      setup.addWorld('Pandora')
+        .then(setup.addWorld('Neptune'))
         .then(findAllWorlds)
         .then(validateCountOf(2))
         .then(done)
         .then(null, handleError(done));
     });
 
-    it('inserts the correct fields into the new world', function(done) {
-      setup.addWorld('Pandora', '/pandora')
+    it('inserts the name and lower case path into the new world schema', function(done) {
+      setup.addWorld('Pandora')
         .then(findAllWorlds)
-        .then(validateWorldFields('Pandora', '/pandora'))
+        .then(validateWorldFields('Pandora', 'pandora'))
+        .then(done);
+    });
+
+    it('inserts the correct name and lower case path with no spaces into the new world', function(done) {
+      setup.addWorld('Great Pandora')
+        .then(findAllWorlds)
+        .then(validateWorldFields('Great Pandora', 'greatpandora'))
         .then(done);
     });
 
     it('returns no value - so that calling done like this will work: setup.addWorld(world).then(done);', function() {
-      setup.addWorld('Pandora', '/pandora')
+      setup.addWorld('Pandora')
         .then(function(arg){
           expect(arg).not.toBeDefined();
           done();
