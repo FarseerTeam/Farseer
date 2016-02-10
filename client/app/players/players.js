@@ -3,7 +3,7 @@
 angular.module('farseerApp')
   .config(function ($routeProvider) {
     $routeProvider
-      .when('/players', {
+      .when('/worlds/:worldName/players', {
         templateUrl: 'app/players/players.html',
         controller: 'PlayersCtrl'
       }).

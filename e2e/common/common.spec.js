@@ -10,7 +10,7 @@ describe('Google sign in link', function() {
   }); 
   
   it('appears on the players roster page', function() {
-	  browser.get('/players');
+	  browser.get('/worlds/world/players');
     var signInLink = element(by.css('a#google-sign-in')); 
     expect(signInLink.isPresent()).toBe(true);
     expect(signInLink.getAttribute('href')).toBe('http://localhost:9001/auth/google');

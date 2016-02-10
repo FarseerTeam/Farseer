@@ -20,8 +20,8 @@ angular.module('farseerApp')
       });
     };
 
-    this.addPlayer = function (newPlayer, world) {
-      return $http.post('/api/worlds/' + world + '/players', newPlayer).then(function (response) {
+    this.addPlayer = function (newPlayer) {
+      return $http.post('/api/worlds/' + newPlayer.world + '/players', newPlayer).then(function (response) {
         return response;
       });
     };

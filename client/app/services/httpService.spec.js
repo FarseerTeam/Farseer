@@ -31,10 +31,16 @@ describe('Http Service', function () {
   });
 
   it('should add new player', function () {
-    var newPlayer = '{"name":"Draco","email":"malfoy@email"}';
-    $httpBackend.expectPOST('/api/worlds/' + defaultWorldName + '/players', newPlayer).respond(200);
+    var newPlayer = {
+      name: 'Draco',
+      email: 'malfoy@email',
+      world: defaultWorldName
+    };
 
-    service.addPlayer(newPlayer, defaultWorldName).then(function (response) {
+    var playersUrl = '/api/worlds/' + defaultWorldName + '/players';
+    $httpBackend.expectPOST(playersUrl, newPlayer).respond(200);
+
+    service.addPlayer(newPlayer).then(function (response) {
       expect(response.status).toBe(200);
     });
     $httpBackend.flush();
