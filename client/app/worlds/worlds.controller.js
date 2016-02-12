@@ -14,6 +14,10 @@ angular.module('farseerApp')
       });
     }
 
+    $scope.convertToLowerCaseNoSpaces = function(nameToConvert) {
+      return nameToConvert.replace(/ /g, '').toLowerCase();
+    };
+
     $scope.addWorld = function () {
       httpService.addWorld($scope.newWorld).then(function (response) {
         addNewWorldToScope(response.data);

@@ -3,4 +3,5 @@ label(for='name', class='white') Name:
 input(type='text', id='name', ng-model='newWorld.name', ng-required)
 button(type='button', ng-click='addWorld()') Add
 
-div(ng-repeat='world in worlds', class='white') {{world.name}}
+div(ng-repeat='world in worlds', class='white')
+    a(href="/worlds/{{convertToLowerCaseNoSpaces(world.name)}}/players?displayableWorld={{world.name}}") {{world.name}}

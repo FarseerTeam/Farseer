@@ -7,14 +7,16 @@ describe('Controller: WorldsCtrl', function () {
   var WorldsCtrl,
     scope,
     mockService,
-    addedWorld;
+    addedWorld,
+    testWorlds = ['Hogwarts School of Witchcraft and Wizardry', 'Beauxbatons Academy of Magic', 'Durmstrang Institute', 'Pillar'];
 
 
   beforeEach(inject(function ($controller, $rootScope, $q) {
+
     mockService = {
       getWorlds: function () {
         var deferred = $q.defer();
-        deferred.resolve(['Hogwarts School of Witchcraft and Wizardry', 'Beauxbatons Academy of Magic', 'Durmstrang Institute']);
+        deferred.resolve(testWorlds);
         return deferred.promise;
       },
       addWorld: function (newWorld) {
@@ -32,6 +34,24 @@ describe('Controller: WorldsCtrl', function () {
     });
   }));
 
+  describe('urls are translated properly', function() {
+
+    it('should return mixed case as lower case', function() {
+      scope.$digest();
+
+      var actual = scope.convertToLowerCaseNoSpaces(scope.worlds[testWorlds.indexOf('Pillar')]);
+      expect(actual).toBe('pillar');
+    });
+
+    it('should remove embedded spaces', function() {
+      scope.$digest();
+
+      var actual = scope.convertToLowerCaseNoSpaces(scope.worlds[testWorlds.indexOf('Hogwarts School of Witchcraft and Wizardry')]);
+      expect(actual).toBe('hogwartsschoolofwitchcraftandwizardry');
+    });
+
+  });
+
   describe('worlds list in the scope', function () {
 
     it('should be empty when promise is not fulfilled', function () {
@@ -42,7 +62,7 @@ describe('Controller: WorldsCtrl', function () {
     it('should be complete when promise is fulfilled', function () {
       scope.$digest();
 
-      expect(scope.worlds.length).toEqual(3);
+      expect(scope.worlds.length).toEqual(testWorlds.length);
     });
 
   });
@@ -77,7 +97,7 @@ describe('Controller: WorldsCtrl', function () {
       scope.addWorld();
       scope.$digest();
 
-      expect(scope.worlds.length).toBe(4);
+      expect(scope.worlds.length).toBe(testWorlds.length);
       expect(_.last(scope.worlds)).toBe(newWorld);
     });
 
