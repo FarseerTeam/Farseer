@@ -3,8 +3,9 @@ div(class='map-view')
 
   div
     div(class="view-title") {{worldName}} World
+    div(players-common="")
     div
-      a(href="/players" class="pink button")
+      a(href="/worlds/{{urlFormattedWorldName}}/players" class="pink button")
         div(class="fa fa-users fa-2x")
         div View Roster
     p {{currentPath}}

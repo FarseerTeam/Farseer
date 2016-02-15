@@ -4,4 +4,8 @@ input(type='text', id='name', ng-model='newWorld.name', ng-required)
 button(type='button', ng-click='addWorld()') Add
 
 div(ng-repeat='world in worlds', class='white')
-    a(href="/worlds/{{convertToLowerCaseNoSpaces(world.name)}}/players?displayableWorld={{world.name}}") {{world.name}}
+    a(href="/worlds/{{convertToLowerCaseNoSpaces(world.name)}}/players?displayableWorld={{world.name}}")(ng-show="!worldEditMode") {{world.name}} &nbsp;
+    input(type='text', value='{{world.name}}')(ng-show="worldEditMode")
+    i.fa.fa-pencil-square-o.fa-fw(ng-click='worldEditMode = !worldEditMode')(ng-show="!worldEditMode")
+    i.fa.fa-floppy-o.fa-fw(ng-show="worldEditMode")(ng-click='updateWorldName()')
+    i.fa.fa-undo.fa-fw(ng-show="worldEditMode")(ng-click='worldEditMode = false')

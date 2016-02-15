@@ -78,6 +78,7 @@ body {
 // Component styles are injected through grunt
 // injector
 @import 'main/main.scss';
+@import 'players/players-common/players-common.scss';
 @import 'players/players.scss';
 @import 'players/playersMap.scss';
 @import 'worlds/worlds.scss';

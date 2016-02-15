@@ -3,6 +3,7 @@
 angular.module('farseerApp')
   .controller('WorldsCtrl', function ($scope, httpService) {
     $scope.worlds = [];
+    $scope.worldEditMode = false;
 
     (function initializeController() {
       loadWorlds();
