@@ -25,6 +25,17 @@ angular.module('farseerApp')
       });
     };
 
+    $scope.updateWorld = function(oldWorldName, updatedWorldName) {
+      httpService.updateWorld(oldWorldName, updatedWorldName).then(function(response) {
+        for (var i = 0; i < $scope.worlds.length; i++) {
+          if ($scope.worlds[i] === oldWorldName) {
+            $scope.worlds[i] = response.data;
+            break;
+          }
+        }
+      });
+    };
+
     function addNewWorldToScope(newWorld) {
       $scope.worlds.push(newWorld);
     }

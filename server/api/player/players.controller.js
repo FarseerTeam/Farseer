@@ -69,10 +69,6 @@ exports.update = function (request, response) {
     response.status(409).send({message: 'A player with email ' + request.player.email + ' already exists'});
   };
 
-  //var teamNotFoundError = function (err) {
-  //  response.status(404).send({message: "A team with identifier '" + request.body._team + "' does not exist"});
-  //};
-
   handleUpdate();
 
 };

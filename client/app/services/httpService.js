@@ -32,6 +32,17 @@ angular.module('farseerApp')
       });
     };
 
+    this.updateWorld = function(oldWorldName, updatedWorldName) {
+      var data = {
+        oldWorldName: oldWorldName,
+        updatedWorldName: updatedWorldName
+      };
+      //TODO: save to worlds
+      return $http.put('/api/worlds/', data).then(function(response) {
+        return response;
+      });
+    };
+
     this.getTeamToPlayersMap = function (path, world) {
       var request = '/api/worlds/' + world + '/maps';
       if (path) {

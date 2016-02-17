@@ -5,10 +5,10 @@ describe('Controller: WorldsCtrl', function () {
   beforeEach(module('farseerApp'));
 
   var WorldsCtrl,
-    scope,
-    mockService,
-    addedWorld,
-    testWorlds = ['Hogwarts School of Witchcraft and Wizardry', 'Beauxbatons Academy of Magic', 'Durmstrang Institute', 'Pillar'];
+      scope,
+      mockService,
+      addedWorld,
+      testWorlds;
 
 
   beforeEach(inject(function ($controller, $rootScope, $q) {
@@ -24,15 +24,43 @@ describe('Controller: WorldsCtrl', function () {
         var deferred = $q.defer();
         deferred.resolve({ data: newWorld });
         return deferred.promise;
+      },
+      updateWorld: function (oldWorld, updatedWorld) {
+        var deferred = $q.defer();
+        deferred.resolve({data: updatedWorld});
+        return deferred.promise;
       }
     };
 
     scope = $rootScope.$new();
+    testWorlds = ['Hogwarts School of Witchcraft and Wizardry', 'Beauxbatons Academy of Magic', 'Durmstrang Institute', 'Pillar'];
     WorldsCtrl = $controller('WorldsCtrl', {
       $scope: scope,
       httpService: mockService
     });
   }));
+
+  describe('updating an existing world', function() {
+
+    it('should return an updated world from the service', function() {
+      var SECOND_WORLD_INDEX = 1;
+      var UPDATED_WORLD = 'Pandora';
+      scope.updateWorld(testWorlds[SECOND_WORLD_INDEX], UPDATED_WORLD);
+      scope.$digest();
+
+      expect(scope.worlds[SECOND_WORLD_INDEX]).toBe(UPDATED_WORLD);
+    });
+
+    it('should not update if world not found', function() {
+      var NON_EXISTING_WORLD = 'asdf';
+      var UPDATED_WORLD = 'Pandora';
+      scope.updateWorld(NON_EXISTING_WORLD, UPDATED_WORLD);
+      scope.$digest();
+
+      expect(testWorlds).toBe(testWorlds);
+    });
+
+  });
 
   describe('urls are translated properly', function() {
 
@@ -100,6 +128,7 @@ describe('Controller: WorldsCtrl', function () {
       expect(scope.worlds.length).toBe(testWorlds.length);
       expect(_.last(scope.worlds)).toBe(newWorld);
     });
-
   });
+
+
 });
