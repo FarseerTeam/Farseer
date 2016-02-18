@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('farseerApp')
-  .controller('WorldsCtrl', function ($scope, httpService) {
+  .controller('WorldsCtrl', function ($scope, httpService, $route) {
     $scope.worlds = [];
     $scope.worldEditMode = false;
 
@@ -27,13 +27,21 @@ angular.module('farseerApp')
 
     $scope.updateWorld = function(oldWorldName, updatedWorldName) {
       httpService.updateWorld(oldWorldName, updatedWorldName).then(function(response) {
+        //TODO: need to make sure this is invoked and projected to the world's view.
+        $scope.testValue = "myTestValue";
         for (var i = 0; i < $scope.worlds.length; i++) {
-          if ($scope.worlds[i] === oldWorldName) {
-            $scope.worlds[i] = response.data;
+          if ($scope.worlds[i].name === oldWorldName) {
+            $scope.worlds[i].name = response.data.name;
             break;
           }
         }
+
       });
+      //$scope.worldEditMode = false;
+      //TODO: ugly, need another way to update the view. Do not refresh the entire page.
+      $route.reload();
+
+
     };
 
     function addNewWorldToScope(newWorld) {

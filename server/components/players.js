@@ -38,9 +38,22 @@ module.exports = (function() {
       _findByEmail(worldId, uniqueIdentifier, success, fail);
     }
   };
+
+  var _updatePlayersWorlds = function(oldWorldName, newWorldName) {
+    var query = {world: formatWorldName(oldWorldName)};
+    var updateQuery = _model.update(query, {world: formatWorldName(newWorldName)}, {multi: true});
+    return updateQuery.exec();
+  };
+
+  var formatWorldName = function(name) {
+    return name.replace(/ /g, '').toLowerCase();
+  };
+
+
   return {
     Player: _model,
     schema: _playerSchema,
-    findByAnyUniqueIdentifier: _findByAnyUniqueIdentifier
+    findByAnyUniqueIdentifier: _findByAnyUniqueIdentifier,
+    updatePlayersWorlds: _updatePlayersWorlds
   }
 })();

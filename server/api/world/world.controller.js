@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var worlds = require('../../components/worlds');
+var players = require('../../components/players');
 
 exports.index = function (request, response) {
   worlds.World.find({}, function (err, doc) {
@@ -19,23 +20,29 @@ exports.create = function (request, response) {
 };
 
 exports.update = function (request, response) {
-  var worldToFind =  request.body.oldWorldName;
+  var worldToChange =  request.body.oldWorldName;
   var updatedWorldName = request.body.updatedWorldName;
 
-  worlds.findWorldByName(worldToFind).then(function(world) {
-    world._doc.name = updatedWorldName;
+  //TODO:
+  //approach 1: call just as is and then read worlds from world
+  //approach 2. save and update (by returning an updated object) an existing world
+  //var res = worlds.updateWorldName(worldToChange, updatedWorldName, function(err, doc) {
+  //    if (err) {
+  //      console.log("Error occurred while looking for a world by name");
+  //      //TODO: how do we do resolve?
+  //      return err;
+  //    } else {
+  //      return doc;
+  //    }
+  //});
+  var res = worlds.updateWorldName(worldToChange, updatedWorldName).then(function(data) {
+    console.log("I'm in a promise callback, ", data);
+    players.updatePlayersWorlds(worldToChange, updatedWorldName);
+    response.json(data);
 
-    world.save();
-
-    //var updatedWorld = worlds.World.save(world);
-
-    console.log(updatedWorld);
   });
 
 
-  //step1. find a world object by name
-  //step2. update the name of the old world and save it with a new one
 
-  //step3. update old worlds with the new world in all players via mango.
-  //step4. return an updated world.
+  console.log("object", res);
 };
