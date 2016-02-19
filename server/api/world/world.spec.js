@@ -49,8 +49,6 @@ describe('/api/worlds', function () {
   });
 
   describe('POST', function () {
-    var worldList = [];
-
     afterEach(function (done) {
       worlds.World.remove({}, function () {
         done();
@@ -87,5 +85,30 @@ describe('/api/worlds', function () {
       });
     });
   });
+
+  describe('PUT', function() {
+    afterEach(function(done) {
+      worlds.World.remove({}, function () {
+        done();
+      });
+    });
+
+    //TODO: finish the tests
+    it('should update a world', function(done) {
+      var updatedWorld = {name: 'Updated World'};
+
+      authenticatedRequest
+        .put('/api/worlds')
+        .send(updatedWorld)
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .end(function (err, res) {
+          if (err) return done(err);
+          expect(res.body.name).to.be.eql('Lost World');
+          done();
+        });
+
+    })
+  })
 
 });

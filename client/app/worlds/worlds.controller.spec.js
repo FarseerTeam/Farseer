@@ -27,7 +27,10 @@ describe('Controller: WorldsCtrl', function () {
       },
       updateWorld: function (oldWorld, updatedWorld) {
         var deferred = $q.defer();
-        deferred.resolve({data: updatedWorld});
+        deferred.resolve({data: {
+            name: updatedWorld
+          }
+        });
         return deferred.promise;
       }
     };
@@ -59,7 +62,6 @@ describe('Controller: WorldsCtrl', function () {
 
       expect(testWorlds).toBe(testWorlds);
     });
-
   });
 
   describe('urls are translated properly', function() {
@@ -129,6 +131,5 @@ describe('Controller: WorldsCtrl', function () {
       expect(_.last(scope.worlds)).toBe(newWorld);
     });
   });
-
 
 });

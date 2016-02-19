@@ -9,5 +9,3 @@ div(id="worldsList" ng-repeat='world in worlds', class='white')
     i.fa.fa-pencil-square-o.fa-fw(ng-click='worldEditMode = true')(ng-show="!worldEditMode")
     i.fa.fa-floppy-o.fa-fw(ng-show="worldEditMode")(ng-click='updateWorld(world.name, updatedWorldName)')
     i.fa.fa-undo.fa-fw(ng-show="worldEditMode")(ng-click='worldEditMode = false')
-
-div(id="asdf") {{testValue}}

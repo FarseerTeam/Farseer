@@ -28,10 +28,9 @@ angular.module('farseerApp')
     $scope.updateWorld = function(oldWorldName, updatedWorldName) {
       httpService.updateWorld(oldWorldName, updatedWorldName).then(function(response) {
         //TODO: need to make sure this is invoked and projected to the world's view.
-        $scope.testValue = "myTestValue";
         for (var i = 0; i < $scope.worlds.length; i++) {
-          if ($scope.worlds[i].name === oldWorldName) {
-            $scope.worlds[i].name = response.data.name;
+          if ($scope.worlds[i] === oldWorldName) {
+            $scope.worlds[i] = response.data.name;
             break;
           }
         }
