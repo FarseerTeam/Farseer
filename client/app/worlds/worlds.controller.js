@@ -1,7 +1,9 @@
 'use strict';
 
-angular.module('farseerApp')
-  .controller('WorldsCtrl', function ($scope, httpService, $route, $uibModal) {
+angular
+  .module('farseerApp')
+  .controller('WorldsCtrl', function($scope, httpService, $route, $uibModal) {
+
     $scope.worlds = [];
     $scope.worldEditMode = false;
 
@@ -48,11 +50,9 @@ angular.module('farseerApp')
     };
 
     $scope.open = function (size) {
-
       var modalInstance = $uibModal.open({
-        animation: true,
-        //templateUrl: 'myModalContent.html',
-        template: "<div>I am in a modal</div>",
+        templateUrl: 'worldsModal1.html',
+        //template: '<div>asdfadf</div>',
         controller: 'ModalInstanceCtrl',
         size: size,
         resolve: {
@@ -64,9 +64,9 @@ angular.module('farseerApp')
       });
 
       modalInstance.result.then(function (selectedItem) {
-        $scope.selected = selectedItem;
+        console.log("modalInstance result");
       }, function () {
-        $log.info('Modal dismissed at: ' + new Date());
+        console.log('Modal dismissed at: ' + new Date());
       });
     };
 
@@ -75,12 +75,7 @@ angular.module('farseerApp')
     }
   });
 
-angular.module('farseerApp').controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, items) {
-
-  //$scope.items = items;
-  //$scope.selected = {
-  //  item: $scope.items[0]
-  //};
+angular.module('farseerApp').controller('ModalInstanceCtrl', function ($scope, $uibModalInstance) {
 
   $scope.ok = function () {
     console.log("I'm in a ModalInstanceCtrl");
@@ -90,4 +85,5 @@ angular.module('farseerApp').controller('ModalInstanceCtrl', function ($scope, $
   $scope.cancel = function () {
     $uibModalInstance.dismiss('cancel');
   };
+
 });

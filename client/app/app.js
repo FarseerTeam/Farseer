@@ -7,7 +7,8 @@ angular.module('farseerApp', [
   'ngSanitize',
   'ngRoute',
   'dndLists',
-  'ui.gravatar'
+  'ui.gravatar',
+  'ui.bootstrap'
 ])
   .config(function ($routeProvider, $locationProvider) {
     $routeProvider
