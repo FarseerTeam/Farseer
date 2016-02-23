@@ -47,7 +47,6 @@ describe('The playersMap page has images for each player on it, and... ', functi
       page.playerImages.get(i).getSize().then(function (size) {
         expect(size.height).toBeGreaterThan(50);
       });
-
     }
   });
 });

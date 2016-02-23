@@ -33,6 +33,16 @@ module.exports = (function () {
         return undefined;
       });
     },
+    deleteWorld: function(worldName) {
+      worlds.World.remove({name: worldName},function(err, result){
+        if(err){
+          console.log('Failed to remove world ', worldName, err);
+        }
+        else {
+          console.log('Succeeded removing world ', worldName, result);
+        }
+      });
+    },
     purgeData: function () {
       return RSVP.all([
         players.Player.remove({}),

@@ -120,7 +120,16 @@ describe('Http Service', function () {
 
       $httpBackend.flush();
     });
+
+    it('should remove a world on world delete', function(){
+      var worldName = 'newWorld';
+      $httpBackend.expectDELETE('/api/worlds?worldName='+ worldName).respond(200);
+
+      service.deleteWorld(worldName).then(function(response){
+        expect(response.status).toBe(200);
+      });
+
+      $httpBackend.flush();
+    });
   });
-
-
 });

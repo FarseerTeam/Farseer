@@ -23,8 +23,7 @@ describe('The data-setup module... ', function() {
 
 	var validateCountOf = function(expectedCount) {
 		return function(queryResults) {
-			// console.log('found results: ' + queryResults);
-			expect(queryResults.length).toEqual(expectedCount);	
+			expect(queryResults.length).toEqual(expectedCount);
 		}
 	};
 
@@ -117,7 +116,7 @@ describe('The data-setup module... ', function() {
 				.then(function(arg){
 					expect(arg).not.toBeDefined();
 					done();
-				}); 
+				});
 		});
 	});
 
@@ -138,7 +137,6 @@ describe('The data-setup module... ', function() {
 				expect(team.path).toEqual(path);
 			}
 		};
-
 
 		it('can insert a single team using promises.', function(done) {
 			setup.addTeam('Gryffindor', '/Gryffindor')
@@ -169,10 +167,38 @@ describe('The data-setup module... ', function() {
 				.then(function(arg){
 					expect(arg).not.toBeDefined();
 					done();
-				}); 
+				});
 		});
 	});
 
+  describe('the deleteWorld function...', function(){
+    beforeEach(function(done) {
+      setup.purgeData().then(done);
+      setup.addWorld('Pandora')
+        .then(findAllWorlds)
+        .then(validateCountOf(1))
+        .then(done)
+        .then(null, handleError(done));
+    });
+
+
+    afterEach(function(done) {
+      setup.purgeData().then(done);
+    });
+
+    it('deletes the specified world', function(done) {
+      setup.deleteWorld('Pandora');
+
+      findAllWorlds()
+        .then(validateCountOf(0))
+        .then(done)
+        .then(null, handleError(done));
+    });
+
+    //it('deletes all players in the specified world', function(){
+    //
+    //});
+  });
 
   describe('the addWorld function... ', function() {
 
@@ -230,8 +256,5 @@ describe('The data-setup module... ', function() {
         expect(world.path).toEqual(path);
       }
     };
-
   });
-
-
 });

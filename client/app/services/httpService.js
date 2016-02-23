@@ -14,6 +14,22 @@ angular.module('farseerApp')
       });
     };
 
+    this.updateWorld = function(oldWorldName, updatedWorldName) {
+      var data = {
+        oldWorldName: oldWorldName,
+        updatedWorldName: updatedWorldName
+      };
+      return $http.put('/api/worlds/', data).then(function(response) {
+        return response;
+      });
+    };
+
+    this.deleteWorld = function(worldName) {
+      return $http.delete('/api/worlds', {params: {worldName: worldName}}).then(function(response){
+        return response;
+      });
+    };
+
     this.getPlayers = function (world) {
       return $http.get('/api/worlds/' + world + '/players').then(function (response) {
         return response.data;
@@ -32,16 +48,6 @@ angular.module('farseerApp')
       });
     };
 
-    this.updateWorld = function(oldWorldName, updatedWorldName) {
-      var data = {
-        oldWorldName: oldWorldName,
-        updatedWorldName: updatedWorldName
-      };
-      return $http.put('/api/worlds/', data).then(function(response) {
-        return response;
-      });
-
-    };
 
     this.getTeamToPlayersMap = function (path, world) {
       var request = '/api/worlds/' + world + '/maps';
@@ -52,5 +58,4 @@ angular.module('farseerApp')
         return response.data;
       });
     };
-
   });

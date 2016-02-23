@@ -6,7 +6,7 @@ describe('The Home Page', function() {
     browser.get('/');
   });
 
-  it('redirects to playersMap', function(done) {
+  it('redirects to Worlds form', function(done) {
     expect(browser.getCurrentUrl()).toContain('/worlds');
     done();
   });

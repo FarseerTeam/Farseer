@@ -25,6 +25,12 @@ angular.module('farseerApp')
       });
     };
 
+    $scope.deleteWorld = function(worldName) {
+      httpService.deleteWorld(worldName).then(function(response){
+        console.log('delete response', response);
+      });
+    };
+
     $scope.updateWorld = function(oldWorldName, updatedWorldName) {
       httpService.updateWorld(oldWorldName, updatedWorldName).then(function(response) {
         //TODO: need to make sure this is invoked and projected to the world's view.

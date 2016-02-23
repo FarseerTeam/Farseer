@@ -18,6 +18,14 @@ exports.create = function (request, response) {
   });
 };
 
+exports.delete = function (request, response) {
+  worlds.World.remove({name: request.query.worldName}).then(function(data){
+    response.json(data);
+  }, function(error){
+    response.send({message: "World could not be deleted"});
+  });
+};
+
 exports.update = function (request, response) {
   var worldToChange =  request.body.oldWorldName;
   var updatedWorldName = request.body.updatedWorldName;
