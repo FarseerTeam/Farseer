@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('farseerApp')
-  .controller('WorldsCtrl', function ($scope, httpService, $route) {
+  .controller('WorldsCtrl', function ($scope, httpService, $route, $uibModal) {
     $scope.worlds = [];
     $scope.worldEditMode = false;
 
@@ -45,11 +45,49 @@ angular.module('farseerApp')
       //$scope.worldEditMode = false;
       //TODO: ugly, need another way to update the view. Do not refresh the entire page.
       $route.reload();
+    };
 
+    $scope.open = function (size) {
 
+      var modalInstance = $uibModal.open({
+        animation: true,
+        //templateUrl: 'myModalContent.html',
+        template: "<div>I am in a modal</div>",
+        controller: 'ModalInstanceCtrl',
+        size: size,
+        resolve: {
+          items: function () {
+            //return $scope.items;
+            return "asdfa";
+          }
+        }
+      });
+
+      modalInstance.result.then(function (selectedItem) {
+        $scope.selected = selectedItem;
+      }, function () {
+        $log.info('Modal dismissed at: ' + new Date());
+      });
     };
 
     function addNewWorldToScope(newWorld) {
       $scope.worlds.push(newWorld);
     }
   });
+
+angular.module('farseerApp').controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, items) {
+
+  //$scope.items = items;
+  //$scope.selected = {
+  //  item: $scope.items[0]
+  //};
+
+  $scope.ok = function () {
+    console.log("I'm in a ModalInstanceCtrl");
+    //$uibModalInstance.close($scope.selected.item);
+  };
+
+  $scope.cancel = function () {
+    $uibModalInstance.dismiss('cancel');
+  };
+});
