@@ -27,10 +27,12 @@ describe('Controller: WorldsCtrl', function () {
       },
       updateWorld: function (oldWorld, updatedWorld) {
         var deferred = $q.defer();
-        deferred.resolve({data: {
-            name: updatedWorld
-          }
-        });
+        deferred.resolve({data: { name: updatedWorld }});
+        return deferred.promise;
+      },
+      deleteWorld: function () {
+        var deferred = $q.defer();
+        deferred.resolve({data: { ok: 1 }});
         return deferred.promise;
       }
     };
@@ -97,7 +99,7 @@ describe('Controller: WorldsCtrl', function () {
 
   });
 
-  describe('adding new world', function () {
+  describe('adding a new world', function () {
     var newWorld;
 
     beforeEach(function () {
@@ -129,6 +131,32 @@ describe('Controller: WorldsCtrl', function () {
 
       expect(scope.worlds.length).toBe(testWorlds.length);
       expect(_.last(scope.worlds)).toBe(newWorld);
+    });
+  });
+
+  describe('delete a world', function() {
+    var world;
+
+    beforeEach(function () {
+      world = { name: 'Warcraft' };
+    });
+
+    it('should delete a world on confirmation', function() {
+      spyOn(window, 'confirm').and.returnValue(true);
+
+      scope.deleteWorldOnUserConfirmation(world);
+      scope.$digest();
+
+      expect(scope.deleteWorldStatus).toBe(1);
+    });
+
+    it('should not delete a world on cancellation', function() {
+      spyOn(window, 'confirm').and.returnValue(false);
+
+      scope.deleteWorldOnUserConfirmation(world);
+      scope.$digest();
+
+      expect(scope.deleteWorldStatus).toBe(undefined);
     });
   });
 

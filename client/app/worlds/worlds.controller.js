@@ -2,7 +2,7 @@
 
 angular
   .module('farseerApp')
-  .controller('WorldsCtrl', function($scope, httpService, $route, $uibModal) {
+  .controller('WorldsCtrl', function($scope, httpService, $route) {
 
     $scope.worlds = [];
     $scope.worldEditMode = false;
@@ -27,12 +27,6 @@ angular
       });
     };
 
-    $scope.deleteWorld = function(worldName) {
-      httpService.deleteWorld(worldName).then(function(response){
-        console.log('delete response', response);
-      });
-    };
-
     $scope.updateWorld = function(oldWorldName, updatedWorldName) {
       httpService.updateWorld(oldWorldName, updatedWorldName).then(function(response) {
         //TODO: need to make sure this is invoked and projected to the world's view.
@@ -44,46 +38,31 @@ angular
         }
 
       });
-      //$scope.worldEditMode = false;
       //TODO: ugly, need another way to update the view. Do not refresh the entire page.
       $route.reload();
     };
 
-    $scope.open = function (size) {
-      var modalInstance = $uibModal.open({
-        templateUrl: 'worldsModal1.html',
-        //template: '<div>asdfadf</div>',
-        controller: 'ModalInstanceCtrl',
-        size: size,
-        resolve: {
-          items: function () {
-            //return $scope.items;
-            return "asdfa";
-          }
+    $scope.deleteWorldOnUserConfirmation = function(worldName) {
+      var result = window.confirm('Are you sure you want to delete this world and all associated players?');
+      if (result) {
+        deleteWorld(worldName);
+        loadWorlds();
+      }
+    };
+
+    function deleteWorld(worldName) {
+      httpService.deleteWorld(worldName).then(function(response) {
+        if (response.data.ok === 1) {
+          $scope.deleteWorldStatus = response.data.ok;
+        } else {
+          $scope.deleteWorldStatus = -1;
         }
       });
-
-      modalInstance.result.then(function (selectedItem) {
-        console.log("modalInstance result");
-      }, function () {
-        console.log('Modal dismissed at: ' + new Date());
-      });
-    };
+    }
 
     function addNewWorldToScope(newWorld) {
       $scope.worlds.push(newWorld);
     }
+
+
   });
-
-angular.module('farseerApp').controller('ModalInstanceCtrl', function ($scope, $uibModalInstance) {
-
-  $scope.ok = function () {
-    console.log("I'm in a ModalInstanceCtrl");
-    //$uibModalInstance.close($scope.selected.item);
-  };
-
-  $scope.cancel = function () {
-    $uibModalInstance.dismiss('cancel');
-  };
-
-});

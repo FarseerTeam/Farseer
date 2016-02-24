@@ -123,4 +123,43 @@ describe('/api/worlds', function () {
         });
     })
   })
+
+  describe('DELETE', function() {
+    var world = { name: 'Lost World' };
+    beforeEach(function(done) {
+
+      authenticatedRequest
+        .post('/api/worlds')
+        .send(world)
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .end(function (err, res) {
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    afterEach(function(done) {
+      worlds.World.remove({}, function () {
+        done();
+      });
+    });
+
+    it('should delete a world name', function(done) {
+      var request = {query: world.name};
+
+      authenticatedRequest
+        .delete('/api/worlds')
+        .send(request)
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .end(function (err, res) {
+          if (err) return done(err);
+            //console.log(res);
+            //console.log("asdfadf");
+            expect(res.body.ok).to.be.eql(1);
+          done();
+        });
+    })
+  })
 });
