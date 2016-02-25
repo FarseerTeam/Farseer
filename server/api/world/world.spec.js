@@ -3,6 +3,7 @@
 var expect = require('chai').expect;
 require('chai').use(require('dirty-chai'));
 var worlds = require("../../components/worlds");
+var players = require('../../components/players');
 var _ = require('lodash');
 var authenticatedRequest = require('../../authentication/authentication-helper.spec');
 var VALID_USER = authenticatedRequest.VALID_USER;
@@ -146,7 +147,7 @@ describe('/api/worlds', function () {
     });
 
     it('should delete a world name', function(done) {
-      var request = {query: world.name};
+      var request = {worldName: world.name};
 
       authenticatedRequest
         .delete('/api/worlds')
@@ -155,8 +156,6 @@ describe('/api/worlds', function () {
         .expect('Content-Type', /json/)
         .end(function (err, res) {
           if (err) return done(err);
-            //console.log(res);
-            //console.log("asdfadf");
             expect(res.body.ok).to.be.eql(1);
           done();
         });

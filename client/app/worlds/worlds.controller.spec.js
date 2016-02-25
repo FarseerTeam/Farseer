@@ -38,7 +38,7 @@ describe('Controller: WorldsCtrl', function () {
     };
 
     scope = $rootScope.$new();
-    testWorlds = ['Hogwarts School of Witchcraft and Wizardry', 'Beauxbatons Academy of Magic', 'Durmstrang Institute', 'Pillar'];
+    testWorlds = [{name: 'Hogwarts School of Witchcraft and Wizardry'}, {name: 'Beauxbatons Academy of Magic'}, {name: 'Durmstrang Institute'}, {name: 'Pillar'}];
     WorldsCtrl = $controller('WorldsCtrl', {
       $scope: scope,
       httpService: mockService
@@ -50,10 +50,10 @@ describe('Controller: WorldsCtrl', function () {
     it('should return an updated world from the service', function() {
       var SECOND_WORLD_INDEX = 1;
       var UPDATED_WORLD = 'Pandora';
-      scope.updateWorld(testWorlds[SECOND_WORLD_INDEX], UPDATED_WORLD);
+      scope.updateWorld(testWorlds[SECOND_WORLD_INDEX].name, UPDATED_WORLD);
       scope.$digest();
 
-      expect(scope.worlds[SECOND_WORLD_INDEX]).toBe(UPDATED_WORLD);
+      expect(scope.worlds[SECOND_WORLD_INDEX].name).toBe(UPDATED_WORLD);
     });
 
     it('should not update if world not found', function() {
@@ -70,15 +70,17 @@ describe('Controller: WorldsCtrl', function () {
 
     it('should return mixed case as lower case', function() {
       scope.$digest();
+      var worldIndex = 3;
 
-      var actual = scope.convertToLowerCaseNoSpaces(scope.worlds[testWorlds.indexOf('Pillar')]);
+      var actual = scope.convertToLowerCaseNoSpaces(scope.worlds[worldIndex].name);
       expect(actual).toBe('pillar');
     });
 
     it('should remove embedded spaces', function() {
       scope.$digest();
+      var worldIndex = 0;
 
-      var actual = scope.convertToLowerCaseNoSpaces(scope.worlds[testWorlds.indexOf('Hogwarts School of Witchcraft and Wizardry')]);
+      var actual = scope.convertToLowerCaseNoSpaces(scope.worlds[worldIndex].name);
       expect(actual).toBe('hogwartsschoolofwitchcraftandwizardry');
     });
 

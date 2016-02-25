@@ -10,7 +10,7 @@ router
 	.get(controller.index)
 	.post(controller.create)
 	.put(controller.update)
-    .delete(controller.delete);
+	.delete(controller.delete);
 
 var worldRouter = express.Router({ mergeParams: true });
 worldRouter

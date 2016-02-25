@@ -2,7 +2,7 @@
 
 angular
   .module('farseerApp')
-  .controller('WorldsCtrl', function($scope, httpService, $route) {
+  .controller('WorldsCtrl', function($scope, httpService) {
 
     $scope.worlds = [];
     $scope.worldEditMode = false;
@@ -18,7 +18,10 @@ angular
     }
 
     $scope.convertToLowerCaseNoSpaces = function(nameToConvert) {
-      return nameToConvert.replace(/ /g, '').toLowerCase();
+      if (nameToConvert !== null && nameToConvert !== undefined) {
+        return nameToConvert.replace(/ /g, '').toLowerCase();
+      }
+      return '';
     };
 
     $scope.addWorld = function () {
@@ -29,17 +32,13 @@ angular
 
     $scope.updateWorld = function(oldWorldName, updatedWorldName) {
       httpService.updateWorld(oldWorldName, updatedWorldName).then(function(response) {
-        //TODO: need to make sure this is invoked and projected to the world's view.
         for (var i = 0; i < $scope.worlds.length; i++) {
-          if ($scope.worlds[i] === oldWorldName) {
-            $scope.worlds[i] = response.data.name;
+          if ($scope.worlds[i].name === oldWorldName) {
+            $scope.worlds[i].name = response.data.name;
             break;
           }
         }
-
       });
-      //TODO: ugly, need another way to update the view. Do not refresh the entire page.
-      $route.reload();
     };
 
     $scope.deleteWorldOnUserConfirmation = function(worldName) {
