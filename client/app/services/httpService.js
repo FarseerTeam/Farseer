@@ -14,26 +14,43 @@ angular.module('farseerApp')
       });
     };
 
-    this.getPlayers = function () {
-      return $http.get('/api/worlds/world/players').then(function (response) {
+    this.updateWorld = function(oldWorldName, updatedWorldName) {
+      var data = {
+        oldWorldName: oldWorldName,
+        updatedWorldName: updatedWorldName
+      };
+      return $http.put('/api/worlds/', data).then(function(response) {
+        return response;
+      });
+    };
+
+    this.deleteWorld = function(worldName) {
+      return $http.delete('/api/worlds', {params: {worldName: worldName}}).then(function(response){
+        return response;
+      });
+    };
+
+    this.getPlayers = function (world) {
+      return $http.get('/api/worlds/' + world + '/players').then(function (response) {
         return response.data;
       });
     };
 
     this.addPlayer = function (newPlayer) {
-      return $http.post('/api/worlds/world/players', newPlayer).then(function (response) {
+      return $http.post('/api/worlds/' + newPlayer.world + '/players', newPlayer).then(function (response) {
         return response;
       });
     };
 
     this.update = function (player) {
-      return $http.put('/api/worlds/world/players/' + player._id, player).then(function (response) {
+      return $http.put('/api/worlds/' + player.world + '/players/' + player._id, player).then(function (response) {
         return response;
       });
     };
 
-    this.getTeamToPlayersMap = function (path) {
-      var request = '/api/worlds/world/maps';
+
+    this.getTeamToPlayersMap = function (path, world) {
+      var request = '/api/worlds/' + world + '/maps';
       if (path) {
         request += path;
       }
@@ -41,5 +58,4 @@ angular.module('farseerApp')
         return response.data;
       });
     };
-
   });

@@ -4,6 +4,6 @@ angular.module('farseerApp')
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {
-        redirectTo: '/playersMap'
+        redirectTo: '/worlds'
       });
   });

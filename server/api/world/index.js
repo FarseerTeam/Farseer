@@ -8,7 +8,9 @@ var router = express.Router();
 router
 	.route('/')
 	.get(controller.index)
-	.post(controller.create);
+	.post(controller.create)
+	.put(controller.update)
+    .delete(controller.delete);
 
 var worldRouter = express.Router({ mergeParams: true });
 worldRouter

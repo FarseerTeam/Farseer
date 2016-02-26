@@ -682,6 +682,7 @@ module.exports = function (grunt) {
       'test:client',
       'test:e2e'
     ]);
+
   });
 
   grunt.registerTask('e2e', ['test:e2e']);
@@ -703,6 +704,11 @@ module.exports = function (grunt) {
     'uglify',
     'rev',
     'usemin'
+  ]);
+
+  grunt.registerTask('unitTest', [
+    'test:server',
+    'test:client'
   ]);
 
   grunt.registerTask('default', [

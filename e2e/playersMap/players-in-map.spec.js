@@ -14,7 +14,7 @@ describe('The players map', function () {
     setup.addTeam('Single Quotes', '/quotes', 'world');
     setup.addTeam(undefined, '/noquotes');
 
-    browser.get('playersMap');
+    browser.get('worlds/world/playersMap');
   });
 
   afterEach(function (done) {

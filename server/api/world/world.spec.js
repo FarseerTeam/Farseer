@@ -49,8 +49,6 @@ describe('/api/worlds', function () {
   });
 
   describe('POST', function () {
-    var worldList = [];
-
     afterEach(function (done) {
       worlds.World.remove({}, function () {
         done();
@@ -67,7 +65,7 @@ describe('/api/worlds', function () {
         .expect('Content-Type', /json/)
         .end(function (err, res) {
         if (err) return done(err);
-        expect(res.body.name).to.be.eql('Lost World');
+        expect(res.body.name).to.be.eql(newWorld.name);
         done();
       });
     });
@@ -88,4 +86,41 @@ describe('/api/worlds', function () {
     });
   });
 
+  describe('PUT', function() {
+    var world = { name: 'Lost World' };
+    beforeEach(function(done) {
+
+      authenticatedRequest
+        .post('/api/worlds')
+        .send(world)
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .end(function (err, res) {
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    afterEach(function(done) {
+      worlds.World.remove({}, function () {
+        done();
+      });
+    });
+
+    it('should update a world name', function(done) {
+      var newWorldName = 'Updated World';
+      var request = {oldWorldName: world.name, updatedWorldName: newWorldName};
+
+      authenticatedRequest
+        .put('/api/worlds')
+        .send(request)
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .end(function (err, res) {
+          if (err) return done(err);
+          expect(res.body.name).to.be.eql(newWorldName);
+          done();
+        });
+    })
+  })
 });

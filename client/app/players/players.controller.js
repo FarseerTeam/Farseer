@@ -1,15 +1,19 @@
 'use strict';
 
 angular.module('farseerApp')
-  .controller('PlayersCtrl', function ($scope, $timeout, httpService) {
+  .controller('PlayersCtrl', function ($scope, $timeout, httpService, $routeParams) {
     $scope.players = [];
     $scope.teamPlayersMap = [];
     $scope.error = undefined;
     $scope.currentPath = '';
+    $scope.urlFormattedWorldName = $routeParams.urlFormattedWorldName;
+    $scope.displayableWorld = $routeParams.displayableWorld;
+
+    var urlFormattedWorldName = $routeParams.urlFormattedWorldName;
 
     (function initializeController() {
-      loadTeamToPlayersMap();
-      loadPlayers();
+      loadTeamToPlayersMap(null, urlFormattedWorldName);
+      loadPlayers(urlFormattedWorldName);
     })();
 
     $scope.update = function(player) {
@@ -22,6 +26,7 @@ angular.module('farseerApp')
     };
 
     $scope.addPlayer = function() {
+      $scope.newPlayer.world = urlFormattedWorldName;
       httpService.addPlayer($scope.newPlayer).then(function(response) {
         addNewPlayerToScope(response.data);
         handleResponse('Success', $scope.newPlayer, false);
@@ -45,8 +50,8 @@ angular.module('farseerApp')
       return player;
     };
 
-    function loadPlayers() {
-      httpService.getPlayers().then(function(players) {
+    function loadPlayers(world) {
+      httpService.getPlayers(world).then(function(players) {
         $scope.players = players;
       });
     }
@@ -68,8 +73,8 @@ angular.module('farseerApp')
       loadTeamToPlayersMap().then(displayErrorMessage('Error moving player to a new team: ' + error.data.message));
     }
 
-    function loadTeamToPlayersMap(teamPath) {
-      return httpService.getTeamToPlayersMap(teamPath).then(function(map) {
+    function loadTeamToPlayersMap(teamPath, world) {
+      return httpService.getTeamToPlayersMap(teamPath, world).then(function(map) {
         $scope.teamPlayersMap = map;
         $scope.currentPath = teamPath; 
       });

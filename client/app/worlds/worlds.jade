@@ -1,6 +1,13 @@
-p(class='white') Create New World
+p(class='white') Worlds
 label(for='name', class='white') Name:
 input(type='text', id='name', ng-model='newWorld.name', ng-required)
-button(type='button', ng-click='addWorld()') Go
+button(type='button', ng-click='addWorld()') Add
 
-div(ng-repeat='world in worlds', class='white') {{world.name}}
+div(id="worldsList" ng-repeat='world in worlds', class='white')
+    a(href="/worlds/{{convertToLowerCaseNoSpaces(world.name)}}/players?displayableWorld={{world.name}}")(ng-show="!worldEditMode") {{world.name}} &nbsp;
+    input(type='text', ng-model='updatedWorldName' value="{{world.name}}")(ng-show="worldEditMode")
+    i.fa.fa-pencil-square-o.fa-fw(ng-click='worldEditMode = true')(ng-show="!worldEditMode")
+    i.fa.fa-floppy-o.fa-fw(ng-show="worldEditMode")(ng-click='updateWorld(world.name, updatedWorldName)')
+    i.fa.fa-undo.fa-fw(ng-show="worldEditMode")(ng-click='worldEditMode = false')
+    i.fa.fa-trash.fa-fw(ng-show="worldEditMode")(ng-click="deleteWorld(world.name)")
+

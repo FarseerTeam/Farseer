@@ -12,11 +12,13 @@ describe('Attempt to test jade template', function () {
       processedHtml;
   var teamToPlayersMapFromServer = [{team: 'Gryffindor', path:'/Gryffindor' , players: [{name: 'Harry Potter', email:'hp@gmail.com', _team:'/Gryffindor'}]}, {/*team: undefined,*/ players: [{name: 'Poppy Pomfrey', email:'pp@gmail.com'}, {name: 'Irma Pince', email:'ip@gmail.com'}]}, {team: 'Ravenclaw', path:'/Ravenclaw' , players: [{name: 'Penelope Clearwater', email:'pc@gmail.com', _team:'/Ravenclaw'}]}];
   var cloneObject = function(objectToClone){return JSON.parse(JSON.stringify(objectToClone));};
+  var $httpBackend;
 
-  beforeEach(inject(function ($controller, $rootScope, $q, $templateCache, $compile) {
+  beforeEach(inject(function ($controller, $rootScope, $q, $templateCache, $compile, _$httpBackend_) {
     scope = $rootScope.$new();
     pageHtml = $templateCache.get('app/players/playersMap.html');
     compile = $compile;
+    $httpBackend = _$httpBackend_;
 
     var mockService = {
       getPlayers: function() {
@@ -39,9 +41,9 @@ describe('Attempt to test jade template', function () {
   }));
 
   beforeEach(function() {
+     $httpBackend.expectGET('app/players/players-common/players-common.html').respond('');
      processedHtml = compile(pageHtml)(scope);
      scope.$digest();
-     // console.log(processedHtml);
   });
 
   it('there is one image for each player from teamToPlayersMap', function() {

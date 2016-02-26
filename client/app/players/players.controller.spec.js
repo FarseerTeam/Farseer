@@ -73,10 +73,21 @@ describe('Controller: PlayersCtrl', function () {
     PlayersCtrl = $controller('PlayersCtrl', {
       $scope: scope,
       $timeout: mockTimeout,
-      httpService: mockService
+      httpService: mockService,
+      $routeParams: {urlFormattedWorldName: 'pandora', displayableWorld: 'Pandora'}
     });
 
   }));
+
+  describe('worlds params attached to the url', function() {
+    it('should contain a parameter with current world', function() {
+      expect(scope.displayableWorld).toBe('Pandora');
+    });
+
+    it('should contain a parameter with url-formatted name of the world', function() {
+      expect(scope.urlFormattedWorldName).toBe('pandora');
+    });
+  });
 
   describe('players list attached to the scope', function () {
     it('should be empty when promise is not fulfilled', function () {

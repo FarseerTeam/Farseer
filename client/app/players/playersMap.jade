@@ -2,9 +2,10 @@ div(class='map-view')
   span(ng-show='error' class='errorMessage') {{error.message}}
 
   div
-    div(class="view-title") Map
+    div(class="view-title") {{worldName}} World
+    div(players-common="")
     div
-      a(href="/players" class="pink button")
+      a(href="/worlds/{{urlFormattedWorldName}}/players" class="pink button")
         div(class="fa fa-users fa-2x")
         div View Roster
     p {{currentPath}}

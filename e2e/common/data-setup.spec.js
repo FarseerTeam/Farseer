@@ -1,6 +1,7 @@
 'use strict'
 var players = require('../../server/components/players');
 var teams = require('../../server/components/teams');
+var worlds = require('../../server/components/worlds');
 var setup = require('./data-setup');
 var dataService = require('../../server/components/dataService');
 
@@ -10,25 +11,28 @@ describe('The data-setup module... ', function() {
 
 	var findAllPlayers = function() {
 		return players.Player.find().exec();
-	}
+	};
 
 	var findAllTeams = function() {
 		return teams.Team.find().exec();
-	}
+	};
+
+  var findAllWorlds = function() {
+    return worlds.World.find().exec();
+  };
 
 	var validateCountOf = function(expectedCount) {
 		return function(queryResults) {
-			// console.log('found results: ' + queryResults);
-			expect(queryResults.length).toEqual(expectedCount);	
+			expect(queryResults.length).toEqual(expectedCount);
 		}
-	}
+	};
 
 	var handleError = function(done) {
 		return function(err) {
 			console.log('Error!! - ' + error);
 			done(err);
 		}
-	}
+	};
 
 	describe('the purgeData function... ', function() {
 
@@ -112,7 +116,7 @@ describe('The data-setup module... ', function() {
 				.then(function(arg){
 					expect(arg).not.toBeDefined();
 					done();
-				}); 
+				});
 		});
 	});
 
@@ -133,7 +137,6 @@ describe('The data-setup module... ', function() {
 				expect(team.path).toEqual(path);
 			}
 		};
-
 
 		it('can insert a single team using promises.', function(done) {
 			setup.addTeam('Gryffindor', '/Gryffindor')
@@ -164,7 +167,94 @@ describe('The data-setup module... ', function() {
 				.then(function(arg){
 					expect(arg).not.toBeDefined();
 					done();
-				}); 
+				});
 		});
 	});
+
+  describe('the deleteWorld function...', function(){
+    beforeEach(function(done) {
+      setup.purgeData().then(done);
+      setup.addWorld('Pandora')
+        .then(findAllWorlds)
+        .then(validateCountOf(1))
+        .then(done)
+        .then(null, handleError(done));
+    });
+
+
+    afterEach(function(done) {
+      setup.purgeData().then(done);
+    });
+
+    it('deletes the specified world', function(done) {
+      setup.deleteWorld('Pandora');
+
+      findAllWorlds()
+        .then(validateCountOf(0))
+        .then(done)
+        .then(null, handleError(done));
+    });
+
+    //it('deletes all players in the specified world', function(){
+    //
+    //});
+  });
+
+  describe('the addWorld function... ', function() {
+
+    beforeEach(function(done) {
+      setup.purgeData().then(done);
+    });
+
+    afterEach(function(done) {
+      setup.purgeData().then(done);
+    });
+
+    it('can insert a single world using promises.', function(done) {
+      setup.addWorld('Pandora')
+        .then(findAllWorlds)
+        .then(validateCountOf(1))
+        .then(done)
+        .then(null, handleError(done));
+    });
+
+    it('can insert two worlds using promises.', function(done) {
+      setup.addWorld('Pandora')
+        .then(setup.addWorld('Neptune'))
+        .then(findAllWorlds)
+        .then(validateCountOf(2))
+        .then(done)
+        .then(null, handleError(done));
+    });
+
+    it('inserts the name and lower case path into the new world schema', function(done) {
+      setup.addWorld('Pandora')
+        .then(findAllWorlds)
+        .then(validateWorldFields('Pandora', 'pandora'))
+        .then(done);
+    });
+
+    it('inserts the correct name and lower case path with no spaces into the new world', function(done) {
+      setup.addWorld('Great Pandora')
+        .then(findAllWorlds)
+        .then(validateWorldFields('Great Pandora', 'greatpandora'))
+        .then(done);
+    });
+
+    it('returns no value - so that calling done like this will work: setup.addWorld(world).then(done);', function() {
+      setup.addWorld('Pandora')
+        .then(function(arg){
+          expect(arg).not.toBeDefined();
+          done();
+        });
+    });
+
+    var validateWorldFields = function(name, path){
+      return function(world) {
+        var world = world[0];
+        expect(world.name).toEqual(name);
+        expect(world.path).toEqual(path);
+      }
+    };
+  });
 });
