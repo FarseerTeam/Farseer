@@ -130,17 +130,17 @@ describe('The data-setup module... ', function() {
 			setup.purgeData().then(done);
 		});
 
-		//TODO: need to base on id, not name
-		//it('deletes the specified world', function(done) {
-		//	console.log("=========");
-		//	setup.addWorld('Pandora')
-		//		.then(setup.deleteWorld('Pandora'))
-		//		.then(findAllWorlds)
-		//		.then(validateCountOf(0))
-		//		.then(done)
-		//		.then(null, handleError(done));
-		//	console.log("=========");
-		//});
+		it('deletes the specified world', function(done) {
+
+			setup.addWorld('Neptune1').then(function(data) {
+
+				setup.deleteWorld(data._id)
+					.then(findAllPlayers)
+					.then(validateCountOf(0))
+					.then(done);
+
+			}).then(done);
+		})
 
 	});
 
@@ -220,14 +220,6 @@ describe('The data-setup module... ', function() {
 				.then(validateCountOf(2))
 				.then(done)
 				.then(null, handleError(done));
-		});
-
-		it('returns no value - so that calling done like this will work: setup.addWorld(world).then(done);', function() {
-			setup.addWorld('Pandora')
-				.then(function(arg){
-					expect(arg).not.toBeDefined();
-					done();
-				});
 		});
 	});
 

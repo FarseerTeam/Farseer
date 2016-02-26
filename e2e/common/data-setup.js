@@ -26,15 +26,10 @@ module.exports = (function () {
     },
     addWorld: function (worldName) {
       var world = worlds.World({name: worldName});
-      return world.save().then(function (data) {
-        return undefined;
-      });
+      return world.save();
     },
-    deleteWorld: function(worldName) {
-      var world = worlds.World({name: worldName});
-      return world.remove().then(function(data) {
-        return undefined;
-      });
+    deleteWorld: function(worldId) {
+      return worlds.World({_id: worldId}).remove();
     },
     purgeData: function () {
       return RSVP.all([
