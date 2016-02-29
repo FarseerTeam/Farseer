@@ -130,7 +130,10 @@ describe('The data-setup module... ', function() {
 			 setup.purgeData().then(done);
 		});
 
-				setup.deleteWorld(data._id)
+    it('deletes the specified world', function(done) {
+
+      setup.addWorld('Neptune1').then(function(data) {
+        setup.deleteWorld(data._id)
 					.then(findAllPlayers)
 					.then(validateCountOf(0))
 					.then(done);

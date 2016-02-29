@@ -45,14 +45,11 @@ describe('the application opens to the Worlds screen by default and ...', functi
 
       var worldList = element(by.id('worldsList'));
       browser.wait(ec.presenceOf(worldList),1000).then(function(){
-        var worldLink=worldList.all(by.id('worldLink')).first();
-
-        expect(worldLink.getText()).toContain('Pandora');
+        expect(worldList.getText()).toEqual('Pandora');
       }, function(err){
         fail();
       }).then(done);
     });
-
   });
 
   describe('when there are existing worlds in the database and...',function() {
