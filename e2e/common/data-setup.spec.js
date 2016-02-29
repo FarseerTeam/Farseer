@@ -67,7 +67,7 @@ describe('The data-setup module... ', function() {
 		});
 	});
 
-	xdescribe('the addPlayer function... ', function() {
+	describe('the addPlayer function... ', function() {
 
 		beforeEach(function(done) {
 			setup.purgeData().then(done);
@@ -218,5 +218,4 @@ describe('The data-setup module... ', function() {
 				.then(null, handleError(done));
 		});
 	});
-
 });
