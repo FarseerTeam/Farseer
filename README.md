@@ -14,5 +14,5 @@ Development builds are currently available [here](https://armored-farseer.heroku
 2) fork/clone a local repository  
 2) cd to project root  
 3) npm install  
-4) bower install
+4) bower install  
 5) node_modules/protractor/bin/webdriver-manager update --standalone
