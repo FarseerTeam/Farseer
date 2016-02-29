@@ -10,3 +10,5 @@ var WorldsPage = function() {
   var page = this;
 
 };
+
+module.exports=new WorldsPage();

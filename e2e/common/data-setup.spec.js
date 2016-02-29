@@ -67,7 +67,7 @@ describe('The data-setup module... ', function() {
 		});
 	});
 
-	describe('the addPlayer function... ', function() {
+	xdescribe('the addPlayer function... ', function() {
 
 		beforeEach(function(done) {
 			setup.purgeData().then(done);
@@ -127,12 +127,8 @@ describe('The data-setup module... ', function() {
 		});
 
 		afterEach(function(done) {
-			setup.purgeData().then(done);
+			 setup.purgeData().then(done);
 		});
-
-		it('deletes the specified world', function(done) {
-
-			setup.addWorld('Neptune1').then(function(data) {
 
 				setup.deleteWorld(data._id)
 					.then(findAllPlayers)

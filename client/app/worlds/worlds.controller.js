@@ -62,6 +62,4 @@ angular
     function addNewWorldToScope(newWorld) {
       $scope.worlds.push(newWorld);
     }
-
-
   });

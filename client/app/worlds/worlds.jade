@@ -1,7 +1,7 @@
-p(class='white') Worlds
-label(for='name', class='white') Name:
-input(type='text', id='name', ng-model='newWorld.name', ng-required)
-button(type='button', ng-click='addWorld()') Add
+p(id='worldTitle' class='white') Worlds
+label(id='worldLabel' for='worldNameInput', class='white') Name:
+input(id='worldNameInput' type='text', ng-model='newWorld.name', ng-required)
+button(id='addWorldButton' type='button', ng-click='addWorld()') Add
 
 div(id="worldsList" ng-repeat='world in worlds', class='white')
     a(id="worldLink" href="/worlds/{{convertToLowerCaseNoSpaces(world.name)}}/players?displayableWorld={{world.name}}")(ng-show="!worldEditMode") {{world.name}} &nbsp;
