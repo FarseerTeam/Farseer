@@ -52,8 +52,8 @@ describe('the application opens to the Worlds screen by default and ...', functi
     });
   });
 
-  describe('when there are existing worlds in the database and...',function() {
-    describe('when the application is started at the default routing',function() {
+  describe('when there are existing worlds in the database and...', function() {
+    describe('when the application is started at the default routing', function() {
       beforeEach(function(done){
         setup.purgeData()
           .then(setup.addWorld('Pandora'))
@@ -80,7 +80,20 @@ describe('the application opens to the Worlds screen by default and ...', functi
         }).then(done);
       });
 
-      it('displays an edit icon after each entry', function () {
+      it('displays an edit icon after each entry', function (done) {
+
+        var ec = protractor.ExpectedConditions;
+        var editIcons = element(by.css('.fa-pencil-square-o'));
+
+        browser.wait(ec.presenceOf(editIcons),1000).then(function(){
+          var elements = element.all(by.className('fa-pencil-square-o'));
+
+          expect(element(by.className('fa-pencil-square-o')).isDisplayed()).toBeTruthy();
+          expect(elements.count()).toEqual(2);
+
+        }, function(){
+          fail();
+        }).then(done);
 
       });
     });
