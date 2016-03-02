@@ -154,14 +154,6 @@ describe('the application opens to the Worlds screen by default and ...', functi
           .then(done);
       });
 
-      function checkIfIconIsDisplayed(done, cssSelector){
-        browser.wait(ec.presenceOf(worldList),1000).then(function(){
-          expect(element(by.css(cssSelector)).isDisplayed()).toBeTruthy();
-        }, function(err){
-          fail();
-        }).then(done);
-      }
-
       it('displays a save icon after the text box when the edit icon is clicked',function(done) {
        checkIfIconIsDisplayed(done, '.fa-floppy-o');
       });
@@ -193,6 +185,15 @@ describe('the application opens to the Worlds screen by default and ...', functi
       it('deletes the world when the delete icon is clicked', function(){
 
       });
+
+      function checkIfIconIsDisplayed(done, cssSelector){
+        browser.wait(ec.presenceOf(worldList),1000).then(function(){
+          expect(element(by.css(cssSelector)).isDisplayed()).toBeTruthy();
+        }, function(err){
+          fail();
+        }).then(done);
+      }
+
     });
 
   });
