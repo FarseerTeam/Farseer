@@ -131,19 +131,47 @@ describe('the application opens to the Worlds screen by default and ...', functi
         }).then(done);
       });
 
-      it('displays the new world with italic and bold attributes', function() {
-
-      });
     });
 
     describe('when editing the existing entries',function(){
 
-      it('displays a save icon after the text box when the edit icon is clicked',function() {
+      var ec = protractor.ExpectedConditions;
+      var worldList = element(by.id('worldsList'));
 
+      beforeEach(function(done){
+        setup.purgeData()
+          .then(setup.addWorld('Pandora'))
+          .then(setup.addWorld('Pillar'))
+          .then(browser.get('/'))
+          .then(done);
+
+        var editIcon = element(by.css('.fa-pencil-square-o'));
+        editIcon.click();
       });
 
-      it('displays an undo icon after the text box when the edit icon is clicked', function() {
+      afterEach(function(done){
+        setup.purgeData()
+          .then(done);
+      });
 
+      function checkIfIconIsDisplayed(done, cssSelector){
+        browser.wait(ec.presenceOf(worldList),1000).then(function(){
+          expect(element(by.css(cssSelector)).isDisplayed()).toBeTruthy();
+        }, function(err){
+          fail();
+        }).then(done);
+      }
+
+      it('displays a save icon after the text box when the edit icon is clicked',function(done) {
+       checkIfIconIsDisplayed(done, '.fa-floppy-o');
+      });
+
+      it('displays an undo icon after the text box when the edit icon is clicked', function(done) {
+        checkIfIconIsDisplayed(done, '.fa-undo');
+      });
+
+      it('displays a delete icon after the text box when the edit icon is clicked', function(done) {
+        checkIfIconIsDisplayed(done, '.fa-trash');
       });
 
       it('changes the hyperlink to a pre-filled text box when the edit icon is clicked', function(){
