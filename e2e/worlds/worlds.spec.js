@@ -3,7 +3,7 @@
 var setup = require('../common/data-setup');
 var page = require('./worlds.po.js');
 var RSVP = require('rsvp');
-var progractor = require('protractor');
+var protractor = require('protractor');
 
 describe('the application opens to the Worlds screen by default and ...', function(){
   describe('when there are no worlds', function() {
@@ -99,10 +99,10 @@ describe('the application opens to the Worlds screen by default and ...', functi
     });
 
     describe('when adding a new world to a set of existing worlds',function(){
-
       beforeEach(function(done){
         setup.purgeData()
-          .then(setup.addWorld('Pandora', 'Pillar'))
+          .then(setup.addWorld('Pandora'))
+          .then(setup.addWorld('Pillar'))
           .then(browser.get('/'))
           .then(done);
       });
@@ -112,8 +112,23 @@ describe('the application opens to the Worlds screen by default and ...', functi
           .then(done);
       });
 
-      it('adds a new world to the list after entering the text and the add button is clicked',function(){
+      it('adds a new world to the list after entering the text and the add button is clicked',function(done){
+        var newWorld = "Neptune";
+        var inputName=element(by.id('worldNameInput'));
+        var addButton=element(by.id('addWorldButton'));
+        var ec = protractor.ExpectedConditions;
 
+        inputName.sendKeys(newWorld);
+        addButton.click();
+
+        var worldList = element(by.id('worldsList'));
+        var worldListArr = element.all(by.id('worldsList'));
+        browser.wait(ec.presenceOf(worldList),1000).then(function(){
+          expect(worldListArr.count()).toEqual(3);
+          expect(worldListArr.getText()).toEqual(['Pandora','Pillar','Neptune']);
+        }, function(err){
+          fail();
+        }).then(done);
       });
 
       it('displays the new world with italic and bold attributes', function() {
