@@ -67,6 +67,8 @@ describe('the application opens to the Worlds screen by default and ...', functi
           .then(done);
       });
 
+
+
       it('displays the name of all of the worlds on file as hyperlinks', function (done) {
 
         var ec = protractor.ExpectedConditions;
