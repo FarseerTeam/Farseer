@@ -154,27 +154,27 @@ describe('the application opens to the Worlds screen by default and ...', functi
           .then(done);
       });
 
-      it('displays a save icon after the text box when the edit icon is clicked',function(done) {
-       checkIfIconIsDisplayed(done, '.fa-floppy-o');
-      });
-
-      it('displays an undo icon after the text box when the edit icon is clicked', function(done) {
+      it('displays a save, an undo, and a delete icon after the text box when the edit icon is clicked',function(done) {
+        checkIfIconIsDisplayed(done, '.fa-floppy-o');
         checkIfIconIsDisplayed(done, '.fa-undo');
-      });
-
-      it('displays a delete icon after the text box when the edit icon is clicked', function(done) {
         checkIfIconIsDisplayed(done, '.fa-trash');
       });
 
-      it('changes the hyperlink to a pre-filled text box when the edit icon is clicked', function(){
+      it('changes the hyperlink to a pre-filled text box when the edit icon is clicked', function(done){
+        var textBoxes = element.all(by.model('updatedWorldName'));
+        var hyperlinks = element.all(by.css('#worldsList a'));
 
+        browser.wait(ec.presenceOf(worldList),1000).then(function(){
+          expect(textBoxes.getAttribute('value')).toEqual(hyperlinks.getAttribute('innerHTML'));
+        }, function(err){
+          fail();
+        }).then(done);
+
+        checkIfIconIsDisplayed(done, '#worldsList input');
+        checkIfIconIsNotDisplayed(done, '#worldsList a');
       });
 
       it('changes the text box to a hyperlink containing the new world name when the save icon is clicked', function(){
-
-      });
-
-      it('displays an edited entry hyperlink with bold and italic attributes', function() {
 
       });
 
@@ -189,6 +189,14 @@ describe('the application opens to the Worlds screen by default and ...', functi
       function checkIfIconIsDisplayed(done, cssSelector){
         browser.wait(ec.presenceOf(worldList),1000).then(function(){
           expect(element(by.css(cssSelector)).isDisplayed()).toBeTruthy();
+        }, function(err){
+          fail();
+        }).then(done);
+      }
+
+      function checkIfIconIsNotDisplayed(done, cssSelector){
+        browser.wait(ec.presenceOf(worldList),1000).then(function(){
+          expect(element(by.css(cssSelector)).isDisplayed()).toBeFalsy();
         }, function(err){
           fail();
         }).then(done);
