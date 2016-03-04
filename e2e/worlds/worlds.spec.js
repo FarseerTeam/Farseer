@@ -147,7 +147,7 @@ describe('the application opens to the Worlds screen by default and ...', functi
           .then(browser.get('/'))
           .then(done);
 
-        var editIcon = element(by.css('.fa-pencil-square-o'));
+        var editIcon = retrieveElement('.fa-pencil-square-o');
         editIcon.click();
       });
 
@@ -176,22 +176,22 @@ describe('the application opens to the Worlds screen by default and ...', functi
         checkIfHtmlElementIsNotDisplayed(done, '#worldsList a');
       });
 
-      it('changes the text box to a hyperlink containing the new world name when the save icon is clicked', function(){
-        ////given
-        ////var textBoxes = element.all(by.model('updatedWorldName'));
-        ////var hyperlinks = element.all(by.css('#worldsList a'));
-        //var saveIcon = element(by.css('.fa-floppy-o'));
-        ////$httpBackend.whenPUT('/api/worlds/').respond(edgeCaseData);
-        ////when
-        //saveIcon.click().then(function() {
-        //  console.log("click ok!!");
-        //  checkIfHtmlElementIsDisplayed(done, '#worldsList a');
-        //  checkIfHtmlElementIsNotDisplayed(done, '#worldsList input');
-        //}, function(err) {
-        //  console.log("error", err);
-        //}).then(done);
-        //
-        ////then
+      it('changes the text box to a hyperlink containing the new world name when the save icon is clicked', function(done){
+        var textToAppend = "Omega";
+        var expectedNewWorldName = "Pandora" + textToAppend;
+        var textBoxes = retrieveElement('#worldsList input');
+        var hyperlinks = retrieveElement('#worldsList a');
+        var saveIcon = retrieveElement('.fa-floppy-o');
+
+        var worldList = retrieveElement('#worldsList');
+        textBoxes.sendKeys(textToAppend);
+
+        saveIcon.click().then(function(){
+          expect(worldList.getText()).toEqual(expectedNewWorldName);
+          expect(worldList.getText()).toEqual(hyperlinks.getAttribute('innerHTML'));
+          expect(worldList.getText()).toEqual(textBoxes.getAttribute('value'));
+          checkVisibilityOfElementsAfterLeavingEditMode(done)
+        }).then(done);
 
       });
 
@@ -205,7 +205,6 @@ describe('the application opens to the Worlds screen by default and ...', functi
         var undoIcon = element(by.css('.fa-undo'));
         undoIcon.click();
 
-        var worldList = element(by.id('worldsList'));
         var worldListArr = element.all(by.id('worldsList'));
         browser.wait(ec.presenceOf(worldList),1000).then(function(){
           expect(worldListArr.count()).toEqual(2);
@@ -216,32 +215,36 @@ describe('the application opens to the Worlds screen by default and ...', functi
           fail();
         }).then(done);
 
-        checkIfHtmlElementIsDisplayed(done, '#worldsList a');
-        checkIfHtmlElementIsDisplayed(done, '.fa-pencil-square-o');
-        checkIfHtmlElementIsNotDisplayed(done, '#worldsList input');
-        checkIfHtmlElementIsNotDisplayed(done, '.fa-floppy-o');
-        checkIfHtmlElementIsNotDisplayed(done, '.fa-undo');
-        checkIfHtmlElementIsNotDisplayed(done, '.fa-trash');
+
+        checkVisibilityOfElementsAfterLeavingEditMode(done);
       });
 
       it('deletes the world when the delete icon is clicked', function(){
 
       });
 
+      function retrieveElement(cssSelector){
+        return browser.driver.findElement(by.css(cssSelector));
+      }
+
       function checkIfHtmlElementIsDisplayed(done, cssSelector){
-        browser.wait(ec.presenceOf(worldList), 1000).then(function(){
-          expect(element(by.css(cssSelector)).isDisplayed()).toBeTruthy();
-        }, function(err){
-          fail();
-        }).then(done);
+        expect(retrieveElement(cssSelector).getCssValue('display')).not.toEqual('none');
+        expect(retrieveElement(cssSelector).getCssValue('display')).not.toEqual('');
+        done();
       }
 
       function checkIfHtmlElementIsNotDisplayed(done, cssSelector){
-        browser.wait(ec.presenceOf(worldList),1000).then(function(){
-          expect(element(by.css(cssSelector)).isDisplayed()).toBeFalsy();
-        }, function(err){
-          fail();
-        }).then(done);
+        expect(retrieveElement(cssSelector).getCssValue('display')).toEqual('none');
+        done();
+      }
+
+      function checkVisibilityOfElementsAfterLeavingEditMode(done){
+        checkIfHtmlElementIsDisplayed(done, '#worldsList a');
+        checkIfHtmlElementIsDisplayed(done, '.fa-pencil-square-o');
+        checkIfHtmlElementIsNotDisplayed(done, '#worldsList input');
+        checkIfHtmlElementIsNotDisplayed(done, '.fa-floppy-o');
+        checkIfHtmlElementIsNotDisplayed(done, '.fa-undo');
+        checkIfHtmlElementIsNotDisplayed(done, '.fa-trash');
       }
 
     });
