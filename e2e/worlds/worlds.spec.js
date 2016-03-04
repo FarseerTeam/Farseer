@@ -67,8 +67,6 @@ describe('the application opens to the Worlds screen by default and ...', functi
           .then(done);
       });
 
-
-
       it('displays the name of all of the worlds on file as hyperlinks', function (done) {
 
         var ec = protractor.ExpectedConditions;
@@ -210,7 +208,6 @@ describe('the application opens to the Worlds screen by default and ...', functi
           expect(worldListArr.count()).toEqual(2);
           expect(worldListArr.getText()).toEqual(hyperlinks.getAttribute('innerHTML'));
           expect(worldListArr.getText()).toEqual(textBoxes.getAttribute('value'));
-
         }, function(err){
           fail();
         }).then(done);
@@ -219,7 +216,22 @@ describe('the application opens to the Worlds screen by default and ...', functi
         checkVisibilityOfElementsAfterLeavingEditMode(done);
       });
 
-      it('deletes the world when the delete icon is clicked', function(){
+      it('deletes the world when the delete icon is clicked', function(done){
+        var worldList = element(by.id('worldsList'));
+        var deleteIcon = retrieveElement('.fa-trash');
+
+        deleteIcon.click();
+        browser.switchTo().alert().accept();
+
+        var worldListArr = element.all(by.id('worldsList'));
+        browser.wait(ec.presenceOf(worldList), 1000).then(function(){
+          var expectedWorldsArr = ['Pillar'];
+          expect(worldListArr.count()).toEqual(1);
+          expect(worldListArr.getText()).toEqual(expectedWorldsArr);
+          checkVisibilityOfElementsAfterLeavingEditMode(done);
+        }, function(err){
+          fail();
+        }).then(done);
 
       });
 
