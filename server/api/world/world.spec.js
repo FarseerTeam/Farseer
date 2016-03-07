@@ -16,6 +16,10 @@ describe('/api/worlds', function () {
     var worldList = [];
 
     beforeEach(function (done) {
+
+      worlds.World.remove({}, function () {
+      });
+
       worlds.World.create([{
         name: "Hogwarts"
       }, {
@@ -28,12 +32,6 @@ describe('/api/worlds', function () {
         });
         done();
       }, done);
-    });
-
-    afterEach(function (done) {
-      worlds.World.remove({}, function () {
-        done();
-      });
     });
 
     it('should return a list of worlds', function (done) {

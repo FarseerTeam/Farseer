@@ -73,8 +73,8 @@ describe('the application opens to the Worlds screen by default and ...', functi
         var worldList = element(by.id('worldsList'));
         browser.wait(ec.presenceOf(worldList),1000).then(function(){
           var worldList=element.all(by.id('worldsList'));
-
-          expect(worldList.getText()).toEqual(['Pandora','Pillar']);
+          expect(worldList.getText()).toContain('Pandora');
+          expect(worldList.getText()).toContain('Pillar');
         }, function(){
           fail();
         }).then(done);
@@ -125,7 +125,9 @@ describe('the application opens to the Worlds screen by default and ...', functi
         var worldListArr = element.all(by.id('worldsList'));
         browser.wait(ec.presenceOf(worldList),1000).then(function(){
           expect(worldListArr.count()).toEqual(3);
-          expect(worldListArr.getText()).toEqual(['Pandora','Pillar','Neptune']);
+          expect(worldListArr.getText()).toContain('Pandora');
+          expect(worldListArr.getText()).toContain('Pillar');
+          expect(worldListArr.getText()).toContain('Neptune');
         }, function(err){
           fail();
         }).then(done);
@@ -220,6 +222,7 @@ describe('the application opens to the Worlds screen by default and ...', functi
         var worldList = element(by.id('worldsList'));
         var deleteIcon = retrieveElement('.fa-trash');
 
+        //sort?
         deleteIcon.click();
         browser.switchTo().alert().accept();
 
