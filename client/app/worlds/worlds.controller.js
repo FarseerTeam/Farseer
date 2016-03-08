@@ -32,10 +32,15 @@ angular
 
     $scope.updateWorld = function(oldWorldName, updatedWorldName) {
       httpService.updateWorld(oldWorldName, updatedWorldName).then(function(response) {
-        for (var i = 0; i < $scope.worlds.length; i++) {
-          if ($scope.worlds[i].name === oldWorldName) {
-            $scope.worlds[i].name = response.data.name;
-            break;
+        if(response.data.errorCode){
+          alert(response.data.message);
+        }
+        else{
+          for (var i = 0; i < $scope.worlds.length; i++) {
+           if ($scope.worlds[i].name === oldWorldName) {
+             $scope.worlds[i].name = response.data.name;
+             break;
+           }
           }
         }
       });

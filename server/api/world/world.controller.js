@@ -3,6 +3,7 @@
 var _ = require('lodash');
 var worlds = require('../../components/worlds');
 var players = require('../../components/players');
+var errorHandler = require('../common/errorHandler');
 
 exports.index = function (request, response) {
   worlds.World.find({}, function (err, doc) {
@@ -39,5 +40,10 @@ exports.update = function (request, response) {
   worlds.updateWorldName(worldToChange, updatedWorldName).then(function(data) {
     players.updatePlayersWorlds(worldToChange, updatedWorldName);
     response.json(data);
+  }, function (err){
+    response.send({
+      errorCode : err.code,
+      message: errorHandler.retrieveErrorMessage(err.code, 'world')
+    });
   });
 };

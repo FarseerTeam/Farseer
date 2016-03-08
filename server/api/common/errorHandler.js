@@ -2,15 +2,20 @@
 
 module.exports = (function(){
   var _retrieveErrorMessage = function(errorCode, propertyName){
-    if (errorCode === 11000){
+    const DUPLICATE_KEY_ERROR_CODE = 11000;
+    const INTERNAL_SERVER_ERROR = 500;
+
+    if (errorCode === DUPLICATE_KEY_ERROR_CODE){
       return 'Cannot enter a ' +
         propertyName +
         ' with the same name as another ' +
         propertyName;
     }
-    else if (errorCode === 500){
-      return 'An internal server error has occurred.';
-    }
+    else {
+        if (errorCode === INTERNAL_SERVER_ERROR){
+              return 'An internal server error has occurred.';
+            }
+      }
     return '';
   }
 

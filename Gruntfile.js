@@ -673,7 +673,7 @@ module.exports = function (grunt) {
         'autoprefixer',
         'express:devTest',
         'protractor:chrome',
-        'protractor:firefox'
+        //'protractor:firefox'
       ]);
     }
 

@@ -86,29 +86,23 @@ describe('/api/worlds', function () {
   });
 
   describe('PUT', function() {
-    var world = { name: 'Lost World' };
-    beforeEach(function(done) {
+    const world1 = { name: "Hogwarts" };
+    const world2 = { name: 'Narnia' };
 
-      authenticatedRequest
-        .post('/api/worlds')
-        .send(world)
-        .expect(200)
-        .expect('Content-Type', /json/)
-        .end(function (err, res) {
-          if (err) return done(err);
-          done();
-        });
-    });
+    beforeEach(function (done) {
 
-    afterEach(function(done) {
       worlds.World.remove({}, function () {
-        done();
       });
+
+      worlds.World.create([world1, world2]).then(function () {
+         done();
+      }, done);
+
     });
 
     it('should update a world name', function(done) {
       var newWorldName = 'Updated World';
-      var request = {oldWorldName: world.name, updatedWorldName: newWorldName};
+      var request = {oldWorldName: world2.name, updatedWorldName: newWorldName};
 
       authenticatedRequest
         .put('/api/worlds')
@@ -121,6 +115,25 @@ describe('/api/worlds', function () {
           done();
         });
     })
+
+    it('will throw an error if the oldWorldName and the updatedWorldName are the same', function(done){
+      var request = {oldWorldName: world2.name, updatedWorldName: world1.name};
+      const DUPLICATE_ERROR_CODE = 11000;
+
+      const EXPECTED_ERROR_MESSAGE_WORLD = "Cannot enter a world with " +
+        "the same name as another world";
+
+      authenticatedRequest
+        .put('/api/worlds')
+        .send(request)
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .end(function (err, res) {
+          expect(res.body.errorCode).to.be.eql(DUPLICATE_ERROR_CODE);
+          expect(res.body.message).to.be.eql(EXPECTED_ERROR_MESSAGE_WORLD);
+          done();
+        });
+    });
   })
 
   describe('DELETE', function() {

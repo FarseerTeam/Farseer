@@ -57,12 +57,53 @@ describe('Controller: WorldsCtrl', function () {
     });
 
     it('should not update if world not found', function() {
+      var SECOND_WORLD_INDEX = 1;
       var NON_EXISTING_WORLD = 'asdf';
       var UPDATED_WORLD = 'Pandora';
       scope.updateWorld(NON_EXISTING_WORLD, UPDATED_WORLD);
       scope.$digest();
 
-      expect(testWorlds).toBe(testWorlds);
+      expect(scope.worlds[SECOND_WORLD_INDEX].name).not.toBe(UPDATED_WORLD);
+    });
+
+    it('should show alert and not update world if an error code and message are received', function(){
+      var expectedMessage = 'The Displayed Message';
+      var someErrorCode = 1;
+
+      spyOn(window, 'alert');
+
+      inject(function ($controller, $rootScope, $q) {
+        mockService = {
+          getWorlds: function () {
+            var deferred = $q.defer();
+            deferred.resolve(testWorlds);
+            return deferred.promise;
+          },
+          updateWorld : function () {
+            var deferred = $q.defer();
+            deferred.resolve({data: {errorCode: someErrorCode, message: expectedMessage}});
+            return deferred.promise;
+          }
+        };
+
+        scope = $rootScope.$new();
+        testWorlds = [{name: 'Hogwarts School of Witchcraft and Wizardry'}, {name: 'Beauxbatons Academy of Magic'}, {name: 'Durmstrang Institute'}, {name: 'Pillar'}];
+        WorldsCtrl = $controller('WorldsCtrl', {
+          $scope: scope,
+          httpService: mockService
+        });
+      });
+
+      var SECOND_WORLD_INDEX = 1;
+      var FIRST_WORLD_INDEX = 0;
+      scope.updateWorld(testWorlds[SECOND_WORLD_INDEX].name, testWorlds[FIRST_WORLD_INDEX].name);
+      scope.$digest();
+
+      expect(window.alert).toHaveBeenCalledWith(expectedMessage);
+      expect(testWorlds[SECOND_WORLD_INDEX].name).not.toBe(testWorlds[FIRST_WORLD_INDEX].name);
+      expect(testWorlds[SECOND_WORLD_INDEX].name).not.toBe(undefined);
+      expect(testWorlds[SECOND_WORLD_INDEX].name).not.toBe('');
+
     });
   });
 
