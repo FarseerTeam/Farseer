@@ -18,7 +18,7 @@ angular
     }
 
     $scope.convertToLowerCaseNoSpaces = function(nameToConvert) {
-      if (nameToConvert !== null && nameToConvert !== undefined) {
+      if (nameToConvert) {
         return nameToConvert.replace(/ /g, '').toLowerCase();
       }
       return '';

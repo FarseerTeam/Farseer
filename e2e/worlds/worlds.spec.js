@@ -39,13 +39,16 @@ describe('the application opens to the Worlds screen by default and ...', functi
       var inputName=element(by.id('worldNameInput'));
       var addButton=element(by.id('addWorldButton'));
       var ec = protractor.ExpectedConditions;
+      const EXPECTED_WORLD_NAME = 'Pandora';
 
-      inputName.sendKeys('Pandora');
+      inputName.sendKeys(EXPECTED_WORLD_NAME);
       addButton.click();
 
       var worldList = element(by.id('worldsList'));
       browser.wait(ec.presenceOf(worldList),1000).then(function(){
-        expect(worldList.getText()).toEqual('Pandora');
+        const hyperlinkText = element(by.css('#worldsList a')).getAttribute('innerHTML');
+        expect(hyperlinkText).toEqual(EXPECTED_WORLD_NAME);
+        expect(worldList.getText()).toEqual(EXPECTED_WORLD_NAME);
       }, function(err){
         fail();
       }).then(done);
@@ -73,8 +76,10 @@ describe('the application opens to the Worlds screen by default and ...', functi
         var worldList = element(by.id('worldsList'));
         browser.wait(ec.presenceOf(worldList),1000).then(function(){
           var worldList=element.all(by.id('worldsList'));
+          var textOfHyperlinks = element.all(by.css('#worldsList a')).getAttribute('innerHTML');
 
           expect(worldList.getText()).toEqual(['Pandora','Pillar']);
+          expect(textOfHyperlinks).toEqual(['Pandora','Pillar']);
         }, function(){
           fail();
         }).then(done);

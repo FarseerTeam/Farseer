@@ -144,12 +144,13 @@ describe('Controller: WorldsCtrl', function () {
     });
 
     it('should delete a world on confirmation', function() {
+      var EXPECTED_DELETE_WORLD_STATUS = 1;
       spyOn(window, 'confirm').and.returnValue(true);
 
       scope.deleteWorldOnUserConfirmation(world);
       scope.$digest();
 
-      expect(scope.deleteWorldStatus).toBe(1);
+      expect(scope.deleteWorldStatus).toBe(EXPECTED_DELETE_WORLD_STATUS);
     });
 
     it('should not delete a world on cancellation', function() {
