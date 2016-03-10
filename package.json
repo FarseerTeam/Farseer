@@ -16,7 +16,6 @@
     "lodash": "^3.10.1",
     "method-override": "~2.3.5",
     "mongoose": "^4.2.8",
-    "mongoose-unique-validator": "^1.0.2",
     "morgan": "~1.6.1",
     "passport": "^0.3.2",
     "passport-google-oauth": "^0.2.0",
@@ -89,6 +88,7 @@
     "protractor-jasmine2-screenshot-reporter": "^0.1.7",
     "requirejs": "~2.1.22",
     "should": "^7.1.1",
+    "sinon" : "^1.17.3",
     "supertest": "~1.1.0",
     "time-grunt": "~1.2.2"
   },

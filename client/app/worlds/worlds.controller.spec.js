@@ -66,9 +66,8 @@ describe('Controller: WorldsCtrl', function () {
       expect(scope.worlds[SECOND_WORLD_INDEX].name).not.toBe(UPDATED_WORLD);
     });
 
-    it('should show alert and not update world if an error code and message are received', function(){
+    it('should show alert and not update world if http request is rejected', function(){
       var expectedMessage = 'The Displayed Message';
-      var someErrorCode = 1;
 
       spyOn(window, 'alert');
 
@@ -81,18 +80,18 @@ describe('Controller: WorldsCtrl', function () {
           },
           updateWorld : function () {
             var deferred = $q.defer();
-            deferred.resolve({data: {errorCode: someErrorCode, message: expectedMessage}});
+            deferred.reject({data: {message: expectedMessage}});
             return deferred.promise;
           }
         };
 
         scope = $rootScope.$new();
-        testWorlds = [{name: 'Hogwarts School of Witchcraft and Wizardry'}, {name: 'Beauxbatons Academy of Magic'}, {name: 'Durmstrang Institute'}, {name: 'Pillar'}];
         WorldsCtrl = $controller('WorldsCtrl', {
           $scope: scope,
           httpService: mockService
         });
       });
+
 
       var SECOND_WORLD_INDEX = 1;
       var FIRST_WORLD_INDEX = 0;
@@ -175,6 +174,47 @@ describe('Controller: WorldsCtrl', function () {
       expect(scope.worlds.length).toBe(testWorlds.length);
       expect(_.last(scope.worlds)).toBe(newWorld);
     });
+
+    it('should show alert with message and set newWorld to empty string if http request is rejected', function(){
+      var expectedMessage = 'Here is a Message';
+      scope.newWorld = 'I am a new world and I am happy to be added';
+
+      spyOn(window, 'alert');
+
+      setupMockServiceToRejectAddWorldAndReturnMessage(expectedMessage);
+
+      scope.$digest();
+      scope.worlds = [];
+      scope.addWorld();
+      scope.$digest();
+
+      expect(scope.worlds).toEqual([]);
+      expect(scope.newWorld).toEqual('');
+      expect(window.alert).toHaveBeenCalledWith(expectedMessage);
+    });
+
+    function setupMockServiceToRejectAddWorldAndReturnMessage(messageToReturn){
+      inject(function ($controller, $rootScope, $q) {
+        mockService = {
+          getWorlds: function () {
+            var deferred = $q.defer();
+            deferred.resolve(testWorlds);
+            return deferred.promise;
+          },
+          addWorld : function () {
+            var deferred = $q.defer();
+            deferred.reject({data: {message: messageToReturn}});
+            return deferred.promise;
+          }
+        };
+
+        scope = $rootScope.$new();
+        WorldsCtrl = $controller('WorldsCtrl', {
+          $scope: scope,
+          httpService: mockService
+        });
+      });
+    }
   });
 
   describe('delete a world', function() {

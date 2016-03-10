@@ -26,23 +26,23 @@ angular
 
     $scope.addWorld = function () {
       httpService.addWorld($scope.newWorld).then(function (response) {
-        addNewWorldToScope(response.data);
+          addNewWorldToScope(response.data);
+      }, function(response){
+        alert(response.data.message);
+        $scope.newWorld = '';
       });
     };
 
     $scope.updateWorld = function(oldWorldName, updatedWorldName) {
       httpService.updateWorld(oldWorldName, updatedWorldName).then(function(response) {
-        if(response.data.errorCode){
-          alert(response.data.message);
-        }
-        else{
-          for (var i = 0; i < $scope.worlds.length; i++) {
-           if ($scope.worlds[i].name === oldWorldName) {
-             $scope.worlds[i].name = response.data.name;
-             break;
-           }
+        for (var i = 0; i < $scope.worlds.length; i++) {
+          if ($scope.worlds[i].name === oldWorldName) {
+            $scope.worlds[i].name = response.data.name;
+            break;
           }
         }
+      }, function (response){
+        alert(response.data.message);
       });
     };
 
