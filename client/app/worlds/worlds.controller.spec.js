@@ -66,11 +66,23 @@ describe('Controller: WorldsCtrl', function () {
       expect(scope.worlds[SECOND_WORLD_INDEX].name).not.toBe(UPDATED_WORLD);
     });
 
-    it('should show alert and not update world if http request is rejected', function(){
+    it('should show alert and set updatedWorldName to old world name if http request is rejected', function(){
       var expectedMessage = 'The Displayed Message';
+      var SECOND_WORLD_INDEX = 1;
+      var oldWorldName = testWorlds[SECOND_WORLD_INDEX].name;
 
       spyOn(window, 'alert');
 
+      setupMockServiceToRejectUpdateWorldAndReturnMessage(expectedMessage);
+
+      scope.updateWorld(oldWorldName, 'Some other name');
+      scope.$digest();
+
+      expect(window.alert).toHaveBeenCalledWith(expectedMessage);
+      expect(scope.updatedWorldNames[SECOND_WORLD_INDEX]).toBe(oldWorldName);
+    });
+
+    function setupMockServiceToRejectUpdateWorldAndReturnMessage(messageToReturn){
       inject(function ($controller, $rootScope, $q) {
         mockService = {
           getWorlds: function () {
@@ -80,7 +92,7 @@ describe('Controller: WorldsCtrl', function () {
           },
           updateWorld : function () {
             var deferred = $q.defer();
-            deferred.reject({data: {message: expectedMessage}});
+            deferred.reject({data: {message: messageToReturn}});
             return deferred.promise;
           }
         };
@@ -91,19 +103,7 @@ describe('Controller: WorldsCtrl', function () {
           httpService: mockService
         });
       });
-
-
-      var SECOND_WORLD_INDEX = 1;
-      var FIRST_WORLD_INDEX = 0;
-      scope.updateWorld(testWorlds[SECOND_WORLD_INDEX].name, testWorlds[FIRST_WORLD_INDEX].name);
-      scope.$digest();
-
-      expect(window.alert).toHaveBeenCalledWith(expectedMessage);
-      expect(testWorlds[SECOND_WORLD_INDEX].name).not.toBe(testWorlds[FIRST_WORLD_INDEX].name);
-      expect(testWorlds[SECOND_WORLD_INDEX].name).not.toBe(undefined);
-      expect(testWorlds[SECOND_WORLD_INDEX].name).not.toBe('');
-
-    });
+    }
   });
 
   describe('urls are translated properly', function() {

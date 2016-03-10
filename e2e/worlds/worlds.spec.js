@@ -163,7 +163,7 @@ describe('the application opens to the Worlds screen by default and ...', functi
       });
 
       it('changes the hyperlink to a pre-filled text box when the edit icon is clicked', function(done){
-        var textBoxes = element.all(by.model('updatedWorldName'));
+        var textBoxes = element.all(by.model('updatedWorldNames[$index]'));
         var hyperlinks = element.all(by.css('#worldsList a'));
 
         browser.wait(ec.presenceOf(worldList),1000).then(function(){
@@ -197,8 +197,8 @@ describe('the application opens to the Worlds screen by default and ...', functi
 
       it('resets to the original world name after altering the text box and clicking the undo icon', function(done) {
         var newWorld = "Neptune1234";
-        var inputName=element(by.id('worldNameInput'));
-        var textBoxes = element.all(by.model('updatedWorldName'));
+        var inputName=element(by.css('#worldsList input'));
+        var textBoxes = element.all(by.model('updatedWorldNames[$index]'));
         var hyperlinks = element.all(by.css('#worldsList a'));
 
         inputName.sendKeys(newWorld);
@@ -222,7 +222,6 @@ describe('the application opens to the Worlds screen by default and ...', functi
         var worldList = element(by.id('worldsList'));
         var deleteIcon = retrieveElement('.fa-trash');
 
-        //sort?
         deleteIcon.click();
         browser.switchTo().alert().accept();
 
