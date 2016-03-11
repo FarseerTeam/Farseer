@@ -19,7 +19,7 @@ describe('the application opens to the Worlds screen by default and ...', functi
     });
 
     it('displays the Worlds entry screen on startup',function() {
-      expect(element(by.id('worldTitle')).isPresent()).toBe(true);
+      checkIfHtmlElementIsDisplayed('#worldTitle');
     });
 
     it('has no worlds displayed on the screen',function() {
@@ -27,11 +27,11 @@ describe('the application opens to the Worlds screen by default and ...', functi
     });
 
     it('has a text field for entering a new world',function(){
-      expect(element(by.id('worldNameInput')).isPresent()).toBe(true);
+      checkIfHtmlElementIsDisplayed('#worldNameInput');
     });
 
     it('has an add button to allowing adding of a new world',function(){
-      expect(element(by.id('addWorldButton')).isPresent()).toBe(true);
+      checkIfHtmlElementIsDisplayed('#addWorldButton');
     });
 
     it('displays a newly-added world as a hyperlink after entering a new world and clicking the add button',function(done){
@@ -159,10 +159,10 @@ describe('the application opens to the Worlds screen by default and ...', functi
           .then(done);
       });
 
-      it('displays a save, an undo, and a delete icon after the text box when the edit icon is clicked',function(done) {
-        checkIfHtmlElementIsDisplayed(done, '.fa-floppy-o');
-        checkIfHtmlElementIsDisplayed(done, '.fa-undo');
-        checkIfHtmlElementIsDisplayed(done, '.fa-trash');
+      it('displays a save, an undo, and a delete icon after the text box when the edit icon is clicked',function() {
+        checkIfHtmlElementIsDisplayed('.fa-floppy-o');
+        checkIfHtmlElementIsDisplayed('.fa-undo');
+        checkIfHtmlElementIsDisplayed('.fa-trash');
       });
 
       it('changes the hyperlink to a pre-filled text box when the edit icon is clicked', function(done){
@@ -171,12 +171,11 @@ describe('the application opens to the Worlds screen by default and ...', functi
 
         browser.wait(ec.presenceOf(worldList),1000).then(function(){
           expect(textBoxes.getAttribute('value')).toEqual(hyperlinks.getAttribute('innerHTML'));
+          checkIfHtmlElementIsDisplayed('#worldsList input');
+          checkIfHtmlElementIsNotDisplayed('#worldsList a');
         }, function(err){
           fail();
         }).then(done);
-
-        checkIfHtmlElementIsDisplayed(done, '#worldsList input');
-        checkIfHtmlElementIsNotDisplayed(done, '#worldsList a');
       });
 
       it('changes the text box to a hyperlink containing the new world name when the save icon is clicked', function(done){
@@ -193,7 +192,7 @@ describe('the application opens to the Worlds screen by default and ...', functi
           expect(worldList.getText()).toEqual(expectedNewWorldName);
           expect(worldList.getText()).toEqual(hyperlinks.getAttribute('innerHTML'));
           expect(worldList.getText()).toEqual(textBoxes.getAttribute('value'));
-          checkVisibilityOfElementsAfterLeavingEditMode(done)
+          checkVisibilityOfElementsAfterLeavingEditMode()
         }).then(done);
 
       });
@@ -213,12 +212,12 @@ describe('the application opens to the Worlds screen by default and ...', functi
           expect(worldListArr.count()).toEqual(2);
           expect(worldListArr.getText()).toEqual(hyperlinks.getAttribute('innerHTML'));
           expect(worldListArr.getText()).toEqual(textBoxes.getAttribute('value'));
+          checkVisibilityOfElementsAfterLeavingEditMode();
         }, function(err){
           fail();
         }).then(done);
 
 
-        checkVisibilityOfElementsAfterLeavingEditMode(done);
       });
 
       it('deletes the world when the delete icon is clicked', function(done){
@@ -240,31 +239,29 @@ describe('the application opens to the Worlds screen by default and ...', functi
 
       });
 
-      function retrieveElement(cssSelector){
-        return browser.driver.findElement(by.css(cssSelector));
-      }
-
-      function checkIfHtmlElementIsDisplayed(done, cssSelector){
-        expect(retrieveElement(cssSelector).getCssValue('display')).not.toEqual('none');
-        expect(retrieveElement(cssSelector).getCssValue('display')).not.toEqual('');
-        done();
-      }
-
-      function checkIfHtmlElementIsNotDisplayed(done, cssSelector){
-        expect(retrieveElement(cssSelector).getCssValue('display')).toEqual('none');
-        done();
-      }
-
-      function checkVisibilityOfElementsAfterLeavingEditMode(done){
-        checkIfHtmlElementIsDisplayed(done, '#worldsList a');
-        checkIfHtmlElementIsDisplayed(done, '.fa-pencil-square-o');
-        checkIfHtmlElementIsNotDisplayed(done, '#worldsList input');
-        checkIfHtmlElementIsNotDisplayed(done, '.fa-floppy-o');
-        checkIfHtmlElementIsNotDisplayed(done, '.fa-undo');
-        checkIfHtmlElementIsNotDisplayed(done, '.fa-trash');
+      function checkVisibilityOfElementsAfterLeavingEditMode(){
+        checkIfHtmlElementIsDisplayed('#worldsList a');
+        checkIfHtmlElementIsDisplayed('.fa-pencil-square-o');
+        checkIfHtmlElementIsNotDisplayed('#worldsList input');
+        checkIfHtmlElementIsNotDisplayed('.fa-floppy-o');
+        checkIfHtmlElementIsNotDisplayed('.fa-undo');
+        checkIfHtmlElementIsNotDisplayed('.fa-trash');
       }
 
     });
 
   });
+
+  function retrieveElement(cssSelector){
+    return browser.driver.findElement(by.css(cssSelector));
+  }
+
+  function checkIfHtmlElementIsDisplayed(cssSelector){
+    expect(retrieveElement(cssSelector).getCssValue('display')).not.toEqual('none');
+    expect(retrieveElement(cssSelector).getCssValue('display')).not.toEqual('');
+  }
+
+  function checkIfHtmlElementIsNotDisplayed(cssSelector){
+    expect(retrieveElement(cssSelector).getCssValue('display')).toEqual('none');
+  }
 });
