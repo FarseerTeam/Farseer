@@ -148,8 +148,8 @@ describe('the application opens to the Worlds screen by default and ...', functi
           .then(setup.addWorld('Pandora'))
           .then(setup.addWorld('Pillar'))
           .then(browser.get('/'))
-          .then(activateEditMode())
           .then(done);
+
       });
 
       afterEach(function(done){
@@ -158,12 +158,14 @@ describe('the application opens to the Worlds screen by default and ...', functi
       });
 
       it('displays a save, an undo, and a delete icon after the text box when the edit icon is clicked',function() {
+        activateEditMode();
         checkIfHtmlElementIsDisplayed('.fa-floppy-o');
         checkIfHtmlElementIsDisplayed('.fa-undo');
         checkIfHtmlElementIsDisplayed('.fa-trash');
       });
 
       it('changes the hyperlink to a pre-filled text box when the edit icon is clicked', function(done){
+        activateEditMode();
         var textBoxes = element.all(by.model('updatedWorldName'));
         var hyperlinks = element.all(by.css('#worldsList a'));
 
@@ -177,6 +179,7 @@ describe('the application opens to the Worlds screen by default and ...', functi
       });
 
       it('changes the text box to a hyperlink containing the new world name when the save icon is clicked', function(done){
+        activateEditMode();
         var textToAppend = "Omega";
         var expectedNewWorldName = "Pandora" + textToAppend;
         var textBoxes = retrieveElement('#worldsList input');
@@ -196,6 +199,7 @@ describe('the application opens to the Worlds screen by default and ...', functi
       });
 
       it('resets to the original world name after altering the text box and clicking the undo icon', function(done) {
+        activateEditMode();
         var newWorld = "Neptune1234";
         var inputName=element(by.css('#worldsList input'));
         var textBoxes = element.all(by.model('updatedWorldName'));
@@ -219,6 +223,7 @@ describe('the application opens to the Worlds screen by default and ...', functi
       });
 
       it('deletes the world when the delete icon is clicked', function(done){
+        activateEditMode();
         var worldList = element(by.id('worldsList'));
         var deleteIcon = retrieveElement('.fa-trash');
 
