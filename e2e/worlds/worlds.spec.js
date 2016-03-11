@@ -200,7 +200,7 @@ describe('the application opens to the Worlds screen by default and ...', functi
 
       it('resets to the original world name after altering the text box and clicking the undo icon', function(done) {
         var newWorld = "Neptune1234";
-        var inputName=element(by.id('worldNameInput'));
+        var inputName=element(by.css('#worldsList input'));
         var textBoxes = element.all(by.model('updatedWorldName'));
         var hyperlinks = element.all(by.css('#worldsList a'));
 
