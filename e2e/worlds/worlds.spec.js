@@ -4,6 +4,7 @@ var setup = require('../common/data-setup');
 var page = require('./worlds.po.js');
 var RSVP = require('rsvp');
 var protractor = require('protractor');
+var ec = protractor.ExpectedConditions;
 
 describe('the application opens to the Worlds screen by default and ...', function(){
   describe('when there are no worlds', function() {
@@ -38,7 +39,6 @@ describe('the application opens to the Worlds screen by default and ...', functi
 
       var inputName=element(by.id('worldNameInput'));
       var addButton=element(by.id('addWorldButton'));
-      var ec = protractor.ExpectedConditions;
       const EXPECTED_WORLD_NAME = 'Pandora';
 
       inputName.sendKeys(EXPECTED_WORLD_NAME);
@@ -71,8 +71,6 @@ describe('the application opens to the Worlds screen by default and ...', functi
       });
 
       it('displays the name of all of the worlds on file as hyperlinks', function (done) {
-
-        var ec = protractor.ExpectedConditions;
         var worldList = element(by.id('worldsList'));
         browser.wait(ec.presenceOf(worldList),1000).then(function(){
           var worldList=element.all(by.id('worldsList'));
@@ -86,8 +84,6 @@ describe('the application opens to the Worlds screen by default and ...', functi
       });
 
       it('displays an edit icon after each entry', function (done) {
-
-        var ec = protractor.ExpectedConditions;
         var editIcons = element(by.css('.fa-pencil-square-o'));
 
         browser.wait(ec.presenceOf(editIcons),1000).then(function(){
@@ -121,7 +117,6 @@ describe('the application opens to the Worlds screen by default and ...', functi
         var newWorld = "Neptune";
         var inputName=element(by.id('worldNameInput'));
         var addButton=element(by.id('addWorldButton'));
-        var ec = protractor.ExpectedConditions;
 
         inputName.sendKeys(newWorld);
         addButton.click();
@@ -139,8 +134,6 @@ describe('the application opens to the Worlds screen by default and ...', functi
     });
 
     describe('when editing the existing entries',function(){
-
-      var ec = protractor.ExpectedConditions;
       var worldList = element(by.id('worldsList'));
 
       beforeEach(function(done){
@@ -150,6 +143,7 @@ describe('the application opens to the Worlds screen by default and ...', functi
           .then(browser.get('/'))
           .then(done);
 
+        activateEditMode();
       });
 
       afterEach(function(done){
@@ -158,14 +152,12 @@ describe('the application opens to the Worlds screen by default and ...', functi
       });
 
       it('displays a save, an undo, and a delete icon after the text box when the edit icon is clicked',function() {
-        activateEditMode();
         checkIfHtmlElementIsDisplayed('.fa-floppy-o');
         checkIfHtmlElementIsDisplayed('.fa-undo');
         checkIfHtmlElementIsDisplayed('.fa-trash');
       });
 
       it('changes the hyperlink to a pre-filled text box when the edit icon is clicked', function(done){
-        activateEditMode();
         var textBoxes = element.all(by.model('updatedWorldName'));
         var hyperlinks = element.all(by.css('#worldsList a'));
 
@@ -179,7 +171,6 @@ describe('the application opens to the Worlds screen by default and ...', functi
       });
 
       it('changes the text box to a hyperlink containing the new world name when the save icon is clicked', function(done){
-        activateEditMode();
         var textToAppend = "Omega";
         var expectedNewWorldName = "Pandora" + textToAppend;
         var textBoxes = retrieveElement('#worldsList input');
@@ -193,13 +184,12 @@ describe('the application opens to the Worlds screen by default and ...', functi
           expect(worldList.getText()).toEqual(expectedNewWorldName);
           expect(worldList.getText()).toEqual(hyperlinks.getAttribute('innerHTML'));
           expect(worldList.getText()).toEqual(textBoxes.getAttribute('value'));
-          checkVisibilityOfElementsAfterLeavingEditMode()
+          checkVisibilityOfElementsAfterLeavingEditMode();
         }).then(done);
 
       });
 
       it('resets to the original world name after altering the text box and clicking the undo icon', function(done) {
-        activateEditMode();
         var newWorld = "Neptune1234";
         var inputName=element(by.css('#worldsList input'));
         var textBoxes = element.all(by.model('updatedWorldName'));
@@ -223,7 +213,6 @@ describe('the application opens to the Worlds screen by default and ...', functi
       });
 
       it('deletes the world when the delete icon is clicked', function(done){
-        activateEditMode();
         var worldList = element(by.id('worldsList'));
         var deleteIcon = retrieveElement('.fa-trash');
 
@@ -235,7 +224,7 @@ describe('the application opens to the Worlds screen by default and ...', functi
           var expectedWorldsArr = ['Pillar'];
           expect(worldListArr.count()).toEqual(1);
           expect(worldListArr.getText()).toEqual(expectedWorldsArr);
-          checkVisibilityOfElementsAfterLeavingEditMode(done);
+          checkVisibilityOfElementsAfterLeavingEditMode();
         }, function(err){
           fail();
         }).then(done);
