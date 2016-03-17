@@ -173,12 +173,13 @@ describe('The data-setup module... ', function() {
 
   describe('the deleteWorld function...', function(){
     beforeEach(function(done) {
-      setup.purgeData().then(done);
-      setup.addWorld('Pandora')
+      setup.purgeData()
+        .then(function() {
+          return setup.addWorld('Pandora');
+        })
         .then(findAllWorlds)
         .then(validateCountOf(1))
-        .then(done)
-        .then(null, handleError(done));
+        .then(done, handleError(done));
     });
 
 
