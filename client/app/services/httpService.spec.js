@@ -123,7 +123,7 @@ describe('Http Service', function () {
 
     it('should remove a world on world delete', function(){
       var worldName = 'newWorld';
-      $httpBackend.expectDELETE('/api/worlds?worldName='+ worldName).respond(200);
+      $httpBackend.expectDELETE('/api/worlds').respond(200);
 
       service.deleteWorld(worldName).then(function(response){
         expect(response.status).toBe(200);

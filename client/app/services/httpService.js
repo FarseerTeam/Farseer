@@ -25,7 +25,12 @@ angular.module('farseerApp')
     };
 
     this.deleteWorld = function(worldName) {
-      return $http.delete('/api/worlds', {params: {worldName: worldName}}).then(function(response){
+      return $http({
+        url: '/api/worlds',
+        method: 'DELETE',
+        data: {worldName: worldName},
+        headers: {'Content-Type': 'application/json;charset=utf-8'}
+      }).then(function(response){
         return response;
       });
     };
