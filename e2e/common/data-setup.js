@@ -25,23 +25,11 @@ module.exports = (function () {
       });
     },
     addWorld: function (worldName) {
-      var worldPath = worldName.toLowerCase().replace(/\s+/, '');
-
-      var world = worlds.World({name: worldName, path: worldPath});
-
-      return world.save().then(function () {
-        return undefined;
-      });
+      var world = worlds.World({name: worldName});
+      return world.save();
     },
-    deleteWorld: function(worldName) {
-      worlds.World.remove({name: worldName},function(err, result){
-        if(err){
-          console.log('Failed to remove world ', worldName, err);
-        }
-        else {
-          console.log('Succeeded removing world ', worldName, result);
-        }
-      });
+    deleteWorld: function(worldId) {
+      return worlds.World({_id: worldId}).remove();
     },
     purgeData: function () {
       return RSVP.all([

@@ -1,13 +1,13 @@
-p(class='white') Worlds
-label(for='name', class='white') Name:
-input(type='text', id='name', ng-model='newWorld.name', ng-required)
-button(type='button', ng-click='addWorld()') Add
+p(id='worldTitle' class='white') Worlds
+label(id='worldLabel' for='worldNameInput', class='white') Name:
+input(id='worldNameInput' type='text', ng-model='newWorld.name', ng-required)
+button(id='addWorldButton' type='button', ng-click='addWorld()') Add
 
 div(id="worldsList" ng-repeat='world in worlds', class='white')
-    a(href="/worlds/{{convertToLowerCaseNoSpaces(world.name)}}/players?displayableWorld={{world.name}}")(ng-show="!worldEditMode") {{world.name}} &nbsp;
-    input(type='text', ng-model='updatedWorldName' value="{{world.name}}")(ng-show="worldEditMode")
+    a(href="/worlds/{{convertToLowerCaseNoSpaces(world.name)}}/players?displayableWorld={{world.name}}")(ng-show="!worldEditMode") {{world.name}}
+    input(type='text', ng-model='updatedWorldName', ng-value="updatedWorldName == undefined ? world.name : updatedWorldName" )(ng-show="worldEditMode")
     i.fa.fa-pencil-square-o.fa-fw(ng-click='worldEditMode = true')(ng-show="!worldEditMode")
-    i.fa.fa-floppy-o.fa-fw(ng-show="worldEditMode")(ng-click='updateWorld(world.name, updatedWorldName)')
-    i.fa.fa-undo.fa-fw(ng-show="worldEditMode")(ng-click='worldEditMode = false')
-    i.fa.fa-trash.fa-fw(ng-show="worldEditMode")(ng-click="deleteWorld(world.name)")
+    i.fa.fa-floppy-o.fa-fw(ng-show="worldEditMode")(ng-click='updateWorld(world.name, updatedWorldName); worldEditMode = false;')
+    i.fa.fa-undo.fa-fw(ng-show="worldEditMode")(ng-click='worldEditMode = false; updatedWorldName = world.name')
+    i.fa.fa-trash.fa-fw(ng-show="worldEditMode")(ng-click="deleteWorldOnUserConfirmation(world.name)")
 

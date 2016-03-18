@@ -120,6 +120,29 @@ describe('The data-setup module... ', function() {
 		});
 	});
 
+	describe('the deleteWorld function...', function() {
+
+		beforeEach(function(done) {
+			setup.purgeData().then(done);
+		});
+
+		afterEach(function(done) {
+			 setup.purgeData().then(done);
+		});
+
+    it('deletes the specified world', function(done) {
+
+      setup.addWorld('Neptune1').then(function(data) {
+        setup.deleteWorld(data._id)
+					.then(findAllPlayers)
+					.then(validateCountOf(0))
+					.then(done);
+
+			}).then(done);
+		})
+
+	});
+
 	describe('the addTeam function... ', function() {
 
 		beforeEach(function(done) {
@@ -171,91 +194,31 @@ describe('The data-setup module... ', function() {
 		});
 	});
 
-  describe('the deleteWorld function...', function(){
-    beforeEach(function(done) {
-      setup.purgeData()
-        .then(function() {
-          return setup.addWorld('Pandora');
-        })
-        .then(findAllWorlds)
-        .then(validateCountOf(1))
-        .then(done, handleError(done));
-    });
+	describe('the addWorld function... ', function() {
 
+		beforeEach(function(done) {
+			setup.purgeData().then(done);
+		});
 
-    afterEach(function(done) {
-      setup.purgeData().then(done);
-    });
+		afterEach(function(done) {
+			setup.purgeData().then(done);
+		});
 
-    it('deletes the specified world', function(done) {
-      setup.deleteWorld('Pandora');
+		it('can insert a single world using promises.', function(done) {
+			setup.addWorld('Pandora')
+				.then(findAllWorlds)
+				.then(validateCountOf(1))
+				.then(done)
+				.then(null, handleError(done));
+		});
 
-      findAllWorlds()
-        .then(validateCountOf(0))
-        .then(done)
-        .then(null, handleError(done));
-    });
-
-    //it('deletes all players in the specified world', function(){
-    //
-    //});
-  });
-
-  describe('the addWorld function... ', function() {
-
-    beforeEach(function(done) {
-      setup.purgeData().then(done);
-    });
-
-    afterEach(function(done) {
-      setup.purgeData().then(done);
-    });
-
-    it('can insert a single world using promises.', function(done) {
-      setup.addWorld('Pandora')
-        .then(findAllWorlds)
-        .then(validateCountOf(1))
-        .then(done)
-        .then(null, handleError(done));
-    });
-
-    it('can insert two worlds using promises.', function(done) {
-      setup.addWorld('Pandora')
-        .then(setup.addWorld('Neptune'))
-        .then(findAllWorlds)
-        .then(validateCountOf(2))
-        .then(done)
-        .then(null, handleError(done));
-    });
-
-    it('inserts the name and lower case path into the new world schema', function(done) {
-      setup.addWorld('Pandora')
-        .then(findAllWorlds)
-        .then(validateWorldFields('Pandora', 'pandora'))
-        .then(done);
-    });
-
-    it('inserts the correct name and lower case path with no spaces into the new world', function(done) {
-      setup.addWorld('Great Pandora')
-        .then(findAllWorlds)
-        .then(validateWorldFields('Great Pandora', 'greatpandora'))
-        .then(done);
-    });
-
-    it('returns no value - so that calling done like this will work: setup.addWorld(world).then(done);', function() {
-      setup.addWorld('Pandora')
-        .then(function(arg){
-          expect(arg).not.toBeDefined();
-          done();
-        });
-    });
-
-    var validateWorldFields = function(name, path){
-      return function(world) {
-        var world = world[0];
-        expect(world.name).toEqual(name);
-        expect(world.path).toEqual(path);
-      }
-    };
-  });
+		it('can insert two worlds using promises.', function(done) {
+			setup.addWorld('Pandora')
+				.then(setup.addWorld('Neptune'))
+				.then(findAllWorlds)
+				.then(validateCountOf(2))
+				.then(done)
+				.then(null, handleError(done));
+		});
+	});
 });

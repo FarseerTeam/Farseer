@@ -19,7 +19,13 @@ exports.create = function (request, response) {
 };
 
 exports.delete = function (request, response) {
-  worlds.World.remove({name: request.query.worldName}).then(function(data){
+  var worldName = request.body.worldName;
+  var worldNameFormatted = worldName.replace(/ /g, '').toLowerCase();
+
+  worlds.World.remove({name: worldName}).then(function(data) {
+    players.Player.remove({world: worldNameFormatted}).then(function() {
+      console.log("players have been removed from the world");
+    });
     response.json(data);
   }, function(error){
     response.send({message: "World could not be deleted"});

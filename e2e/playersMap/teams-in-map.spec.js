@@ -141,6 +141,5 @@ describe('The playersMap page has teams on it, and... ', function() {
 		it('the parent teams are still shown on screen', function(){
 			expect(page.allTeams.count()).toBe(3);
 		});
-
 	});
 });
