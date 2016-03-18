@@ -142,8 +142,10 @@ describe('the application opens to the Worlds screen by default and ...', functi
           .then(setup.addWorld('Pillar'))
           .then(browser.get('/'))
           .then(done);
-
-        activateEditMode();
+      });
+      
+      beforeEach(function() {
+        activatePandoraEditMode();
       });
 
       afterEach(function(done){
@@ -231,8 +233,8 @@ describe('the application opens to the Worlds screen by default and ...', functi
 
       });
 
-      function activateEditMode(){
-        retrieveElement('.fa-pencil-square-o').click();
+      function activatePandoraEditMode(){
+        element.all(by.className('fa-pencil-square-o')).first().click();
       }
 
       function checkVisibilityOfElementsAfterLeavingEditMode(){
@@ -249,7 +251,7 @@ describe('the application opens to the Worlds screen by default and ...', functi
   });
 
   function retrieveElement(cssSelector){
-    return browser.driver.findElement(by.css(cssSelector));
+    return element(by.css(cssSelector));
   }
 
   function checkIfHtmlElementIsDisplayed(cssSelector){
