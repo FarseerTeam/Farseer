@@ -57,7 +57,7 @@
     "grunt-node-inspector": "^0.4.1",
     "grunt-nodemon": "~0.4.0",
     "grunt-open": "~0.2.3",
-    "grunt-protractor-runner": "^2.1.0",
+    "grunt-protractor-runner": "^3.0.0",
     "grunt-rev": "~0.1.0",
     "grunt-svgmin": "~3.1.0",
     "grunt-usemin": "~3.1.1",
@@ -103,7 +103,7 @@
     "pretest": "npm run update-webdriver",
     "test": "npm run jshint; npm run grunt-test",
     "preprotractor": "npm run update-webdriver",
-    "update-webdriver": "node node_modules/grunt-protractor-runner/node_modules/protractor/bin/webdriver-manager update"
+    "update-webdriver": "node node_modules/protractor/bin/webdriver-manager update"
   },
   "private": true
 }
