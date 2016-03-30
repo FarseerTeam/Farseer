@@ -2,6 +2,7 @@ var mongoose = require("mongoose");
 var worlds = require("./worlds");
 var RSVP = require('rsvp');
 var expect = require('chai').expect;
+var should = require('should');
 require('chai').use(require('dirty-chai'));
 var assert = require('assert');
 var config = require('../config/environment/test');
@@ -13,27 +14,45 @@ dataService.connect();
 describe("A world", function () {
 
   var world;
+  var worldName = "Hogwarts";
 
   beforeEach(function (done) {
-    worlds.World.create({
-      name: "Hogwarts"
-    }).then(function (document) {
-      world = document;
-      done();
-    }, done);
+
+    worlds.World.remove({}, function () {
+      var world = new worlds.World({name: worldName});
+      world.save(function() {
+        done();
+      });
+
+    });
   });
 
-  afterEach(function (done) {
-    worlds.World.remove({}, function () {
-      done();
-    });
+  it("should save only one world when trying to save multiple worlds with the same name", function(done) {
+
+    var world = new worlds.World({name: worldName});
+    setTimeout(function() {
+      world.save(function(err) {
+        if (err) {
+          worlds.World.count({}, function(err, count){
+            var expectedWorldCount = 1;
+            expect(count).to.equal(expectedWorldCount);
+          });
+        } else {
+          should.fail('We should not save multiple worlds with the same name');
+        }
+      });
+
+    }, 1000);
+
+    done();
   });
 
   it("assigns ID and keeps the world name when saved", function (done) {
-    world.save(function (err, document) {
-      expect(document.name).to.equal("Hogwarts");
+    worlds.World.findOne({name: worldName}, function (err, document) {
       expect(document._id).to.not.be.null();
-      done(err);
-    });
+      expect(document.name).to.equal(worldName);
+      done();
+    })
   });
+
 });

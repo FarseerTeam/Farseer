@@ -6,6 +6,7 @@ angular
 
     $scope.worlds = [];
     $scope.worldEditMode = false;
+    $scope.updatedWorldNames = [];
 
     (function initializeController() {
       loadWorlds();
@@ -26,7 +27,10 @@ angular
 
     $scope.addWorld = function () {
       httpService.addWorld($scope.newWorld).then(function (response) {
-        addNewWorldToScope(response.data);
+          addNewWorldToScope(response.data);
+      }, function(response){
+        window.alert(response.data.message);
+        $scope.newWorld = '';
       });
     };
 
@@ -35,6 +39,14 @@ angular
         for (var i = 0; i < $scope.worlds.length; i++) {
           if ($scope.worlds[i].name === oldWorldName) {
             $scope.worlds[i].name = response.data.name;
+            break;
+          }
+        }
+      }, function (response){
+        window.alert(response.data.message);
+        for (var i = 0; i < $scope.worlds.length; i++) {
+          if ($scope.worlds[i].name === oldWorldName) {
+            $scope.updatedWorldNames[i] = oldWorldName;
             break;
           }
         }

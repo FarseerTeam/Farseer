@@ -125,7 +125,9 @@ describe('the application opens to the Worlds screen by default and ...', functi
         var worldListArr = element.all(by.id('worldsList'));
         browser.wait(ec.presenceOf(worldList),1000).then(function(){
           expect(worldListArr.count()).toEqual(3);
-          expect(worldListArr.getText()).toEqual(['Pandora','Pillar','Neptune']);
+          expect(worldListArr.getText()).toContain('Pandora');
+          expect(worldListArr.getText()).toContain('Pillar');
+          expect(worldListArr.getText()).toContain('Neptune');
         }, function(err){
           fail();
         }).then(done);
@@ -143,7 +145,7 @@ describe('the application opens to the Worlds screen by default and ...', functi
           .then(browser.get('/'))
           .then(done);
       });
-      
+
       beforeEach(function() {
         activatePandoraEditMode();
       });
@@ -160,7 +162,7 @@ describe('the application opens to the Worlds screen by default and ...', functi
       });
 
       it('changes the hyperlink to a pre-filled text box when the edit icon is clicked', function(done){
-        var textBoxes = element.all(by.model('updatedWorldName'));
+        var textBoxes = element.all(by.model('updatedWorldNames[$index]'));
         var hyperlinks = element.all(by.css('#worldsList a'));
 
         browser.wait(ec.presenceOf(worldList),1000).then(function(){
@@ -194,7 +196,7 @@ describe('the application opens to the Worlds screen by default and ...', functi
       it('resets to the original world name after altering the text box and clicking the undo icon', function(done) {
         var newWorld = "Neptune1234";
         var inputName=element(by.css('#worldsList input'));
-        var textBoxes = element.all(by.model('updatedWorldName'));
+        var textBoxes = element.all(by.model('updatedWorldNames[$index]'));
         var hyperlinks = element.all(by.css('#worldsList a'));
 
         inputName.sendKeys(newWorld);

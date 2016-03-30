@@ -88,6 +88,7 @@
     "protractor-jasmine2-screenshot-reporter": "^0.1.7",
     "requirejs": "~2.1.22",
     "should": "^7.1.1",
+    "sinon" : "^1.17.3",
     "supertest": "~1.1.0",
     "time-grunt": "~1.2.2"
   },
