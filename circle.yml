@@ -2,7 +2,14 @@ machine:
   node:
     version: 5.1.0
 dependencies:
+  cache_directories:
+    - ../mongodb-linux-x86_64-ubuntu1204-3.2.4
   pre:
+    - if [[ ! -d ../mongodb-linux-x86_64-ubuntu1204-3.2.4 ]]; then wget http://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu1204-3.2.4.tgz -P ../ && tar xvzf ../mongodb-linux-x86_64-ubuntu1204-3.2.4.tgz -C ../; fi
+    - sudo stop mongodb
+    - sudo cp ../mongodb-linux-x86_64-ubuntu1204-3.2.4/bin/* /usr/bin
+    - sudo start mongodb
+    - pip install asynctest
     - google-chrome --version
     - wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
     - sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
