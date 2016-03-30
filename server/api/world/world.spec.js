@@ -145,7 +145,7 @@ describe('/api/worlds', function () {
         .expect(409)
         .expect('Content-Type', /json/)
         .end(function (err, res) {
-          expect(stubErrorHandler.calledWith(DUPLICATE_ERROR_CODE, WORLD)).to.be.eql(true);
+          sinon.assert.calledWith(stubErrorHandler, DUPLICATE_ERROR_CODE, WORLD);
           expect(res.body.message).to.be.eql(EXPECTED_ERROR_MESSAGE_WORLD);
           done();
         });
