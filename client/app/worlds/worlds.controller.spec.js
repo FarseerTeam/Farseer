@@ -25,9 +25,9 @@ describe('Controller: WorldsCtrl', function () {
         deferred.resolve({ data: newWorld });
         return deferred.promise;
       },
-      updateWorld: function (oldWorld, updatedWorld) {
+      updateWorld: function (worldId, updatedWorld) {
         var deferred = $q.defer();
-        deferred.resolve({data: { name: updatedWorld }});
+        deferred.resolve({data: { id: updatedWorld }});
         return deferred.promise;
       },
       deleteWorld: function () {
@@ -38,7 +38,7 @@ describe('Controller: WorldsCtrl', function () {
     };
 
     scope = $rootScope.$new();
-    testWorlds = [{name: 'Hogwarts School of Witchcraft and Wizardry'}, {name: 'Beauxbatons Academy of Magic'}, {name: 'Durmstrang Institute'}, {name: 'Pillar'}];
+    testWorlds = [{id: 'Hogwarts School of Witchcraft and Wizardry'}, {id: 'Beauxbatons Academy of Magic'}, {id: 'Durmstrang Institute'}, {id: 'Pillar'}];
     WorldsCtrl = $controller('WorldsCtrl', {
       $scope: scope,
       httpService: mockService
@@ -50,10 +50,10 @@ describe('Controller: WorldsCtrl', function () {
     it('should return an updated world from the service', function() {
       var SECOND_WORLD_INDEX = 1;
       var UPDATED_WORLD = 'Pandora';
-      scope.updateWorld(testWorlds[SECOND_WORLD_INDEX].name, UPDATED_WORLD);
+      scope.updateWorld(testWorlds[SECOND_WORLD_INDEX].id, UPDATED_WORLD);
       scope.$digest();
 
-      expect(scope.worlds[SECOND_WORLD_INDEX].name).toBe(UPDATED_WORLD);
+      expect(scope.worlds[SECOND_WORLD_INDEX].id).toBe(UPDATED_WORLD);
     });
 
     it('should not update if world not found', function() {
@@ -63,23 +63,23 @@ describe('Controller: WorldsCtrl', function () {
       scope.updateWorld(NON_EXISTING_WORLD, UPDATED_WORLD);
       scope.$digest();
 
-      expect(scope.worlds[SECOND_WORLD_INDEX].name).not.toBe(UPDATED_WORLD);
+      expect(scope.worlds[SECOND_WORLD_INDEX].id).not.toBe(UPDATED_WORLD);
     });
 
     it('should show alert and set updatedWorldName to old world name if http request is rejected', function(){
       var expectedMessage = 'The Displayed Message';
       var SECOND_WORLD_INDEX = 1;
-      var oldWorldName = testWorlds[SECOND_WORLD_INDEX].name;
+      var worldId = testWorlds[SECOND_WORLD_INDEX].id;
 
       spyOn(window, 'alert');
 
       setupMockServiceToRejectUpdateWorldAndReturnMessage(expectedMessage);
 
-      scope.updateWorld(oldWorldName, 'Some other name');
+      scope.updateWorld(worldId, 'someothername');
       scope.$digest();
 
       expect(window.alert).toHaveBeenCalledWith(expectedMessage);
-      expect(scope.updatedWorldNames[SECOND_WORLD_INDEX]).toBe(oldWorldName);
+      expect(scope.updatedWorldNames[SECOND_WORLD_INDEX]).toBe(worldId);
     });
 
     function setupMockServiceToRejectUpdateWorldAndReturnMessage(messageToReturn){
@@ -112,7 +112,7 @@ describe('Controller: WorldsCtrl', function () {
       scope.$digest();
       var worldIndex = 3;
 
-      var actual = scope.convertToLowerCaseNoSpaces(scope.worlds[worldIndex].name);
+      var actual = scope.convertToLowerCaseNoSpaces(scope.worlds[worldIndex].id);
       expect(actual).toBe('pillar');
     });
 
@@ -120,7 +120,7 @@ describe('Controller: WorldsCtrl', function () {
       scope.$digest();
       var worldIndex = 0;
 
-      var actual = scope.convertToLowerCaseNoSpaces(scope.worlds[worldIndex].name);
+      var actual = scope.convertToLowerCaseNoSpaces(scope.worlds[worldIndex].id);
       expect(actual).toBe('hogwartsschoolofwitchcraftandwizardry');
     });
 
@@ -145,7 +145,7 @@ describe('Controller: WorldsCtrl', function () {
     var newWorld;
 
     beforeEach(function () {
-      newWorld = { name: 'Warcraft' };
+      newWorld = { id: 'Warcraft' };
       scope.newWorld = newWorld;
     });
 
@@ -221,7 +221,7 @@ describe('Controller: WorldsCtrl', function () {
     var world;
 
     beforeEach(function () {
-      world = { name: 'Warcraft' };
+      world = { id: 'Warcraft' };
     });
 
     it('should delete a world on confirmation', function() {

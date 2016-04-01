@@ -100,7 +100,7 @@ describe('Http Service', function () {
     });
 
     it('should add new world', function () {
-      var newWorld = '{"name":"Starcraft"}';
+      var newWorld = '{"id":"starcraft"}';
       $httpBackend.expectPOST('/api/worlds', newWorld).respond(200);
 
       service.addWorld(newWorld).then(function (response) {
@@ -110,11 +110,11 @@ describe('Http Service', function () {
     });
 
     it('should return modified world on world update', function() {
-      var oldWorldName = 'oldWorld';
-      var updatedWorldName = 'newWorld';
-      $httpBackend.expectPUT('/api/worlds/', {oldWorldName: oldWorldName, updatedWorldName: updatedWorldName}).respond(200);
+      var worldId = 'somewhere';
+      var updatedWorldName = 'supername';
+      $httpBackend.expectPUT('/api/worlds/', {worldId: worldId, updatedWorldName: updatedWorldName}).respond(200);
 
-      service.updateWorld(oldWorldName, updatedWorldName).then(function(response) {
+      service.updateWorld(worldId, updatedWorldName).then(function(response) {
         expect(response.status).toBe(200);
       });
 
@@ -122,10 +122,10 @@ describe('Http Service', function () {
     });
 
     it('should remove a world on world delete', function(){
-      var worldName = 'newWorld';
+      var worldId = 'somewhere';
       $httpBackend.expectDELETE('/api/worlds').respond(200);
 
-      service.deleteWorld(worldName).then(function(response){
+      service.deleteWorld(worldId).then(function(response){
         expect(response.status).toBe(200);
       });
 

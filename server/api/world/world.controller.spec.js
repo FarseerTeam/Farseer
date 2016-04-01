@@ -22,23 +22,24 @@ describe('/api/worlds', function () {
   describe('GET', function () {
     var worldList = [];
 
-    beforeEach(function (done) {
+    beforeEach(function(done) {
 
-      worlds.World.remove({}, function () {
-      });
-
-      worlds.World.create([{
-        name: "Hogwarts"
-      }, {
-          name: "Narnia"
-        }]).then(function (documents) {
-        worldList = _.map(documents, function (document) {
-          var documentJSON = document.toJSON();
-          documentJSON._id = document._id.toString();
-          return documentJSON;
+        worlds.World.remove({}, function() {
         });
-        done();
-      }, done);
+
+        worlds.World.create([
+            {
+                id: "hogwarts"
+            }, {
+                id: "narnia"
+            }]).then(function(documents) {
+                worldList = _.map(documents, function(document) {
+                    var documentJSON = document.toJSON();
+                    documentJSON._id = document._id.toString();
+                    return documentJSON;
+                });
+                done();
+            }, done);
     });
 
     it('should return a list of worlds', function (done) {
@@ -67,27 +68,27 @@ describe('/api/worlds', function () {
     });
 
     it('should add a world to the list', function (done) {
-      var newWorld = { name: 'Lost World' };
+      var request = { id: 'lostworld' };
 
       authenticatedRequest
         .post('/api/worlds')
-        .send(newWorld)
+        .send(request)
         .expect(200)
         .expect('Content-Type', /json/)
         .end(function (err, res) {
         if (err) return done(err);
-        expect(res.body.name).to.be.eql(newWorld.name);
+        expect(res.body.id).to.be.eql(request.id);
         done();
       });
     });
 
-    it('will reject request to create a world with the same name as another world', function(done){
-      const THE_SAME_NAME = 'Lost World';
+    it('will reject request to create a world with the same id as another world', function(done){
+      var request = {id: 'lostworld'}
 
-      worlds.World.create({ name: THE_SAME_NAME }).then(function (){
+      worlds.World.create({ id: 'lostworld' }).then(function (){
         authenticatedRequest
           .post('/api/worlds/')
-          .send(new worlds.World({name: THE_SAME_NAME}))
+          .send(request)
           .expect(409)
           .expect('Content-Type', /json/)
           .end(function (err, res){
@@ -102,8 +103,8 @@ describe('/api/worlds', function () {
     });
 
   describe('PUT', function() {
-    const world1 = { name: "Hogwarts" };
-    const world2 = { name: 'Narnia' };
+    const world1 = { id: "hogwarts" };
+    const world2 = { id: 'narnia' };
 
     beforeEach(function (done) {
       setupStubErrorHandler(DUPLICATE_ERROR_CODE, WORLD, EXPECTED_ERROR_MESSAGE_WORLD);
@@ -120,9 +121,9 @@ describe('/api/worlds', function () {
       restoreStubs();
     })
 
-    it('should update a world name', function(done) {
-      var newWorldName = 'Updated World';
-      var request = {oldWorldName: world2.name, updatedWorldName: newWorldName};
+    it('should update a world name (temporarily same as id)', function(done) {
+      var newWorldName = 'updatedworld';
+      var request = {worldId: world2.id, updatedWorldName: newWorldName};
 
       authenticatedRequest
         .put('/api/worlds')
@@ -131,13 +132,13 @@ describe('/api/worlds', function () {
         .expect('Content-Type', /json/)
         .end(function (err, res) {
           if (err) return done(err);
-          expect(res.body.name).to.be.eql(newWorldName);
+          expect(res.body.id).to.be.eql(newWorldName);
           done();
         });
-    })
+    });
 
-    it('will throw an error if the oldWorldName and the updatedWorldName are the same', function(done){
-      var request = {oldWorldName: world2.name, updatedWorldName: world1.name};
+    it('will throw an error if the updated name (temporarily same as id) is taken', function(done){
+      var request = {worldId: world2.id, updatedWorldName: world1.id};
 
       authenticatedRequest
         .put('/api/worlds')
@@ -153,12 +154,12 @@ describe('/api/worlds', function () {
   })
 
   describe('DELETE', function() {
-    var world = { name: 'Lost World' };
+    var request = { id: 'lostworld' };
+    
     beforeEach(function(done) {
-
       authenticatedRequest
         .post('/api/worlds')
-        .send(world)
+        .send(request)
         .expect(200)
         .expect('Content-Type', /json/)
         .end(function (err, res) {
@@ -173,9 +174,7 @@ describe('/api/worlds', function () {
       });
     });
 
-    it('should delete a world name', function(done) {
-      var request = {worldName: world.name};
-
+    it('should delete a world', function(done) {
       authenticatedRequest
         .delete('/api/worlds')
         .send(request)

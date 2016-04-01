@@ -39,16 +39,11 @@ module.exports = (function() {
     }
   };
 
-  var _updatePlayersWorlds = function(oldWorldName, newWorldName) {
-    var query = {world: formatWorldName(oldWorldName)};
-    var updateQuery = _model.update(query, {world: formatWorldName(newWorldName)}, {multi: true});
+  var _updatePlayersWorlds = function(worldId, newWorldName) {
+    var query = {world: worldId};
+    var updateQuery = _model.update(query, {world: newWorldName}, {multi: true});
     return updateQuery.exec();
   };
-
-  var formatWorldName = function(name) {
-    return name.replace(/ /g, '').toLowerCase();
-  };
-
 
   return {
     Player: _model,

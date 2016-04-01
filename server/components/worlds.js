@@ -6,13 +6,14 @@ module.exports = (function () {
   var Schema = mongoose.Schema;
 
   var WorldSchema = new Schema({
-    name: {type: String, required: true, unique: true, index: true}
+    id: {type: String, required: true, unique: true, index: true}
   });
 
   var _model = mongoose.model('World', WorldSchema);
 
-  var _updateWorldName = function(worldName, updatedWorldName) {
-    var updateQuery = _model.findOneAndUpdate({name: worldName}, {name: updatedWorldName}, {upsert: true, new: true});
+//TODO: actually update the name, once it exists
+  var _updateWorldName = function(id, updatedWorldName) {
+    var updateQuery = _model.findOneAndUpdate({id: id}, {id: updatedWorldName}, {upsert: true, new: true});
 
     return updateQuery.exec();
   };

@@ -13,8 +13,7 @@ var dataService = require('./dataService');
 dataService.connect();
 
 
-describe("In the components/players module,", function() {
-
+describe("Player", function() {
 
     describe("finding by unique identifier", function(){
 

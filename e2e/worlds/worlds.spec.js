@@ -39,7 +39,7 @@ describe('the application opens to the Worlds screen by default and ...', functi
 
       var inputName=element(by.id('worldNameInput'));
       var addButton=element(by.id('addWorldButton'));
-      const EXPECTED_WORLD_NAME = 'Pandora';
+      const EXPECTED_WORLD_NAME = 'pandora';
 
       inputName.sendKeys(EXPECTED_WORLD_NAME);
       addButton.click();
@@ -59,8 +59,8 @@ describe('the application opens to the Worlds screen by default and ...', functi
     describe('when the application is started at the default routing', function() {
       beforeEach(function(done){
         setup.purgeData()
-          .then(setup.addWorld('Pandora'))
-          .then(setup.addWorld('Pillar'))
+          .then(setup.addWorld('pandora'))
+          .then(setup.addWorld('pillar'))
           .then(browser.get('/'))
           .then(done);
       });
@@ -76,8 +76,8 @@ describe('the application opens to the Worlds screen by default and ...', functi
           var worldList=element.all(by.id('worldsList'));
           var textOfHyperlinks = element.all(by.css('#worldsList a')).getAttribute('innerHTML');
 
-          expect(worldList.getText()).toEqual(['Pandora','Pillar']);
-          expect(textOfHyperlinks).toEqual(['Pandora','Pillar']);
+          expect(worldList.getText()).toEqual(['pandora','pillar']);
+          expect(textOfHyperlinks).toEqual(['pandora','pillar']);
         }, function(){
           fail();
         }).then(done);
@@ -102,8 +102,8 @@ describe('the application opens to the Worlds screen by default and ...', functi
     describe('when adding a new world to a set of existing worlds',function(){
       beforeEach(function(done){
         setup.purgeData()
-          .then(setup.addWorld('Pandora'))
-          .then(setup.addWorld('Pillar'))
+          .then(setup.addWorld('pandora'))
+          .then(setup.addWorld('pillar'))
           .then(browser.get('/'))
           .then(done);
       });
@@ -114,7 +114,7 @@ describe('the application opens to the Worlds screen by default and ...', functi
       });
 
       it('adds a new world to the list after entering the text and the add button is clicked',function(done){
-        var newWorld = "Neptune";
+        var newWorld = "neptune";
         var inputName=element(by.id('worldNameInput'));
         var addButton=element(by.id('addWorldButton'));
 
@@ -125,9 +125,9 @@ describe('the application opens to the Worlds screen by default and ...', functi
         var worldListArr = element.all(by.id('worldsList'));
         browser.wait(ec.presenceOf(worldList),1000).then(function(){
           expect(worldListArr.count()).toEqual(3);
-          expect(worldListArr.getText()).toContain('Pandora');
-          expect(worldListArr.getText()).toContain('Pillar');
-          expect(worldListArr.getText()).toContain('Neptune');
+          expect(worldListArr.getText()).toContain('pandora');
+          expect(worldListArr.getText()).toContain('pillar');
+          expect(worldListArr.getText()).toContain('neptune');
         }, function(err){
           fail();
         }).then(done);
@@ -140,8 +140,8 @@ describe('the application opens to the Worlds screen by default and ...', functi
 
       beforeEach(function(done){
         setup.purgeData()
-          .then(setup.addWorld('Pandora'))
-          .then(setup.addWorld('Pillar'))
+          .then(setup.addWorld('pandora'))
+          .then(setup.addWorld('pillar'))
           .then(browser.get('/'))
           .then(done);
       });
@@ -175,8 +175,8 @@ describe('the application opens to the Worlds screen by default and ...', functi
       });
 
       it('changes the text box to a hyperlink containing the new world name when the save icon is clicked', function(done){
-        var textToAppend = "Omega";
-        var expectedNewWorldName = "Pandora" + textToAppend;
+        var textToAppend = "omega";
+        var expectedNewWorldName = "pandora" + textToAppend;
         var textBoxes = retrieveElement('#worldsList input');
         var hyperlinks = retrieveElement('#worldsList a');
         var saveIcon = retrieveElement('.fa-floppy-o');
@@ -194,7 +194,7 @@ describe('the application opens to the Worlds screen by default and ...', functi
       });
 
       it('resets to the original world name after altering the text box and clicking the undo icon', function(done) {
-        var newWorld = "Neptune1234";
+        var newWorld = "neptune1234";
         var inputName=element(by.css('#worldsList input'));
         var textBoxes = element.all(by.model('updatedWorldNames[$index]'));
         var hyperlinks = element.all(by.css('#worldsList a'));
@@ -225,7 +225,7 @@ describe('the application opens to the Worlds screen by default and ...', functi
 
         var worldListArr = element.all(by.id('worldsList'));
         browser.wait(ec.presenceOf(worldList), 1000).then(function(){
-          var expectedWorldsArr = ['Pillar'];
+          var expectedWorldsArr = ['pillar'];
           expect(worldListArr.count()).toEqual(1);
           expect(worldListArr.getText()).toEqual(expectedWorldsArr);
           checkVisibilityOfElementsAfterLeavingEditMode();

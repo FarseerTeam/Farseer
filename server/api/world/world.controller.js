@@ -10,22 +10,23 @@ exports.index = function (request, response) {
   });
 };
 
-exports.create = function (request, response) {
-  worlds.World.create(request.body).then(function (newWorld) {
-    response.json(newWorld);
-  }, function (error) {
-    response.status(409).send({
-      message: errorHandler.retrieveErrorMessage(error.code, 'world')
+exports.create = function(request, response) {
+    var worldId = request.body.id;
+    worlds.World.create({ id: worldId }).then(function(newWorld) {
+        response.json(newWorld);
+    }, function(error) {
+        response.status(409).send({
+            message: errorHandler.retrieveErrorMessage(error.code, 'world')
+        });
     });
-  });
 };
 
 exports.delete = function (request, response) {
-  var worldName = request.body.worldName;
-  var worldNameFormatted = worldName.replace(/ /g, '').toLowerCase();
+  var worldId = request.body.worldId;
 
-  worlds.World.remove({name: worldName}).then(function(data) {
-    players.Player.remove({world: worldNameFormatted});
+  worlds.World.remove({id: worldId}).then(function(data) {
+      //TODO: add test around player clean up
+    players.Player.remove({world: worldId});
     response.json(data);
   }, function(error){
     response.send({message: "World could not be deleted"});
@@ -33,11 +34,12 @@ exports.delete = function (request, response) {
 };
 
 exports.update = function (request, response) {
-  var worldToChange =  request.body.oldWorldName;
+  var worldId =  request.body.worldId;
   var updatedWorldName = request.body.updatedWorldName;
 
-  worlds.updateWorldName(worldToChange, updatedWorldName).then(function(data) {
-    players.updatePlayersWorlds(worldToChange, updatedWorldName);
+//TODO: test coverage for player world update
+  worlds.updateWorldName(worldId, updatedWorldName).then(function(data) {
+    players.updatePlayersWorlds(worldId, updatedWorldName);
     response.json(data);
   }, function (err){
     response.status(409).send({

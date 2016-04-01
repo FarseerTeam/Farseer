@@ -14,12 +14,12 @@ dataService.connect();
 describe("A world", function () {
 
   var world;
-  var worldName = "Hogwarts";
+  var worldId = "hogwarts";
 
   beforeEach(function (done) {
 
     worlds.World.remove({}, function () {
-      var world = new worlds.World({name: worldName});
+      var world = new worlds.World({id: worldId});
       world.save(function() {
         done();
       });
@@ -27,9 +27,9 @@ describe("A world", function () {
     });
   });
 
-  it("should save only one world when trying to save multiple worlds with the same name", function(done) {
+  it("should save only one world when trying to save multiple worlds with the same id", function(done) {
 
-    var world = new worlds.World({name: worldName});
+    var world = new worlds.World({id: worldId});
     setTimeout(function() {
       world.save(function(err) {
         if (err) {
@@ -38,7 +38,7 @@ describe("A world", function () {
             expect(count).to.equal(expectedWorldCount);
           });
         } else {
-          should.fail('We should not save multiple worlds with the same name');
+          should.fail('Should not allow saving multiple worlds with the same id');
         }
       });
 
@@ -47,10 +47,10 @@ describe("A world", function () {
     done();
   });
 
-  it("assigns ID and keeps the world name when saved", function (done) {
-    worlds.World.findOne({name: worldName}, function (err, document) {
+  it("assigns internal ID and keeps the world id when saved", function (done) {
+    worlds.World.findOne({id: worldId}, function (err, document) {
       expect(document._id).to.not.be.null();
-      expect(document.name).to.equal(worldName);
+      expect(document.id).to.equal(worldId);
       done();
     })
   });

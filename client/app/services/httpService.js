@@ -14,9 +14,9 @@ angular.module('farseerApp')
       });
     };
 
-    this.updateWorld = function(oldWorldName, updatedWorldName) {
+    this.updateWorld = function(worldId, updatedWorldName) {
       var data = {
-        oldWorldName: oldWorldName,
+        worldId: worldId,
         updatedWorldName: updatedWorldName
       };
       return $http.put('/api/worlds/', data).then(function(response) {
@@ -24,11 +24,11 @@ angular.module('farseerApp')
       });
     };
 
-    this.deleteWorld = function(worldName) {
+    this.deleteWorld = function(worldId) {
       return $http({
         url: '/api/worlds',
         method: 'DELETE',
-        data: {worldName: worldName},
+        data: {worldId: worldId},
         headers: {'Content-Type': 'application/json;charset=utf-8'}
       }).then(function(response){
         return response;

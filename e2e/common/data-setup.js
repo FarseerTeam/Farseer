@@ -24,12 +24,12 @@ module.exports = (function () {
         return undefined;
       });
     },
-    addWorld: function (worldName) {
-      var world = worlds.World({name: worldName});
+    addWorld: function (worldId) {
+      var world = worlds.World({id: worldId});
       return world.save();
     },
     deleteWorld: function(worldId) {
-      return worlds.World({_id: worldId}).remove();
+      return worlds.World({id: worldId}).remove();
     },
     purgeData: function () {
       return RSVP.all([

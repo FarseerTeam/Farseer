@@ -120,7 +120,7 @@ describe('The data-setup module... ', function() {
 		});
 	});
 
-	describe('the deleteWorld function...', function() {
+	describe('deleting a world', function() {
 
 		beforeEach(function(done) {
 			setup.purgeData().then(done);
@@ -132,8 +132,8 @@ describe('The data-setup module... ', function() {
 
     it('deletes the specified world', function(done) {
 
-      setup.addWorld('Neptune1').then(function(data) {
-        setup.deleteWorld(data._id)
+      setup.addWorld('neptune1').then(function(data) {
+        setup.deleteWorld(data.id)
 					.then(findAllPlayers)
 					.then(validateCountOf(0))
 					.then(done);
@@ -194,7 +194,7 @@ describe('The data-setup module... ', function() {
 		});
 	});
 
-	describe('the addWorld function... ', function() {
+	describe('adding a world', function() {
 
 		beforeEach(function(done) {
 			setup.purgeData().then(done);
@@ -205,7 +205,7 @@ describe('The data-setup module... ', function() {
 		});
 
 		it('can insert a single world using promises.', function(done) {
-			setup.addWorld('Pandora')
+			setup.addWorld('pandora')
 				.then(findAllWorlds)
 				.then(validateCountOf(1))
 				.then(done)
@@ -213,8 +213,8 @@ describe('The data-setup module... ', function() {
 		});
 
 		it('can insert two worlds using promises.', function(done) {
-			setup.addWorld('Pandora')
-				.then(setup.addWorld('Neptune'))
+			setup.addWorld('pandora')
+				.then(setup.addWorld('neptune'))
 				.then(findAllWorlds)
 				.then(validateCountOf(2))
 				.then(done)

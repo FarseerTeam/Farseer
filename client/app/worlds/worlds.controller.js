@@ -34,35 +34,35 @@ angular
       });
     };
 
-    $scope.updateWorld = function(oldWorldName, updatedWorldName) {
-      httpService.updateWorld(oldWorldName, updatedWorldName).then(function(response) {
+    $scope.updateWorld = function(worldId, updatedWorldName) {
+      httpService.updateWorld(worldId, updatedWorldName).then(function(response) {
         for (var i = 0; i < $scope.worlds.length; i++) {
-          if ($scope.worlds[i].name === oldWorldName) {
-            $scope.worlds[i].name = response.data.name;
+          if ($scope.worlds[i].id === worldId) {
+            $scope.worlds[i].id = response.data.id;
             break;
           }
         }
       }, function (response){
         window.alert(response.data.message);
         for (var i = 0; i < $scope.worlds.length; i++) {
-          if ($scope.worlds[i].name === oldWorldName) {
-            $scope.updatedWorldNames[i] = oldWorldName;
+          if ($scope.worlds[i].id === worldId) {
+            $scope.updatedWorldNames[i] = worldId;
             break;
           }
         }
       });
     };
 
-    $scope.deleteWorldOnUserConfirmation = function(worldName) {
+    $scope.deleteWorldOnUserConfirmation = function(worldId) {
       var result = window.confirm('Are you sure you want to delete this world and all associated players?');
       if (result) {
-        deleteWorld(worldName);
+        deleteWorld(worldId);
         loadWorlds();
       }
     };
 
-    function deleteWorld(worldName) {
-      httpService.deleteWorld(worldName).then(function(response) {
+    function deleteWorld(worldId) {
+      httpService.deleteWorld(worldId).then(function(response) {
         if (response.data.ok === 1) {
           $scope.deleteWorldStatus = response.data.ok;
         } else {
