@@ -29,9 +29,11 @@ describe('/api/worlds', function () {
 
         worlds.World.create([
             {
-                id: "hogwarts"
+                id: 'hogwarts',
+                name: 'Hogwarts'
             }, {
-                id: "narnia"
+                id: 'narnia',
+                name: 'Narnia'
             }]).then(function(documents) {
                 worldList = _.map(documents, function(document) {
                     var documentJSON = document.toJSON();
@@ -68,7 +70,7 @@ describe('/api/worlds', function () {
     });
 
     it('should add a world to the list', function (done) {
-      var request = { id: 'lostworld' };
+      var request = { name: 'Lost World' };
 
       authenticatedRequest
         .post('/api/worlds')
@@ -77,15 +79,30 @@ describe('/api/worlds', function () {
         .expect('Content-Type', /json/)
         .end(function (err, res) {
         if (err) return done(err);
-        expect(res.body.id).to.be.eql(request.id);
+        expect(res.body.name).to.be.eql(request.name);
         done();
       });
     });
+    
+    it('should generate a url-friendly world id from the name', function(done) {
+        var request = { name: 'Lost World' };
 
-    it('will reject request to create a world with the same id as another world', function(done){
-      var request = {id: 'lostworld'}
+        authenticatedRequest
+            .post('/api/worlds')
+            .send(request)
+            .expect(200)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                expect(res.body.id).to.be.eql('lostworld');
+                done();
+            });
+    });
 
-      worlds.World.create({ id: 'lostworld' }).then(function (){
+    it('should reject request to create a world with a name that would generate a duplicate id', function(done){
+      var request = {name: 'LostWorld'}
+
+      worlds.World.create({ id: 'lostworld', name: 'Lost World' }).then(function (){
         authenticatedRequest
           .post('/api/worlds/')
           .send(request)
@@ -103,8 +120,8 @@ describe('/api/worlds', function () {
     });
 
   describe('PUT', function() {
-    const world1 = { id: "hogwarts" };
-    const world2 = { id: 'narnia' };
+    const world1 = { id: "hogwarts", name: 'Hogwarts' };
+    const world2 = { id: 'narnia', name: 'Narnia' };
 
     beforeEach(function (done) {
       setupStubErrorHandler(DUPLICATE_ERROR_CODE, WORLD, EXPECTED_ERROR_MESSAGE_WORLD);
@@ -121,8 +138,8 @@ describe('/api/worlds', function () {
       restoreStubs();
     })
 
-    it('should update a world name (temporarily same as id)', function(done) {
-      var newWorldName = 'updatedworld';
+    it('should update a world name and id', function(done) {
+      var newWorldName = 'Better Name';
       var request = {worldId: world2.id, updatedWorldName: newWorldName};
 
       authenticatedRequest
@@ -132,13 +149,14 @@ describe('/api/worlds', function () {
         .expect('Content-Type', /json/)
         .end(function (err, res) {
           if (err) return done(err);
-          expect(res.body.id).to.be.eql(newWorldName);
+          expect(res.body.name).to.be.eql(newWorldName);
+          expect(res.body.id).to.be.eql('bettername');
           done();
         });
     });
 
-    it('will throw an error if the updated name (temporarily same as id) is taken', function(done){
-      var request = {worldId: world2.id, updatedWorldName: world1.id};
+    it('should throw an error if the updated name would generate a duplicate id', function(done){
+      var request = {worldId: world2.id, updatedWorldName: 'ho gwar ts'};
 
       authenticatedRequest
         .put('/api/worlds')
@@ -154,12 +172,13 @@ describe('/api/worlds', function () {
   })
 
   describe('DELETE', function() {
-    var request = { id: 'lostworld' };
+    var postRequest = { name: 'Lost World' };
+    var deleteRequest = { id: 'lostworld' };
     
     beforeEach(function(done) {
       authenticatedRequest
         .post('/api/worlds')
-        .send(request)
+        .send(postRequest)
         .expect(200)
         .expect('Content-Type', /json/)
         .end(function (err, res) {
@@ -177,7 +196,7 @@ describe('/api/worlds', function () {
     it('should delete a world', function(done) {
       authenticatedRequest
         .delete('/api/worlds')
-        .send(request)
+        .send(deleteRequest)
         .expect(200)
         .expect('Content-Type', /json/)
         .end(function (err, res) {

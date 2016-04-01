@@ -4,6 +4,10 @@ var worlds = require('../../components/worlds');
 var players = require('../../components/players');
 var errorHandler = require('../common/errorHandler');
 
+var generateWorldId = function(worldName){
+    return worldName.replace(/ /g, '').toLowerCase();
+};
+
 exports.index = function (request, response) {
   worlds.World.find({}, function (err, doc) {
     response.json(doc);
@@ -11,8 +15,10 @@ exports.index = function (request, response) {
 };
 
 exports.create = function(request, response) {
-    var worldId = request.body.id;
-    worlds.World.create({ id: worldId }).then(function(newWorld) {
+    var worldName = request.body.name;
+    var worldId = generateWorldId(worldName);
+    
+    worlds.World.create({ id: worldId, name: worldName }).then(function(newWorld) {
         response.json(newWorld);
     }, function(error) {
         response.status(409).send({
@@ -36,10 +42,11 @@ exports.delete = function (request, response) {
 exports.update = function (request, response) {
   var worldId =  request.body.worldId;
   var updatedWorldName = request.body.updatedWorldName;
+  var updatedWorldId = generateWorldId(updatedWorldName);
 
+  worlds.updateWorldName(worldId, updatedWorldId, updatedWorldName).then(function(data) {
 //TODO: test coverage for player world update
-  worlds.updateWorldName(worldId, updatedWorldName).then(function(data) {
-    players.updatePlayersWorlds(worldId, updatedWorldName);
+    players.updatePlayersWorlds(worldId, updatedWorldId);
     response.json(data);
   }, function (err){
     response.status(409).send({

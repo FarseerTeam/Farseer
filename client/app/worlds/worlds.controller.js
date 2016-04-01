@@ -18,13 +18,6 @@ angular
       });
     }
 
-    $scope.convertToLowerCaseNoSpaces = function(nameToConvert) {
-      if (nameToConvert) {
-        return nameToConvert.replace(/ /g, '').toLowerCase();
-      }
-      return '';
-    };
-
     $scope.addWorld = function () {
       httpService.addWorld($scope.newWorld).then(function (response) {
           addNewWorldToScope(response.data);
@@ -34,11 +27,12 @@ angular
       });
     };
 
-    $scope.updateWorld = function(worldId, updatedWorldName) {
+    $scope.updateWorld = function(worldId, worldName, updatedWorldName) {
       httpService.updateWorld(worldId, updatedWorldName).then(function(response) {
         for (var i = 0; i < $scope.worlds.length; i++) {
           if ($scope.worlds[i].id === worldId) {
             $scope.worlds[i].id = response.data.id;
+            $scope.worlds[i].name = response.data.name;
             break;
           }
         }
@@ -46,7 +40,7 @@ angular
         window.alert(response.data.message);
         for (var i = 0; i < $scope.worlds.length; i++) {
           if ($scope.worlds[i].id === worldId) {
-            $scope.updatedWorldNames[i] = worldId;
+            $scope.updatedWorldNames[i] = worldName;
             break;
           }
         }

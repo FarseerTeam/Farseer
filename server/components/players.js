@@ -39,9 +39,9 @@ module.exports = (function() {
     }
   };
 
-  var _updatePlayersWorlds = function(worldId, newWorldName) {
+  var _updatePlayersWorlds = function(worldId, updatedWorldId) {
     var query = {world: worldId};
-    var updateQuery = _model.update(query, {world: newWorldName}, {multi: true});
+    var updateQuery = _model.update(query, {world: updatedWorldId}, {multi: true});
     return updateQuery.exec();
   };
 

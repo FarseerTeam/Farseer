@@ -23,7 +23,7 @@ describe('The playersMap page has images for each player on it, and... ', functi
   };
 
   beforeEach(function (done) {
-    setup.addWorld('world')
+    setup.addWorld('world', 'World')
       .then(setup.addTeam('team1', '/team1', 'world'))
       .then(setup.addTeam('team2', '/team1/team2', 'world'))
       .then(setup.addPlayer('p0', 'p0@somewhere.com', undefined, 'world'))

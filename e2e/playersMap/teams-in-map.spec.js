@@ -62,15 +62,16 @@ describe('The playersMap page has teams on it, and... ', function() {
 	});
 
 	describe('when there are N teams defined with no parent teams (but with players)... ', function() {
-
+        var worldId = 'world';
+        var worldName = 'World';
+        
 		beforeEach(function(done) {
-			var world = 'world';
-			setup.addWorld(world)
-				.then(setup.addTeam('team1', '/team1', world))
-				.then(setup.addTeam('team2', '/team2', world))
-				.then(setup.addPlayer('a', 'amail', '/team1', world))
-				.then(setup.addPlayer('b', 'bmail', '/team2', world))
-				.then(browser.get('worlds/' + world + '/playersMap'))
+			setup.addWorld(worldId, worldName)
+				.then(setup.addTeam('team1', '/team1', worldId))
+				.then(setup.addTeam('team2', '/team2', worldId))
+				.then(setup.addPlayer('a', 'amail', '/team1', worldId))
+				.then(setup.addPlayer('b', 'bmail', '/team2', worldId))
+				.then(browser.get('worlds/' + worldId + '/playersMap'))
 				.then(done);
 		});
 
@@ -93,18 +94,19 @@ describe('The playersMap page has teams on it, and... ', function() {
 		});
 	});
 
-	describe('when there is a team defined that has a parent team... ', function() {
-    var world = 'world';
+    describe('when there is a team defined that has a parent team... ', function() {
+        var worldId = 'world';
+        var worldName = 'World';
 
-		beforeEach(function(done) {
-      setup.addWorld(world)
-        .then(setup.addTeam('outerTeam', '/outerTeam', world))
-				.then(setup.addTeam('innerTeam', '/outerTeam/innerTeam', world))
-				.then(setup.addPlayer('a', 'amail', '/outerTeam', world))
-				.then(setup.addPlayer('b', 'bmail', '/outerTeam/innerTeam', world))
-				.then(browser.get('worlds/' + world + '/playersMap'))
-				.then(done);
-		});
+        beforeEach(function(done) {
+            setup.addWorld(worldId, worldName)
+                .then(setup.addTeam('outerTeam', '/outerTeam', worldId))
+                .then(setup.addTeam('innerTeam', '/outerTeam/innerTeam', worldId))
+                .then(setup.addPlayer('a', 'amail', '/outerTeam', worldId))
+                .then(setup.addPlayer('b', 'bmail', '/outerTeam/innerTeam', worldId))
+                .then(browser.get('worlds/' + worldId + '/playersMap'))
+                .then(done);
+        });
 
 		afterEach(function(done) {
 			setup.purgeData().then(done);
@@ -121,18 +123,19 @@ describe('The playersMap page has teams on it, and... ', function() {
 
 	});
 
-	describe('when there are parent teams having no players... ', function() {
-    var world = 'world';
+    describe('when there are parent teams having no players... ', function() {
+        var worldId = 'world';
+        var worldName = 'World';
 
-		beforeEach(function(done) {
-      setup.addWorld(world)
-        .then(setup.addTeam('outerTeam', '/outerTeam', world))
-				.then(setup.addTeam('middleTeam', '/outerTeam/middleTeam', world))
-				.then(setup.addTeam('innerTeam', '/outerTeam/middleTeam/innerTeam', world))
-				.then(setup.addPlayer('a', 'amail', '/outerTeam/middleTeam/innerTeam', world))
-				.then(browser.get('worlds/' + world + '/playersMap'))
-				.then(done);
-		});
+        beforeEach(function(done) {
+            setup.addWorld(worldId, worldName)
+                .then(setup.addTeam('outerTeam', '/outerTeam', worldId))
+                .then(setup.addTeam('middleTeam', '/outerTeam/middleTeam', worldId))
+                .then(setup.addTeam('innerTeam', '/outerTeam/middleTeam/innerTeam', worldId))
+                .then(setup.addPlayer('a', 'amail', '/outerTeam/middleTeam/innerTeam', worldId))
+                .then(browser.get('worlds/' + worldId + '/playersMap'))
+                .then(done);
+        });
 
 		afterEach(function(done) {
 			setup.purgeData().then(done);

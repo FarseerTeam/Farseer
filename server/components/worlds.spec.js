@@ -15,11 +15,12 @@ describe("A world", function () {
 
   var world;
   var worldId = "hogwarts";
+  var worldName = "Hogwarts";
 
   beforeEach(function (done) {
 
     worlds.World.remove({}, function () {
-      var world = new worlds.World({id: worldId});
+      var world = new worlds.World({id: worldId, name: worldName});
       world.save(function() {
         done();
       });
@@ -29,7 +30,7 @@ describe("A world", function () {
 
   it("should save only one world when trying to save multiple worlds with the same id", function(done) {
 
-    var world = new worlds.World({id: worldId});
+    var world = new worlds.World({id: worldId, name: worldName});
     setTimeout(function() {
       world.save(function(err) {
         if (err) {
@@ -47,10 +48,11 @@ describe("A world", function () {
     done();
   });
 
-  it("assigns internal ID and keeps the world id when saved", function (done) {
+  it("assigns internal ID and keeps the world id and name when saved", function (done) {
     worlds.World.findOne({id: worldId}, function (err, document) {
       expect(document._id).to.not.be.null();
       expect(document.id).to.equal(worldId);
+      expect(document.name).to.equal(worldName);
       done();
     })
   });

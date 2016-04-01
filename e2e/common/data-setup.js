@@ -24,8 +24,8 @@ module.exports = (function () {
         return undefined;
       });
     },
-    addWorld: function (worldId) {
-      var world = worlds.World({id: worldId});
+    addWorld: function (worldId, worldName) {
+      var world = worlds.World({id: worldId, name: worldName});
       return world.save();
     },
     deleteWorld: function(worldId) {
