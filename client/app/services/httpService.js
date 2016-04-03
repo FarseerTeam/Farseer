@@ -2,10 +2,17 @@
 
 angular.module('farseerApp')
   .service('httpService', function ($http) {
+
     this.getWorlds = function () {
       return $http.get('/api/worlds').then(function (response) {
         return response.data;
       });
+    };
+
+    this.getWorld = function(worldId) {
+        return $http.get('/api/worlds/' + worldId).then(function(response) {
+            return response.data;
+        });
     };
 
     this.addWorld = function (newWorld) {

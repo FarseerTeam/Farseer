@@ -14,6 +14,19 @@ exports.index = function (request, response) {
   });
 };
 
+exports.read = function(request, response) {
+    var worldId = request.params.worldId;
+    worlds.World.findOne({ id: worldId }, function(err, doc) {
+        if (doc) {
+            response.json(doc);
+        } else {
+            response.status(404).send({
+                message: 'World with id (' + worldId + ') does not exist.'
+            });
+        }
+    });
+};
+
 exports.create = function(request, response) {
     var worldName = request.body.name;
     var worldId = generateWorldId(worldName);

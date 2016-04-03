@@ -99,6 +99,17 @@ describe('Http Service', function () {
       $httpBackend.flush();
     });
 
+    it('should return requested world', function() {
+        $httpBackend.expectGET('/api/worlds/durmstrang')
+            .respond('Durmstrang');
+
+        service.getWorld('durmstrang').then(function(returnedWorld) {
+            expect(returnedWorld).toBe('Durmstrang');
+        });
+
+        $httpBackend.flush();
+    });
+
     it('should add new world', function () {
       var newWorld = '{"id":"starcraft"}';
       $httpBackend.expectPOST('/api/worlds', newWorld).respond(200);

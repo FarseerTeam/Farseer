@@ -6,14 +6,14 @@ angular.module('farseerApp')
     $scope.teamPlayersMap = [];
     $scope.error = undefined;
     $scope.currentPath = '';
-    $scope.urlFormattedWorldName = $routeParams.urlFormattedWorldName;
-    $scope.displayableWorld = $routeParams.displayableWorld;
+    $scope.world = '';
 
-    var urlFormattedWorldName = $routeParams.urlFormattedWorldName;
+    var worldId = $routeParams.worldId;
 
     (function initializeController() {
-      loadTeamToPlayersMap(null, urlFormattedWorldName);
-      loadPlayers(urlFormattedWorldName);
+        loadWorld(worldId);
+        loadTeamToPlayersMap(null, worldId);
+        loadPlayers(worldId);
     })();
 
     $scope.update = function(player) {
@@ -26,7 +26,7 @@ angular.module('farseerApp')
     };
 
     $scope.addPlayer = function() {
-      $scope.newPlayer.world = urlFormattedWorldName;
+      $scope.newPlayer.world = worldId;
       httpService.addPlayer($scope.newPlayer).then(function(response) {
         addNewPlayerToScope(response.data);
         handleResponse('Success', $scope.newPlayer, false);
@@ -78,6 +78,12 @@ angular.module('farseerApp')
         $scope.teamPlayersMap = map;
         $scope.currentPath = teamPath; 
       });
+    }
+    
+    function loadWorld(worldId) {
+        httpService.getWorld(worldId).then(function(world) {
+            $scope.world = world;
+        });
     }
 
     function displayErrorMessage(errorMessage) {

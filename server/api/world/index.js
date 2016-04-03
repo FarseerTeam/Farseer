@@ -11,6 +11,10 @@ router
 	.post(controller.create)
 	.put(controller.update)
 	.delete(controller.delete);
+    
+router
+	.route('/:worldId')
+	.get(controller.read);    
 
 var worldRouter = express.Router({ mergeParams: true });
 worldRouter

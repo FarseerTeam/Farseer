@@ -3,11 +3,11 @@
 angular.module('farseerApp')
   .config(function ($routeProvider) {
     $routeProvider
-      .when('/worlds/:urlFormattedWorldName/players', {
+      .when('/worlds/:worldId/players', {
         templateUrl: 'app/players/players.html',
         controller: 'PlayersCtrl'
       }).
-      when('/worlds/:urlFormattedWorldName/playersMap', {
+      when('/worlds/:worldId/playersMap', {
         templateUrl: 'app/players/playersMap.html',
         controller: 'PlayersCtrl'
       }).

@@ -9,7 +9,8 @@ describe('Controller: PlayersCtrl', function () {
     mockService,
     mockTimeout,
     addedPlayer,
-    updatedPlayer;
+    updatedPlayer,
+    requestedWorldId;
   var subteamPath = '/Hogwarts/Ravenclaw';
   var rejectAddPlayer = false;
   var rejectUpdatePlayer = false;
@@ -60,6 +61,16 @@ describe('Controller: PlayersCtrl', function () {
           deferred.resolve(cloneObject(teamToPlayersMapFromServer));
         }
         return deferred.promise;
+      },
+      getWorld: function(worldId) {
+          requestedWorldId = worldId;
+
+          var deferred = $q.defer();
+          deferred.resolve({
+              id: 'pandora',
+              name: 'Pan Dora'
+          });
+          return deferred.promise;
       }
     };
 
@@ -74,19 +85,24 @@ describe('Controller: PlayersCtrl', function () {
       $scope: scope,
       $timeout: mockTimeout,
       httpService: mockService,
-      $routeParams: {urlFormattedWorldName: 'pandora', displayableWorld: 'Pandora'}
+      $routeParams: {worldId: 'pandora'}
     });
 
   }));
 
-  describe('worlds params attached to the url', function() {
-    it('should contain a parameter with current world', function() {
-      expect(scope.displayableWorld).toBe('Pandora');
-    });
+  describe('world attached to the scope', function() {
+      it('should be empty when promise is not fulfilled', function() {
+          expect(scope.world).not.toBe(undefined);
+          expect(scope.world).toBe('');
+      });
 
-    it('should contain a parameter with url-formatted name of the world', function() {
-      expect(scope.urlFormattedWorldName).toBe('pandora');
-    });
+      it('should match the worldId from the URL', function() {
+          scope.$digest();
+
+          expect(scope.world.id).toBe('pandora');
+          expect(scope.world.name).toBe('Pan Dora');
+          expect(requestedWorldId).toBe('pandora');
+      });
   });
 
   describe('players list attached to the scope', function () {

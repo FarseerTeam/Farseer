@@ -44,7 +44,7 @@ describe('/api/worlds', function () {
             }, done);
     });
 
-    it('should return a list of worlds', function (done) {
+    it('should return a list of worlds when not given a world id', function (done) {
       authenticatedRequest
         .get('/api/worlds')
         .expect(200)
@@ -54,6 +54,29 @@ describe('/api/worlds', function () {
         expect(res.body).to.be.eql(worldList);
         done();
       });
+    });
+
+    it('should return existing world when given valid world id', function(done) {
+        authenticatedRequest
+            .get('/api/worlds/' + worldList[0].id)
+            .expect(200)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                expect(res.body).to.be.eql(worldList[0]);
+                done();
+            });
+    });
+
+    it('should return 404 when given invalid world id', function(done) {
+        authenticatedRequest
+            .get('/api/worlds/nonsense')
+            .expect(404)
+            .end(function(err, res) {
+                if (err) return done(err);
+                expect(res.body.message).to.be.eql('World with id (nonsense) does not exist.');
+                done();
+            });
     });
   });
 

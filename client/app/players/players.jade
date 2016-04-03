@@ -1,11 +1,11 @@
 div(class='players-table-view')
-  div(class='view-title') Players in {{displayableWorld}}
+  div(class='view-title') Players in {{world.name}}
 
   div(players-common="")
 
 
   div
-    a(href="/worlds/{{urlFormattedWorldName}}/playersMap" class="green button" title="Map View")
+    a(href="/worlds/{{world.id}}/playersMap" class="green button" title="Map View")
       div(class="fa fa-street-view fa-2x")
       div(class="fa fa-street-view fa-2x")
       div(class="fa fa-street-view fa-2x")

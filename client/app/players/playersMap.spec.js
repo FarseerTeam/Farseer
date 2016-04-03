@@ -30,7 +30,12 @@ describe('Attempt to test jade template', function () {
         var deferred = $q.defer();
         deferred.resolve(cloneObject(teamToPlayersMapFromServer));
         return deferred.promise;
-      } 
+      },
+      getWorld: function() {
+          var deferred = $q.defer();
+          deferred.resolve({ id: 'pillar', name: 'Pillar' });
+          return deferred.promise;
+      }
     };
 
     PlayersCtrl = $controller('PlayersCtrl', {
