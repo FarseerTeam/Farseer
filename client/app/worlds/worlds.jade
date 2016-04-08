@@ -1,7 +1,10 @@
-p(id='worldTitle' class='white') Worlds
-label(id='worldLabel' for='worldNameInput', class='white') Name:
-input(id='worldNameInput' type='text', ng-model='newWorld.name', ng-required)
-button(id='addWorldButton' type='button', ng-click='addWorld()') Add
+h1(id='worldTitle' class='white') Worlds
+a(id='google-sign-in' href='/auth/google') Sign in
+
+div
+    label(id='worldLabel' for='worldNameInput', class='white') Name:
+    input(id='worldNameInput' type='text', ng-model='newWorld.name', ng-required)
+    button(id='addWorldButton' type='button', ng-click='addWorld()') Add
 
 div(id="worldsList" ng-repeat='world in worlds', class='white')
     a(href="/worlds/{{world.id}}/players" ng-show="!worldEditMode") {{world.name}}
