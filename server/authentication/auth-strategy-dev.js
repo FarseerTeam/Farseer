@@ -1,23 +1,19 @@
 'use strict';
 
 var LocalStrategy = require('passport-local').Strategy;
+var users = require('../components/users');
 
 var _verifyCB = function(username, password, done) {
-	// userDataService.findOrCreate(username + "._temp", function (user) {
-	//     done(null, user);
-	// });
-	console.log('*********************************************************************');
-	console.log('inside verify for local auth strategy\nusername: ' + username + '\npassword: ' + password);
-	console.log('*********************************************************************');
-	
-	if (username === 'badUser') {
-		return done('USER IS NOT AUTHENTICATED');
-	}
-	return done(null, {id: username});
-}
+    users.User.findOneAndUpdate({ email: username }, { email: username }, { upsert: true }, function(err, user) {
+        if (err) {
+            console.log(err);
+        }
+        return done(err, user);
+    });
+};
 
 var _strategy = new LocalStrategy(_verifyCB);
 
 module.exports = {
-	strategy: _strategy
+    strategy: _strategy
 }

@@ -5,6 +5,7 @@ var _ = require('lodash');
 
 var players = require("../../components/players");
 var teams = require("../../components/teams");
+var actions = require("../../components/actions");
 
 exports.index = function (req, res) {
   players.Player.find({ world: req.params.worldId }, function (err, doc) {
@@ -16,18 +17,22 @@ exports.index = function (req, res) {
   });
 };
 
-exports.create = function (req, res) {
-  var player = new players.Player(req.body);
-  player.world = req.params.worldId;
-  player.save(function (err) {
-    if (err) {
-      return res.status(409).json({
-        message: 'A player with email ' + player.email + ' already exists'
-      });
-    } else {
-      res.json(player);
-    }
-  });
+exports.create = function(req, res) {
+    var player = new players.Player(req.body);
+    player.world = req.params.worldId;
+    player.save(function(err) {
+        if (err) {
+            return res.status(409).json({
+                message: 'A player with email ' + player.email + ' already exists'
+            });
+        } else {
+            if (req.isAuthenticated()) {
+                var action = new actions.Action();
+                action.save();
+            }
+            res.json(player);
+        }
+    });
 };
 
 exports.delete = function (req, res) {

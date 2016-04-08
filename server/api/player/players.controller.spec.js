@@ -3,9 +3,10 @@
 var nextIfError = require("callback-wrappers").nextIfError;
 var expect = require('chai').expect;
 var app = require('../../app');
-var request = require('supertest');
+var request = require('supertest-as-promised');
 var players = require("../../components/players");
 var teams = require("../../components/teams");
+var actions = require("../../components/actions");
 var dataService = require('../../components/dataService');
 var format = require('string-format');
 var mongoose = require('mongoose');
@@ -54,89 +55,152 @@ describe('/api/worlds/world/players', function () {
     });
   });
 
-  //curl http://localhost:9000/api/worlds/world/players
-  //curl -H "Content-Type: application/json" -d '{"name":"pedro","email":"pedro@email"}' http://localhost:9000/api/worlds/world/players
-  describe('POST ', function () {
-    it('should create players', function (done) {
-      request(app)
-        .post('/api/worlds/hogwarts/players')
-        .send({
-          name: 'Neville',
-          email: 'longbottom@email.com'
-        })
-        .set('Accept', 'application/json')
-        .expect(200)
-        .expect('Content-Type', /json/)
-        .end(function (error, response) {
-          if (error) done(error);
-          expect(response.body.name).to.equal('Neville');
-          expect(response.body.email).to.equal('longbottom@email.com');
-          players.Player.find({ email: 'longbottom@email.com' }, function (err, doc) {
-            if (error) done(error);
-            expect(doc[0].name).to.equal('Neville');
-            expect(doc[0].world).to.equal('hogwarts');
-            done();
-          });
-        });
-    });
-
-    it('should allow creating players with a shared email in different worlds', function (done) {
-      players.Player.create({
-        name: "Mr. Smith ",
-        email: "test@test.smith.com",
-        world: "matrix"
-      }, function () {
-        request(app)
-          .post('/api/worlds/michigan/players')
-          .send({
-            name: 'Rob',
-            email: 'test@test.smith.com'
-          })
-          .set('Accept', 'application/json')
-          .expect(200)
-          .expect('Content-Type', /json/)
-          .end(function (error, response) {
-            if (error) done(error);
-            expect(response.body.name).to.equal('Rob');
-            expect(response.body.email).to.equal('test@test.smith.com');
-            players.Player.find({ email: 'test@test.smith.com', world: 'michigan' }, function (err, doc) {
-              if (error) done(error);
-              expect(doc[0].name).to.equal('Rob');
-              expect(doc[0].world).to.equal('michigan');
+  describe('POST ', function() {
+      beforeEach(function(done) {
+          actions.Action.remove({}, function() {
               done();
-            });
           });
       });
-    });
 
-    describe('when adding duplicate player', function () {
-      beforeEach(function (done) {
-        players.Player.create({
-          name: "Smith ",
-          email: "test@test.smith.com",
-          world: "world"
-        }, done);
+      it('should create players', function(done) {
+          request(app)
+              .post('/api/worlds/hogwarts/players')
+              .send({
+                  name: 'Neville',
+                  email: 'longbottom@email.com'
+              })
+              .set('Accept', 'application/json')
+              .expect(200)
+              .expect('Content-Type', /json/)
+              .end(function(error, response) {
+                  if (error) done(error);
+                  expect(response.body.name).to.equal('Neville');
+                  expect(response.body.email).to.equal('longbottom@email.com');
+                  players.Player.find({ email: 'longbottom@email.com' }, function(err, doc) {
+                      if (error) done(error);
+                      expect(doc[0].name).to.equal('Neville');
+                      expect(doc[0].world).to.equal('hogwarts');
+                      done();
+                  });
+              });
       });
 
-      it('should return a human error message', function (done) {
-        request(app)
-          .post('/api/worlds/world/players')
-          .send({
-            name: 'Smith',
-            email: 'test@test.smith.com'
-          })
-          .set('Accept', 'application/json')
-          .expect(409)
-          .expect('Content-Type', /json/)
-          .expect({ message: "A player with email test@test.smith.com already exists" }, done);
+      it('should log action when authenticated', function(done) {
+          var agent = request.agent(app);
+          agent
+              .get('/test-login?username=author@email&password=pws')
+              .then(function() {
+                  return agent
+                      .post('/api/worlds/hogwarts/players')
+                      .send({
+                          name: 'Ginny',
+                          email: 'gweasley@email.com'
+                      })
+                      .expect(200)
+              })
+              .then(function(response) {
+                  actions.Action.find({}, function(err, docs) {
+                      expect(docs.length).to.equal(1);
+                      done();
+                  });
+              });
       });
-    });
 
-    afterEach(function (done) {
-      players.Player.remove({}, function () {
-        done();
+      it('should not log action when not authenticated', function(done) {
+          var agent = request.agent(app);
+          agent
+              .post('/api/worlds/hogwarts/players')
+              .send({
+                  name: 'Ginny',
+                  email: 'gweasley@email.com'
+              })
+              .expect(200)
+              .then(function(response) {
+                  actions.Action.find({}, function(err, docs) {
+                      expect(docs.length).to.equal(0);
+                      done();
+                  });
+              });
       });
-    });
+
+      it('should allow creating players with a shared email in different worlds', function(done) {
+          players.Player.create({
+              name: "Mr. Smith ",
+              email: "test@test.smith.com",
+              world: "matrix"
+          }, function() {
+              request(app)
+                  .post('/api/worlds/michigan/players')
+                  .send({
+                      name: 'Rob',
+                      email: 'test@test.smith.com'
+                  })
+                  .set('Accept', 'application/json')
+                  .expect(200)
+                  .expect('Content-Type', /json/)
+                  .end(function(error, response) {
+                      if (error) done(error);
+                      expect(response.body.name).to.equal('Rob');
+                      expect(response.body.email).to.equal('test@test.smith.com');
+                      players.Player.find({ email: 'test@test.smith.com', world: 'michigan' }, function(err, doc) {
+                          if (error) done(error);
+                          expect(doc[0].name).to.equal('Rob');
+                          expect(doc[0].world).to.equal('michigan');
+                          done();
+                      });
+                  });
+          });
+      });
+
+      describe('when adding duplicate player', function() {
+          beforeEach(function(done) {
+              players.Player.create({
+                  name: "Smith ",
+                  email: "test@test.smith.com",
+                  world: "world"
+              }, done);
+          });
+
+          it('should return a human error message', function(done) {
+              request(app)
+                  .post('/api/worlds/world/players')
+                  .send({
+                      name: 'Smith',
+                      email: 'test@test.smith.com'
+                  })
+                  .set('Accept', 'application/json')
+                  .expect(409)
+                  .expect('Content-Type', /json/)
+                  .expect({ message: "A player with email test@test.smith.com already exists" }, done);
+          });
+
+          it('should not log action even when authenticated', function(done) {
+              var agent = request.agent(app);
+              agent
+                  .get('/test-login?username=author@email&password=pws')
+                  .then(function() {
+                      return agent
+                          .post('/api/worlds/world/players')
+                          .send({
+                              name: 'Smith',
+                              email: 'test@test.smith.com'
+                          })
+                          .expect(409)
+                  })
+                  .then(function(response) {
+                      actions.Action.find({}, function(err, docs) {
+                          expect(docs.length).to.equal(0);
+                          done();
+                      });
+                  });
+          });
+      });
+
+      afterEach(function(done) {
+          players.Player.remove({}, function() {
+              done();
+          });
+      });
   });
 });
 
