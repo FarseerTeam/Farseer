@@ -2,13 +2,12 @@
 
 var nextIfError = require("callback-wrappers").nextIfError;
 var expect = require('chai').expect;
-var chai = require('chai');
-chai.use(require('chai-datetime'));
 var app = require('../../app');
 var request = require('supertest-as-promised');
 var players = require("../../components/players");
 var teams = require("../../components/teams");
 var actions = require("../../components/actions");
+var worlds = require("../../components/worlds");
 var dataService = require('../../components/dataService');
 var format = require('string-format');
 var mongoose = require('mongoose');
@@ -58,8 +57,23 @@ describe('/api/worlds/world/players', function () {
   });
 
   describe('POST ', function() {
-      beforeEach(function(done) {
+      before(function(done) {
+          worlds.World.create({
+              id: 'hogwarts',
+              name: 'Hogwarts'
+          }, function() {
+              done();
+          });
+      });
+
+      afterEach(function(done) {
           actions.Action.remove({}, function() {
+              done();
+          });
+      });
+
+      after(function(done) {
+          worlds.World.remove({}, function() {
               done();
           });
       });
@@ -104,7 +118,7 @@ describe('/api/worlds/world/players', function () {
               .then(function(response) {
                   actions.Action.find({ userEmail: userEmail }, function(err, docs) {
                       expect(docs.length).to.equal(1);
-                      expect(docs[0].createdAt).to.equalDate(new Date());
+                      expect(docs[0].description).to.equal('created player Ginny (gweasley@email.com) in Hogwarts');
                       done();
                   });
               });
