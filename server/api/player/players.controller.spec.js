@@ -2,6 +2,8 @@
 
 var nextIfError = require("callback-wrappers").nextIfError;
 var expect = require('chai').expect;
+var chai = require('chai');
+chai.use(require('chai-datetime'));
 var app = require('../../app');
 var request = require('supertest-as-promised');
 var players = require("../../components/players");
@@ -87,8 +89,9 @@ describe('/api/worlds/world/players', function () {
 
       it('should log action when authenticated', function(done) {
           var agent = request.agent(app);
+          var userEmail = 'author@email';
           agent
-              .get('/test-login?username=author@email&password=pws')
+              .get('/test-login?username=' + userEmail + '&password=pws')
               .then(function() {
                   return agent
                       .post('/api/worlds/hogwarts/players')
@@ -99,8 +102,9 @@ describe('/api/worlds/world/players', function () {
                       .expect(200)
               })
               .then(function(response) {
-                  actions.Action.find({}, function(err, docs) {
+                  actions.Action.find({ userEmail: userEmail }, function(err, docs) {
                       expect(docs.length).to.equal(1);
+                      expect(docs[0].createdAt).to.equalDate(new Date());
                       done();
                   });
               });

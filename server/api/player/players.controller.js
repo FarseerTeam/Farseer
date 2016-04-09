@@ -27,7 +27,7 @@ exports.create = function(req, res) {
             });
         } else {
             if (req.isAuthenticated()) {
-                var action = new actions.Action();
+                var action = new actions.Action({ userEmail: req.user.email });
                 action.save();
             }
             res.json(player);
