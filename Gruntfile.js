@@ -641,6 +641,18 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('test', function (target) {
+    var protractorSetupTasks = [
+        'clean:server',
+        'env:all',
+        'env:test',
+        'injector:sass',
+        'concurrent:test',
+        'injector',
+        'wiredep',
+        'autoprefixer',
+        'express:devTest'
+    ];
+    
     if (target === 'server') {
       return grunt.task.run([
         'env:all',
@@ -662,19 +674,11 @@ module.exports = function (grunt) {
     }
 
     else if (target === 'e2e') {
-      return grunt.task.run([
-        'clean:server',
-        'env:all',
-        'env:test',
-        'injector:sass',
-        'concurrent:test',
-        'injector',
-        'wiredep',
-        'autoprefixer',
-        'express:devTest',
-        'protractor:chrome',
-        'protractor:firefox'
-      ]);
+        return grunt.task.run(protractorSetupTasks.concat('protractor:chrome', 'protractor:firefox'));
+    }
+
+    else if (target === 'chrome') {
+        return grunt.task.run(protractorSetupTasks.concat('protractor:chrome'));
     }
 
     else grunt.task.run([
@@ -709,6 +713,14 @@ module.exports = function (grunt) {
   grunt.registerTask('unitTest', [
     'test:server',
     'test:client'
+  ]);
+
+  grunt.registerTask('local', [
+      'newer:jshint',
+      'test:server',
+      'test:client',
+      'test:chrome',
+      'build'
   ]);
 
   grunt.registerTask('default', [
