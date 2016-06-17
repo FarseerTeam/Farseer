@@ -19,6 +19,7 @@ describe('Controller: PlayersCtrl', function () {
   var expectedErrorMessage = 'Error Message, Error Message!';
   var teamToPlayersMapFromServer = [{ team: 'Gryffindor', path: '/Gryffindor', players: [{ name: 'Harry Potter', _team: '/Gryffindor' }] }, {players: [{ name: 'Poppy Pomfrey' }, { name: 'Irma Pince' }] }, { team: 'Ravenclaw', path: '/Ravenclaw', players: [{ name: 'Penelope Clearwater', _team: '/Ravenclaw' }] }];
   var subteamPlayersMapFromServer = [{ team: 'Ravenclaw', path: '/Hogwarts/Raveclaw', players: ['Padma Patil'], subteams: [] }];
+  var subTeamRequest = '/api/worlds/pandora/maps/Hogwarts/Ravenclaw';
   var cloneObject = function (objectToClone) { return JSON.parse(JSON.stringify(objectToClone)); };
 
   beforeEach(inject(function ($controller, $rootScope, $q) {
@@ -53,9 +54,14 @@ describe('Controller: PlayersCtrl', function () {
         }
         return deferred.promise;
       },
-      getTeamToPlayersMap: function (path) {
+      getTeamToPlayersMap: function (path, world) {
         var deferred = $q.defer();
-        if (path === subteamPath) {
+        var request = '/api/worlds/' + world + '/maps';
+        if (path) {
+          request += path;
+        }
+
+        if (path === subteamPath && request == subTeamRequest) {
           deferred.resolve(cloneObject(subteamPlayersMapFromServer));
         } else {
           deferred.resolve(cloneObject(teamToPlayersMapFromServer));
@@ -155,6 +161,10 @@ describe('Controller: PlayersCtrl', function () {
   });
 
   describe('going to a subteam view', function () {
+    beforeEach(function () {
+      scope.$digest()
+    });
+
     it('should only display desired subteam map', function () {
       scope.goToTeam(subteamPath);
       scope.$digest();

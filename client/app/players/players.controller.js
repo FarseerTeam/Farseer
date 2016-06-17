@@ -35,9 +35,12 @@ angular.module('farseerApp')
         handleResponse(error.data.message, $scope.newPlayer, true);
       });
     };
-    
-    $scope.goToTeam = function(teamPath) {
-      loadTeamToPlayersMap(teamPath);
+
+    $scope.goToTeam = function(teamPath, worldid) {
+      if(worldid === undefined){
+        worldid = $scope.world.id;
+      }
+      loadTeamToPlayersMap(teamPath, worldid);
     };
 
     $scope.playerDroppedIntoTeamCB = function(player, team) {
@@ -76,10 +79,10 @@ angular.module('farseerApp')
     function loadTeamToPlayersMap(teamPath, world) {
       return httpService.getTeamToPlayersMap(teamPath, world).then(function(map) {
         $scope.teamPlayersMap = map;
-        $scope.currentPath = teamPath; 
+        $scope.currentPath = teamPath;
       });
     }
-    
+
     function loadWorld(worldId) {
         httpService.getWorld(worldId).then(function(world) {
             $scope.world = world;
