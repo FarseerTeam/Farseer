@@ -26,8 +26,6 @@ describe('Http Service', function () {
         expect(returnedPlayers[2]).toBe('Ron Weasley');
       });
 
-      $httpBackend.flush();
-
     });
 
     it('should add new player', function () {
@@ -43,7 +41,6 @@ describe('Http Service', function () {
       service.addPlayer(newPlayer).then(function (response) {
         expect(response.status).toBe(200);
       });
-      $httpBackend.flush();
     });
 
     it('should update existing player', function () {
@@ -54,8 +51,6 @@ describe('Http Service', function () {
       service.update(smitty).then(function (response) {
         expect(response.status).toBe(200);
       });
-
-      $httpBackend.flush();
     });
   });
 
@@ -67,8 +62,6 @@ describe('Http Service', function () {
       service.getTeamToPlayersMap(null, defaultWorldName).then(function (returnedMap) {
         expect(returnedMap).toEqual(expectedResult);
       });
-
-      $httpBackend.flush();
     });
 
     it('should return team-to-players map data for a specified subteam', function () {
@@ -78,8 +71,6 @@ describe('Http Service', function () {
       service.getTeamToPlayersMap('/Hogwarts/Ravenclaw', defaultWorldName).then(function (returnedMap) {
         expect(returnedMap).toEqual(expectedResult);
       });
-
-      $httpBackend.flush();
     });
   });
 
@@ -95,8 +86,6 @@ describe('Http Service', function () {
         expect(returnedWorlds[1]).toBe('Beauxbatons');
         expect(returnedWorlds[2]).toBe('Durmstrang');
       });
-
-      $httpBackend.flush();
     });
 
     it('should return requested world', function() {
@@ -106,8 +95,6 @@ describe('Http Service', function () {
         service.getWorld('durmstrang').then(function(returnedWorld) {
             expect(returnedWorld).toBe('Durmstrang');
         });
-
-        $httpBackend.flush();
     });
 
     it('should add new world', function () {
@@ -117,7 +104,6 @@ describe('Http Service', function () {
       service.addWorld(newWorld).then(function (response) {
         expect(response.status).toBe(200);
       });
-      $httpBackend.flush();
     });
 
     it('should return modified world on world update', function() {
@@ -128,8 +114,6 @@ describe('Http Service', function () {
       service.updateWorld(worldId, updatedWorldName).then(function(response) {
         expect(response.status).toBe(200);
       });
-
-      $httpBackend.flush();
     });
 
     it('should remove a world on world delete', function(){
@@ -139,8 +123,6 @@ describe('Http Service', function () {
       service.deleteWorld(worldId).then(function(response){
         expect(response.status).toBe(200);
       });
-
-      $httpBackend.flush();
     });
   });
 });

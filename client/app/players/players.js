@@ -11,6 +11,14 @@ angular.module('farseerApp')
         templateUrl: 'app/players/playersMap.html',
         controller: 'PlayersCtrl'
       }).
+      when('/worlds/:worldId/playersMap/:teamId', {
+      templateUrl: 'app/players/playersMap.html',
+      controller: 'PlayersCtrl'
+      }).
+      when('/worlds/:worldId/playersMap/:teamId/:subteamId', {
+        templateUrl: 'app/players/playersMap.html',
+        controller: 'PlayersCtrl'
+      }).
       when('/auth/google', {
         redirectTo: function () {
           window.location = '/auth/google';

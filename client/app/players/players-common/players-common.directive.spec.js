@@ -15,6 +15,5 @@ describe('Directive: playersCommon', function () {
   it('should make hidden element visible', inject(function ($compile) {
     element = angular.element('<players-common></players-common>');
     element = $compile(element)(scope);
-    scope.$apply();
   }));
 });

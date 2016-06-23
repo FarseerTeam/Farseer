@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('farseerApp')
-  .controller('PlayersCtrl', function ($scope, $timeout, httpService, $routeParams) {
+  .controller('PlayersCtrl', function ($scope, $timeout, httpService, $routeParams, $location) {
     $scope.players = [];
     $scope.teamPlayersMap = [];
     $scope.error = undefined;
@@ -14,6 +14,7 @@ angular.module('farseerApp')
         loadWorld(worldId);
         loadTeamToPlayersMap(null, worldId);
         loadPlayers(worldId);
+        $scope.homeUrl = $location.path();
     })();
 
     $scope.update = function(player) {
@@ -80,6 +81,11 @@ angular.module('farseerApp')
       return httpService.getTeamToPlayersMap(teamPath, world).then(function(map) {
         $scope.teamPlayersMap = map;
         $scope.currentPath = teamPath;
+        if(teamPath){
+          $location.path( $scope.homeUrl + teamPath, false );
+          $scope.url = $location.path();
+          $scope.apply;
+        }
       });
     }
 

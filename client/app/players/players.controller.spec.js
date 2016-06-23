@@ -5,6 +5,7 @@ describe('Controller: PlayersCtrl', function () {
   beforeEach(module('farseerApp'));
 
   var PlayersCtrl,
+    $location,
     scope,
     mockService,
     mockTimeout,
@@ -22,8 +23,9 @@ describe('Controller: PlayersCtrl', function () {
   var subTeamRequest = '/api/worlds/pandora/maps/Hogwarts/Ravenclaw';
   var cloneObject = function (objectToClone) { return JSON.parse(JSON.stringify(objectToClone)); };
 
-  beforeEach(inject(function ($controller, $rootScope, $q) {
+  beforeEach(inject(function ($controller, $rootScope, $q, _$location_) {
     scope = $rootScope.$new();
+    $location = _$location_;
 
     mockService = {
       getPlayers: function () {
@@ -56,6 +58,7 @@ describe('Controller: PlayersCtrl', function () {
       },
       getTeamToPlayersMap: function (path, world) {
         var deferred = $q.defer();
+        $location.path('/worlds/' + world + '/playersMap');
         var request = '/api/worlds/' + world + '/maps';
         if (path) {
           request += path;
@@ -168,7 +171,16 @@ describe('Controller: PlayersCtrl', function () {
     it('should only display desired subteam map', function () {
       scope.goToTeam(subteamPath);
       scope.$digest();
+
       expect(scope.teamPlayersMap).toEqual(subteamPlayersMapFromServer);
+    });
+
+    it('should set the url to be the sub team path', function () {
+      scope.goToTeam(subteamPath);
+      scope.$digest();
+      var url = '/worlds/pandora/playersMap/Hogwarts/Ravenclaw';
+
+      expect(scope.url).toEqual(url);
     });
   });
 
