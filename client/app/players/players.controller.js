@@ -11,10 +11,9 @@ angular.module('farseerApp')
     var worldId = $routeParams.worldId;
 
     (function initializeController() {
-        loadWorld(worldId);
-        loadTeamToPlayersMap(null, worldId);
-        loadPlayers(worldId);
-        $scope.homeUrl = $location.path();
+      loadWorld(worldId);
+      loadTeamToPlayersMap(null, worldId);
+      loadPlayers(worldId);
     })();
 
     $scope.update = function(player) {
@@ -54,8 +53,16 @@ angular.module('farseerApp')
       return player;
     };
 
+    function getTeamPathFromUrl(url) {
+      var path = url.split('/');
+      if (path.length > 4) {
+        return '/' + url.substring(url.indexOf(path[4]));
+      }
+      return null;
+    }
+
     function loadPlayers(world) {
-      httpService.getPlayers(world).then(function(players) {
+      httpService.getPlayers(world).then(function (players) {
         $scope.players = players;
       });
     }
@@ -78,11 +85,14 @@ angular.module('farseerApp')
     }
 
     function loadTeamToPlayersMap(teamPath, world) {
-      return httpService.getTeamToPlayersMap(teamPath, world).then(function(map) {
+      if (teamPath === null) {
+        teamPath = getTeamPathFromUrl($location.path());
+      }
+      return httpService.getTeamToPlayersMap(teamPath, world).then(function (map) {
         $scope.teamPlayersMap = map;
         $scope.currentPath = teamPath;
-        if(teamPath){
-          $location.path( $scope.homeUrl + teamPath, false );
+        if (teamPath) {
+          $location.path($scope.homeUrl + teamPath, false);
           $scope.url = $location.path();
           $scope.apply;
         }
@@ -92,6 +102,7 @@ angular.module('farseerApp')
     function loadWorld(worldId) {
         httpService.getWorld(worldId).then(function(world) {
             $scope.world = world;
+          $scope.homeUrl = '/worlds/' + worldId + '/playersMap'
         });
     }
 

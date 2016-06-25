@@ -1,28 +1,26 @@
 'use strict';
+var PlayersCtrl,
+  $location,
+  scope,
+  mockService,
+  mockTimeout,
+  addedPlayer,
+  updatedPlayer,
+  requestedWorldId;
+var subteamPath = '/Hogwarts/Ravenclaw';
+var rejectAddPlayer = false;
+var rejectUpdatePlayer = false;
+var timeoutWasCalledWithTime = -1;
+var shouldCallTimeoutFunctionImmediately = false;
+var expectedErrorMessage = 'Error Message, Error Message!';
+var teamToPlayersMapFromServer = [{ team: 'Gryffindor', path: '/Gryffindor', players: [{ name: 'Harry Potter', _team: '/Gryffindor' }] }, {players: [{ name: 'Poppy Pomfrey' }, { name: 'Irma Pince' }] }, { team: 'Ravenclaw', path: '/Ravenclaw', players: [{ name: 'Penelope Clearwater', _team: '/Ravenclaw' }] }];
+var subteamPlayersMapFromServer = [{ team: 'Ravenclaw', path: '/Hogwarts/Raveclaw', players: ['Padma Patil'], subteams: [] }];
+var subTeamRequest = '/api/worlds/pandora/maps/Hogwarts/Ravenclaw';
+var cloneObject = function (objectToClone) { return JSON.parse(JSON.stringify(objectToClone)); };
 
 describe('Controller: PlayersCtrl', function () {
 
   beforeEach(module('farseerApp'));
-
-  var PlayersCtrl,
-    $location,
-    scope,
-    mockService,
-    mockTimeout,
-    addedPlayer,
-    updatedPlayer,
-    requestedWorldId;
-  var subteamPath = '/Hogwarts/Ravenclaw';
-  var rejectAddPlayer = false;
-  var rejectUpdatePlayer = false;
-  var timeoutWasCalledWithTime = -1;
-  var shouldCallTimeoutFunctionImmediately = false;
-  var expectedErrorMessage = 'Error Message, Error Message!';
-  var teamToPlayersMapFromServer = [{ team: 'Gryffindor', path: '/Gryffindor', players: [{ name: 'Harry Potter', _team: '/Gryffindor' }] }, {players: [{ name: 'Poppy Pomfrey' }, { name: 'Irma Pince' }] }, { team: 'Ravenclaw', path: '/Ravenclaw', players: [{ name: 'Penelope Clearwater', _team: '/Ravenclaw' }] }];
-  var subteamPlayersMapFromServer = [{ team: 'Ravenclaw', path: '/Hogwarts/Raveclaw', players: ['Padma Patil'], subteams: [] }];
-  var subTeamRequest = '/api/worlds/pandora/maps/Hogwarts/Ravenclaw';
-  var cloneObject = function (objectToClone) { return JSON.parse(JSON.stringify(objectToClone)); };
-
   beforeEach(inject(function ($controller, $rootScope, $q, _$location_) {
     scope = $rootScope.$new();
     $location = _$location_;
@@ -371,3 +369,94 @@ describe('Controller: PlayersCtrl', function () {
   });
 
 });
+
+describe('PlayersCtrl: When a url is refreshed', function () {
+  beforeEach(module('farseerApp'));
+  beforeEach(inject(function ($q) {
+    mockService = {
+      getTeamToPlayersMap: function (path, world) {
+        var deferred = $q.defer();
+        var request = '/api/worlds/' + world + '/maps';
+        if (path) {
+          request += path;
+        }
+        if (path === subteamPath && request == subTeamRequest) {
+          deferred.resolve(cloneObject(subteamPlayersMapFromServer));
+        } else {
+          deferred.resolve(cloneObject(teamToPlayersMapFromServer));
+        }
+        return deferred.promise;
+      },
+      getWorld: function (worldId) {
+        requestedWorldId = worldId;
+
+        var deferred = $q.defer();
+        deferred.resolve({
+          id: 'pandora',
+          name: 'Pan Dora'
+        });
+        return deferred.promise;
+      },
+      getPlayers: function () {
+        var deferred = $q.defer();
+        deferred.resolve(['Harry Potter', 'Hermione Granger', 'Ron Weasley']);
+        return deferred.promise;
+      }
+    };
+    mockTimeout = function (functionToPerform, timeout) {
+      timeoutWasCalledWithTime = timeout;
+      if (shouldCallTimeoutFunctionImmediately) {
+        functionToPerform();
+      }
+    };
+
+  }));
+
+  it('when there is just one level for subteam', inject(function ($controller, $rootScope, _$location_) {
+    scope = $rootScope.$new();
+    $location = _$location_;
+    $location.path('/worlds/pandora/playersMap/Hogwarts', false);
+    PlayersCtrl = $controller('PlayersCtrl', {
+      $scope: scope,
+      httpService: mockService,
+      $routeParams: {worldId: 'pandora'}
+    });
+    var url = '/worlds/pandora/playersMap/Hogwarts';
+    scope.$digest();
+
+    expect(scope.url).toEqual(url);
+  }));
+
+  it('when there is are two levels for subteam', inject(function ($controller, $rootScope, _$location_) {
+    scope = $rootScope.$new();
+    $location = _$location_;
+    $location.path('/worlds/pandora/playersMap/Hogwarts/Ravenclaw', false);
+    PlayersCtrl = $controller('PlayersCtrl', {
+      $scope: scope,
+      httpService: mockService,
+      $routeParams: {worldId: 'pandora'}
+    });
+    var url = '/worlds/pandora/playersMap/Hogwarts/Ravenclaw';
+    scope.$digest();
+
+    expect(scope.url).toEqual(url);
+  }));
+
+  it('when there is no subteam', inject(function ($controller, $rootScope, _$location_) {
+    scope = $rootScope.$new();
+    $location = _$location_;
+    $location.path('/worlds/pandora/playersMap', false);
+    PlayersCtrl = $controller('PlayersCtrl', {
+      $scope: scope,
+      httpService: mockService,
+      $routeParams: {worldId: 'pandora'}
+    });
+    scope.$digest();
+
+    expect(scope.url).toEqual(undefined);
+  }));
+
+});
+
+
+
