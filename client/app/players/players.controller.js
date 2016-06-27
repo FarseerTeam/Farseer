@@ -16,34 +16,34 @@ angular.module('farseerApp')
       loadPlayers(worldId);
     })();
 
-    $scope.update = function(player) {
-      httpService.update(player).then(function() {
+    $scope.update = function (player) {
+      httpService.update(player).then(function () {
         handleResponse('Success', player, false);
 
-      }, function(error) {
+      }, function (error) {
         handleResponse(error.data.message, player, true);
       });
     };
 
-    $scope.addPlayer = function() {
+    $scope.addPlayer = function () {
       $scope.newPlayer.world = worldId;
-      httpService.addPlayer($scope.newPlayer).then(function(response) {
+      httpService.addPlayer($scope.newPlayer).then(function (response) {
         addNewPlayerToScope(response.data);
         handleResponse('Success', $scope.newPlayer, false);
 
-      }, function(error) {
+      }, function (error) {
         handleResponse(error.data.message, $scope.newPlayer, true);
       });
     };
 
-    $scope.goToTeam = function(teamPath, worldid) {
-      if(worldid === undefined){
+    $scope.goToTeam = function (teamPath, worldid) {
+      if (worldid === undefined) {
         worldid = $scope.world.id;
       }
       loadTeamToPlayersMap(teamPath, worldid);
     };
 
-    $scope.playerDroppedIntoTeamCB = function(player, team) {
+    $scope.playerDroppedIntoTeamCB = function (player, team) {
       if (player._team === team.path) {
         return player;
       }
@@ -94,21 +94,20 @@ angular.module('farseerApp')
         if (teamPath) {
           $location.path($scope.homeUrl + teamPath, false);
           $scope.url = $location.path();
-          $scope.apply;
         }
       });
     }
 
     function loadWorld(worldId) {
-        httpService.getWorld(worldId).then(function(world) {
-            $scope.world = world;
-          $scope.homeUrl = '/worlds/' + worldId + '/playersMap'
-        });
+      httpService.getWorld(worldId).then(function (world) {
+        $scope.world = world;
+        $scope.homeUrl = '/worlds/' + worldId + '/playersMap';
+      });
     }
 
     function displayErrorMessage(errorMessage) {
-      $scope.error = {message: errorMessage};
-      $timeout(function() {$scope.error = undefined;}, 3000);
+      $scope.error = { message: errorMessage };
+      $timeout(function () { $scope.error = undefined; }, 3000);
     }
 
   });

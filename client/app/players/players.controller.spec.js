@@ -62,7 +62,7 @@ describe('Controller: PlayersCtrl', function () {
           request += path;
         }
 
-        if (path === subteamPath && request == subTeamRequest) {
+        if (path === subteamPath && request === subTeamRequest) {
           deferred.resolve(cloneObject(subteamPlayersMapFromServer));
         } else {
           deferred.resolve(cloneObject(teamToPlayersMapFromServer));
@@ -163,7 +163,7 @@ describe('Controller: PlayersCtrl', function () {
 
   describe('going to a subteam view', function () {
     beforeEach(function () {
-      scope.$digest()
+      scope.$digest();
     });
 
     it('should only display desired subteam map', function () {
@@ -380,7 +380,7 @@ describe('PlayersCtrl: When a url is refreshed', function () {
         if (path) {
           request += path;
         }
-        if (path === subteamPath && request == subTeamRequest) {
+        if (path === subteamPath && request === subTeamRequest) {
           deferred.resolve(cloneObject(subteamPlayersMapFromServer));
         } else {
           deferred.resolve(cloneObject(teamToPlayersMapFromServer));
@@ -457,6 +457,3 @@ describe('PlayersCtrl: When a url is refreshed', function () {
   }));
 
 });
-
-
-
