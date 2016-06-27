@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('farseerApp')
-  .controller('PlayersCtrl', function ($scope, $timeout, httpService, $routeParams) {
+  .controller('PlayersCtrl', function ($scope, $timeout, httpService, $routeParams, $location) {
     $scope.players = [];
     $scope.teamPlayersMap = [];
     $scope.error = undefined;
@@ -11,9 +11,9 @@ angular.module('farseerApp')
     var worldId = $routeParams.worldId;
 
     (function initializeController() {
-        loadWorld(worldId);
-        loadTeamToPlayersMap(null, worldId);
-        loadPlayers(worldId);
+      loadWorld(worldId);
+      loadTeamToPlayersMap(null, worldId);
+      loadPlayers(worldId);
     })();
 
     $scope.update = function(player) {
@@ -35,9 +35,12 @@ angular.module('farseerApp')
         handleResponse(error.data.message, $scope.newPlayer, true);
       });
     };
-    
-    $scope.goToTeam = function(teamPath) {
-      loadTeamToPlayersMap(teamPath);
+
+    $scope.goToTeam = function(teamPath, worldid) {
+      if(worldid === undefined){
+        worldid = $scope.world.id;
+      }
+      loadTeamToPlayersMap(teamPath, worldid);
     };
 
     $scope.playerDroppedIntoTeamCB = function(player, team) {
@@ -50,8 +53,16 @@ angular.module('farseerApp')
       return player;
     };
 
+    function getTeamPathFromUrl(url) {
+      var path = url.split('/');
+      if (path.length > 4) {
+        return '/' + url.substring(url.indexOf(path[4]));
+      }
+      return null;
+    }
+
     function loadPlayers(world) {
-      httpService.getPlayers(world).then(function(players) {
+      httpService.getPlayers(world).then(function (players) {
         $scope.players = players;
       });
     }
@@ -74,15 +85,24 @@ angular.module('farseerApp')
     }
 
     function loadTeamToPlayersMap(teamPath, world) {
-      return httpService.getTeamToPlayersMap(teamPath, world).then(function(map) {
+      if (teamPath === null) {
+        teamPath = getTeamPathFromUrl($location.path());
+      }
+      return httpService.getTeamToPlayersMap(teamPath, world).then(function (map) {
         $scope.teamPlayersMap = map;
-        $scope.currentPath = teamPath; 
+        $scope.currentPath = teamPath;
+        if (teamPath) {
+          $location.path($scope.homeUrl + teamPath, false);
+          $scope.url = $location.path();
+          $scope.apply;
+        }
       });
     }
-    
+
     function loadWorld(worldId) {
         httpService.getWorld(worldId).then(function(world) {
             $scope.world = world;
+          $scope.homeUrl = '/worlds/' + worldId + '/playersMap'
         });
     }
 
