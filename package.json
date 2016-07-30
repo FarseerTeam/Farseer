@@ -84,7 +84,7 @@
     "mocha": "^2.3.4",
     "open": "~0.0.5",
     "phantomjs": "^1.9.19",
-    "protractor": "^3.0.0",
+    "protractor": "^4.0.0",
     "protractor-jasmine2-screenshot-reporter": "^0.1.7",
     "requirejs": "~2.1.22",
     "should": "^7.1.1",
