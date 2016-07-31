@@ -182,7 +182,10 @@ describe('Controller: WorldsCtrl', function () {
 
     it('should not add a duplicate world to worlds in scope', function () {
       addedWorld = undefined;
-      scope.newWorld = {name: 'Hogwarts School of Witchcraft and Wizardry', id: 'hogwartsschoolofwitchcraftandwizardry'}
+      scope.newWorld = {
+        name: 'Hogwarts School of Witchcraft and Wizardry',
+        id: 'hogwartsschoolofwitchcraftandwizardry'
+      };
 
       scope.$digest();
       scope.addWorld();
