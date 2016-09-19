@@ -2,7 +2,7 @@
 
 angular
   .module('farseerApp')
-  .controller('WorldsCtrl', function($scope, httpService) {
+  .controller('WorldsCtrl', function ($scope, httpService) {
 
     $scope.worlds = [];
     $scope.worldEditMode = false;
@@ -19,16 +19,20 @@ angular
     }
 
     $scope.addWorld = function () {
-      httpService.addWorld($scope.newWorld).then(function (response) {
+      if (!_.find($scope.worlds, function (world) {
+          return world.id === $scope.newWorld.id;
+        })) {
+        httpService.addWorld($scope.newWorld).then(function (response) {
           addNewWorldToScope(response.data);
-      }, function(response){
-        window.alert(response.data.message);
-        $scope.newWorld = '';
-      });
+        }, function (response) {
+          window.alert(response.data.message);
+          $scope.newWorld = '';
+        });
+      }
     };
 
-    $scope.updateWorld = function(worldId, worldName, updatedWorldName) {
-      httpService.updateWorld(worldId, updatedWorldName).then(function(response) {
+    $scope.updateWorld = function (worldId, worldName, updatedWorldName) {
+      httpService.updateWorld(worldId, updatedWorldName).then(function (response) {
         for (var i = 0; i < $scope.worlds.length; i++) {
           if ($scope.worlds[i].id === worldId) {
             $scope.worlds[i].id = response.data.id;
@@ -36,7 +40,7 @@ angular
             break;
           }
         }
-      }, function (response){
+      }, function (response) {
         window.alert(response.data.message);
         for (var i = 0; i < $scope.worlds.length; i++) {
           if ($scope.worlds[i].id === worldId) {
@@ -47,7 +51,7 @@ angular
       });
     };
 
-    $scope.deleteWorldOnUserConfirmation = function(worldId) {
+    $scope.deleteWorldOnUserConfirmation = function (worldId) {
       var result = window.confirm('Are you sure you want to delete this world and all associated players?');
       if (result) {
         deleteWorld(worldId);
@@ -56,7 +60,7 @@ angular
     };
 
     function deleteWorld(worldId) {
-      httpService.deleteWorld(worldId).then(function(response) {
+      httpService.deleteWorld(worldId).then(function (response) {
         if (response.data.ok === 1) {
           $scope.deleteWorldStatus = response.data.ok;
         } else {
