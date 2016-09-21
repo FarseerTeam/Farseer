@@ -256,7 +256,7 @@ describe('Controller: PlayersCtrl', function () {
 
     beforeEach(function () {
       existingPlayer = { name: 'smitty', email: 'smith@email' };
-      this.form = {$invalid: false}
+      this.form = {$invalid: false};
     });
 
     it('should update player', function () {
@@ -298,7 +298,7 @@ describe('Controller: PlayersCtrl', function () {
     var updateWasNeverCalled = { name: 'neverCalled' };
 
     beforeEach(function () {
-      this.form = {$invalid: false}
+      this.form = {$invalid: false};
       scope.update(updateWasNeverCalled, this.form);
       scope.$digest();
       playerWithTeam = scope.teamPlayersMap[0].players[0];
