@@ -188,10 +188,11 @@ describe('Controller: PlayersCtrl', function () {
     beforeEach(function () {
       newPlayer = { name: 'Draco', email: 'malfoy@email' };
       scope.newPlayer = newPlayer;
+      this.form = {$invalid: false};
     });
 
     it('should add new player', function () {
-      scope.addPlayer();
+      scope.addPlayer(this.form);
       scope.$digest();
 
       expect(addedPlayer).toBe(newPlayer);
@@ -201,15 +202,24 @@ describe('Controller: PlayersCtrl', function () {
       scope.$digest();
       scope.players = [];
 
-      scope.addPlayer();
+      scope.addPlayer(this.form);
       scope.$digest();
 
       expect(scope.players.length).toBe(1);
       expect(scope.players[0]).toBe(newPlayer);
     });
 
+    it('should not add duplicate emails', function () {
+      scope.players = [{name: 'Draco', email: 'malfoy@email'}];
+      var spyOnAddPlayer = spyOn(mockService, 'addPlayer').and.callThrough();
+      scope.addPlayer(this.form);
+      scope.$digest();
+
+      expect(spyOnAddPlayer).not.toHaveBeenCalled();
+    });
+
     it('should add new player to the list of existing players in scope when successful', function () {
-      scope.addPlayer();
+      scope.addPlayer(this.form);
       scope.$digest();
 
       expect(scope.players.length).toBe(4);
@@ -218,7 +228,7 @@ describe('Controller: PlayersCtrl', function () {
 
     it('should pass success message to scope when add is successful', function () {
       scope.newPlayer.error = true;
-      scope.addPlayer();
+      scope.addPlayer(this.form);
       scope.$digest();
 
       expect(scope.handler).not.toBe(undefined);
@@ -231,7 +241,7 @@ describe('Controller: PlayersCtrl', function () {
       scope.newPlayer.error = false;
       rejectAddPlayer = true;
 
-      scope.addPlayer();
+      scope.addPlayer(this.form);
       scope.$digest();
 
       expect(scope.handler).not.toBe(undefined);
@@ -246,17 +256,18 @@ describe('Controller: PlayersCtrl', function () {
 
     beforeEach(function () {
       existingPlayer = { name: 'smitty', email: 'smith@email' };
+      this.form = {$invalid: false}
     });
 
     it('should update player', function () {
-      scope.update(existingPlayer);
+      scope.update(existingPlayer, this.form);
       scope.$digest();
 
       expect(updatedPlayer).toBe(existingPlayer);
     });
 
     it('should pass success message to scope when update is successful', function () {
-      scope.update(existingPlayer);
+      scope.update(existingPlayer, this.form);
       scope.$digest();
 
       expect(scope.handler).not.toBe(undefined);
@@ -267,7 +278,7 @@ describe('Controller: PlayersCtrl', function () {
     it('should pass error message to scope when update is rejected', function () {
       rejectUpdatePlayer = true;
 
-      scope.update(existingPlayer);
+      scope.update(existingPlayer, this.form);
       scope.$digest();
 
       expect(scope.handler).not.toBe(undefined);
@@ -287,7 +298,8 @@ describe('Controller: PlayersCtrl', function () {
     var updateWasNeverCalled = { name: 'neverCalled' };
 
     beforeEach(function () {
-      scope.update(updateWasNeverCalled);
+      this.form = {$invalid: false}
+      scope.update(updateWasNeverCalled, this.form);
       scope.$digest();
       playerWithTeam = scope.teamPlayersMap[0].players[0];
       playerWithNoTeam = scope.teamPlayersMap[1].players[0];

@@ -17,23 +17,25 @@ angular.module('farseerApp')
     })();
 
     $scope.update = function (player) {
-      httpService.update(player).then(function () {
-        handleResponse('Success', player, false);
+        httpService.update(player).then(function () {
+          handleResponse('Success', player, false);
 
-      }, function (error) {
-        handleResponse(error.data.message, player, true);
-      });
+        }, function (error) {
+          handleResponse(error.data.message, player, true);
+        });
     };
 
-    $scope.addPlayer = function () {
-      $scope.newPlayer.world = worldId;
-      httpService.addPlayer($scope.newPlayer).then(function (response) {
-        addNewPlayerToScope(response.data);
-        handleResponse('Success', $scope.newPlayer, false);
+    $scope.addPlayer = function (form) {
+      if (playerExists() == undefined && !form.$invalid) {
+        $scope.newPlayer.world = worldId;
+        httpService.addPlayer($scope.newPlayer).then(function (response) {
+          addNewPlayerToScope(response.data);
+          handleResponse('Success', $scope.newPlayer, false);
 
-      }, function (error) {
-        handleResponse(error.data.message, $scope.newPlayer, true);
-      });
+        }, function (error) {
+          handleResponse(error.data.message, $scope.newPlayer, true);
+        });
+      };
     };
 
     $scope.goToTeam = function (teamPath, worldid) {
@@ -52,6 +54,12 @@ angular.module('farseerApp')
       httpService.update(player).catch(errorUpdatingPlayer);
       return player;
     };
+
+    function playerExists() {
+      return _.find(_.pluck($scope.players, 'email'), function (email) {
+        return email == $scope.newPlayer.email;
+      });
+    }
 
     function getTeamPathFromUrl(url) {
       var path = url.split('/');
