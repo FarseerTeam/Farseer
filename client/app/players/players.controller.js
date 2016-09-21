@@ -26,7 +26,7 @@ angular.module('farseerApp')
     };
 
     $scope.addPlayer = function (form) {
-      if (playerExists() == undefined && !form.$invalid) {
+      if (playerExists() === undefined && !form.$invalid) {
         $scope.newPlayer.world = worldId;
         httpService.addPlayer($scope.newPlayer).then(function (response) {
           addNewPlayerToScope(response.data);
@@ -35,7 +35,7 @@ angular.module('farseerApp')
         }, function (error) {
           handleResponse(error.data.message, $scope.newPlayer, true);
         });
-      };
+      }
     };
 
     $scope.goToTeam = function (teamPath, worldid) {
@@ -57,7 +57,7 @@ angular.module('farseerApp')
 
     function playerExists() {
       return _.find(_.pluck($scope.players, 'email'), function (email) {
-        return email == $scope.newPlayer.email;
+        return email === $scope.newPlayer.email;
       });
     }
 
