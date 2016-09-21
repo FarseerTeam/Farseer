@@ -19,32 +19,6 @@ describe('The playersMap page has teams on it, and... ', function () {
       it('then there is no team displayed on screen.', function () {
         expect(page.allTeams.count()).toBe(0);
       });
-
-      it('can add a new team member', function () {
-        setup.addWorld('Tiger', 'Tiger')
-          .then(browser.get('worlds/Tiger/players'));
-        element(by.model('newPlayer.name')).sendKeys('Nancy');
-        element(by.model('newPlayer.email')).sendKeys('nancy@gmail.com');
-        element(by.model('newPlayer._team')).sendKeys('/teamA');
-        element(by.id('addPlayer')).click();
-
-        var todoList = element.all(by.repeater('player in players'));
-
-        expect(todoList.count()).toEqual(1);
-      });
-
-      it('will not save if team is not valid', function () {
-        setup.addWorld('Tiger', 'Tiger')
-          .then(browser.get('worlds/Tiger/players'));
-        element(by.model('newPlayer.name')).sendKeys('Nancy');
-        element(by.model('newPlayer.email')).sendKeys('nancy@gmail.com');
-        element(by.model('newPlayer._team')).sendKeys('/');
-        element(by.id('addPlayer')).click();
-
-        var todoList = element.all(by.repeater('player in players'));
-
-        expect(todoList.count()).toEqual(0);
-      });
     });
 
     describe('and there is at least one player... ', function () {
