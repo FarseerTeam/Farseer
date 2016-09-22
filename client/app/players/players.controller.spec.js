@@ -259,6 +259,16 @@ describe('Controller: PlayersCtrl', function () {
       this.form = {$invalid: false};
     });
 
+    it('will not update player and pass error message to scope if form is invalid', function () {
+      var spyOnUpdate = spyOn(mockService, 'update').and.callThrough();
+      this.form = {$invalid: true};
+      scope.update(existingPlayer, this.form);
+      scope.$digest();
+
+      expect(spyOnUpdate).not.toHaveBeenCalled();
+      expect(scope.handler.message).toBe('Check team url of player. Update not successful.');
+    });
+
     it('should update player', function () {
       scope.update(existingPlayer, this.form);
       scope.$digest();

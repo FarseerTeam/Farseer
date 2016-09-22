@@ -16,13 +16,17 @@ angular.module('farseerApp')
       loadPlayers(worldId);
     })();
 
-    $scope.update = function (player) {
+    $scope.update = function (player, form) {
+      if (!form.$invalid) {
         httpService.update(player).then(function () {
           handleResponse('Success', player, false);
-
         }, function (error) {
           handleResponse(error.data.message, player, true);
         });
+      } else {
+        handleResponse('Check team url of player. Update not successful.', player, true);
+      }
+
     };
 
     $scope.addPlayer = function (form) {
@@ -31,7 +35,6 @@ angular.module('farseerApp')
         httpService.addPlayer($scope.newPlayer).then(function (response) {
           addNewPlayerToScope(response.data);
           handleResponse('Success', $scope.newPlayer, false);
-
         }, function (error) {
           handleResponse(error.data.message, $scope.newPlayer, true);
         });
@@ -114,8 +117,10 @@ angular.module('farseerApp')
     }
 
     function displayErrorMessage(errorMessage) {
-      $scope.error = { message: errorMessage };
-      $timeout(function () { $scope.error = undefined; }, 3000);
+      $scope.error = {message: errorMessage};
+      $timeout(function () {
+        $scope.error = undefined;
+      }, 3000);
     }
 
   });
