@@ -38,6 +38,8 @@ angular.module('farseerApp')
         }, function (error) {
           handleResponse(error.data.message, $scope.newPlayer, true);
         });
+      } else {
+        handleResponse('Check team url of player. Add not successful.', $scope.newPlayer, true);
       }
     };
 

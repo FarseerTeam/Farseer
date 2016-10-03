@@ -249,6 +249,17 @@ describe('Controller: PlayersCtrl', function () {
       expect(scope.handler.error).toBe(true);
       expect(scope.newPlayer.error).toBe(true);
     });
+
+    it('should pass error message to scope if form is invalid', function () {
+      this.form = {$invalid: true};
+      var sypOnAdd = spyOn(mockService, 'addPlayer').and.callThrough();
+
+      scope.addPlayer(this.form);
+      scope.$digest();
+
+      expect(sypOnAdd).not.toHaveBeenCalled();
+      expect(scope.handler.message).toBe('Check team url of player. Add not successful.');
+    });
   });
 
   describe('updating existing player', function () {
