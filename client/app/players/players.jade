@@ -21,19 +21,19 @@ div(class='players-table-view')
     tbody
       tr(ng-form name='playerAddForm')
         td
-          input(type='text', id='name', ng-model='newPlayer.name', ng-required placeholder='Place name here...')
+          input(type='text', id='name', ng-model='newPlayer.name', ng-required placeholder='Name')
         td
           input(type='text', id='email', ng-model='newPlayer.email', ng-class='{error: newPlayer.error}', ng-required placeholder='format (name@domain.com)')
         td
           input(type='text', id='team', ng-model='newPlayer._team' ng-pattern='/\/[\[a-zA-Z]+/' ng-required placeholder='format (/teamx)')
         td
           button(type='button', id='addPlayer' ng-click='addPlayer(playerAddForm)') Add Player
-      tr(ng-repeat='player in players', ng-class='{disabled: !active}', ng-init='active=false; edited=false')
+      tr(ng-repeat='player in players', ng-class='{disabled: !active}', ng-form name='playerForm', ng-init='active=false; edited=false')
         td
           input(type='text', ng-model='player.name', value='{{player.name}}', ng-focus='active=true', ng-blur='active=false', ng-change='edited=true', ng-readonly='!active')
         td
-          input(type='text', ng-model='player.email', value='{{player.email}}', ng-class='{error: player.error}', ng-focus='active=true', ng-blur='active=false', ng-change='edited=true', ng-readonly='!active')
+          input(type='text', ng-model='player.email', value='{{player.email}}', ng-class='{error: player.error}', ng-focus='active=true', ng-blur='active=false', ng-change='edited=true', ng-readonly='!active' placeholder="format (name@domain.com)")
         td
-          input(type='text', ng-model='player._team', ng-focus='active=true', ng-blur='active=false', ng-change='edited=true', ng-readonly='!active')
+          input(type='text', ng-model='player._team', ng-focus='active=true', ng-blur='active=false', ng-change='edited=true', ng-readonly='!active' ng-pattern='/\/[\[a-zA-Z]+/' placeholder='format (/teamx)')
         td
-          button(ng-click='update(player); active=false; edited=false', ng-show='edited') Save
+          button(id='updatePlayer' ng-click='update(player, playerForm); active=false; edited=false', ng-show='edited') Save
