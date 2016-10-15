@@ -103,7 +103,7 @@
     "pretest": "npm run update-webdriver",
     "test": "npm run jshint && npm run grunt-test",
     "preprotractor": "npm run update-webdriver",
-    "update-webdriver": "node node_modules/protractor/bin/webdriver-manager update && node_modules/grunt-protractor-runner/scripts/webdriver-manager-update"
+    "update-webdriver": "node_modules/protractor/bin/webdriver-manager update --versions.chrome 2.24"
   },
   "private": true
 }
