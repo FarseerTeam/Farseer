@@ -191,11 +191,12 @@ describe('Controller: PlayersCtrl', function () {
       this.form = {$invalid: false};
     });
 
-    it('should add new player', function () {
+    it('should add new player and clear scope', function () {
       scope.addPlayer(this.form);
       scope.$digest();
 
       expect(addedPlayer).toBe(newPlayer);
+      expect(scope.newPlayer).toBeNull();
     });
 
     it('should add new player to the empty list of players in scope when successful', function () {
@@ -234,7 +235,7 @@ describe('Controller: PlayersCtrl', function () {
       expect(scope.handler).not.toBe(undefined);
       expect(scope.handler.message).toBe('Success');
       expect(scope.handler.error).toBe(false);
-      expect(scope.newPlayer.error).toBe(false);
+      expect(scope.newPlayer).toBeNull();
     });
 
     it('should pass error message to scope when add is rejected', function () {
