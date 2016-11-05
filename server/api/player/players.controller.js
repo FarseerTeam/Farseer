@@ -27,14 +27,10 @@ exports.create = function(req, res) {
             });
         } else {
             if (req.isAuthenticated()) {
-                actions.saveCreatePlayer(req.user.email, player.world, player.name, player.email).then(function() {
-                    res.json(player);
-                }, function(error) {
-                    console.log('Error saving action: ' + error);
-                });
-            } else {
-                res.json(player);
+                var action = new actions.Action({ userEmail: req.user.email });
+                action.save();
             }
+            res.json(player);
         }
     });
 };
