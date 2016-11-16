@@ -35,6 +35,7 @@ angular.module('farseerApp')
         httpService.addPlayer($scope.newPlayer).then(function (response) {
           addNewPlayerToScope(response.data);
           handleResponse('Success', $scope.newPlayer, false);
+          $scope.newPlayer = null;
         }, function (error) {
           handleResponse(error.data.message, $scope.newPlayer, true);
         });
